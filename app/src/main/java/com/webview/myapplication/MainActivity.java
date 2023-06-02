@@ -1,89 +1,170 @@
 package com.webview.myapplication;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.DownloadManager;
-import android.content.Context;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
+import android.view.View;
 import android.webkit.CookieManager;
-import android.webkit.URLUtil;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.Toast;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
+import android.widget.FrameLayout;
 
-public class MainActivity extends Activity {
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 
-    private final int STORAGE_PERMISSION_CODE = 1;
-    private WebView mWebView;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
-    private void requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Permission needed")
-                    .setMessage("This permission is needed to download files")
-                    .setPositiveButton("ok", (dialog, which) -> ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE))
-                    .setNegativeButton("cancel", (dialog, which) -> dialog.dismiss())
-                    .create().show();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
-        }
-    }
+public class MainActivity extends AppCompatActivity {
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
-    @Override
+    WebView mWebView;
+    StringBuilder adservers;
+
+
     @SuppressLint("SetJavaScriptEnabled")
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
-        requestStoragePermission();
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.black, this.getTheme()));
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+        }
+        readAdServers();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         setContentView(R.layout.activity_main);
+
         mWebView = findViewById(R.id.activity_main_webview);
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('div#header').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('nav').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('div.footer').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('#buscar').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('h1').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('h3').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('body').setAttribute('data-theme','dark')\n;})()");
+            }
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                ByteArrayInputStream EMPTY = new ByteArrayInputStream("".getBytes());
+                String kk5 = String.valueOf(adservers);
+
+                if (kk5.contains(":::::" + request.getUrl().getHost())) {
+                    return new WebResourceResponse("text/plain", "utf-8", EMPTY);
+                }
+                return super.shouldInterceptRequest(view, request);
+            }
+        });
+        mWebView.setWebChromeClient(new MyChrome());
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        mWebView.setWebViewClient(new HelloWebViewClient());
-        mWebView.setDownloadListener((url, userAgent, contentDisposition, mimeType, contentLength) -> {
-            Uri source = Uri.parse(url);
-            DownloadManager.Request request = new DownloadManager.Request(source);
-            String cookies = CookieManager.getInstance().getCookie(url);
-            request.addRequestHeader("cookie", cookies);
-            request.addRequestHeader("User-Agent", userAgent);
-            request.setDescription("Downloading File...");
-            request.setTitle(URLUtil.guessFileName(url, contentDisposition, mimeType));
-            request.allowScanningByMediaScanner();
-            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
-            request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, URLUtil.guessFileName(url, contentDisposition, mimeType));
-            DownloadManager dm = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
-            dm.enqueue(request);
-            Toast.makeText(getApplicationContext(), "Downloading File", Toast.LENGTH_LONG).show();
-        });
-        mWebView.loadUrl("https://github.com/satyakami"); //Replace The Link Here
-    }
-    private static class HelloWebViewClient extends WebViewClient
-    {
-        @Override
-        public boolean shouldOverrideUrlLoading(final WebView view, final String url)
-        {
-            view.loadUrl(url);
-            return true;
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAppCacheEnabled(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
+        webSettings.setMediaPlaybackRequiresUserGesture(true);
+
+
+        if (savedInstanceState == null) {
+            mWebView.loadUrl("https://canales.online/");
         }
+
+    }
+    private void readAdServers() {
+        String line = "";
+        adservers = new StringBuilder();
+
+        InputStream is = this.getResources().openRawResource(R.raw.adblockserverlist);
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+        if(is != null) {
+            try {
+                while ((line = br.readLine()) != null) {
+                    adservers.append(line);
+                    adservers.append("\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private class MyChrome extends WebChromeClient {
+        private View mCustomView;
+        private WebChromeClient.CustomViewCallback mCustomViewCallback;
+        protected FrameLayout mFullscreenContainer;
+        private int mOriginalOrientation;
+        private int mOriginalSystemUiVisibility;
+
+        MyChrome() {
+        }
+
+        public Bitmap getDefaultVideoPoster() {
+            if (mCustomView == null) {
+                return null;
+            }
+            return BitmapFactory.decodeResource(getApplicationContext().getResources(), 2130837573);
+        }
+
+        public void onHideCustomView() {
+            ((FrameLayout) getWindow().getDecorView()).removeView(this.mCustomView);
+            this.mCustomView = null;
+            getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
+            //setRequestedOrientation(this.mOriginalOrientation);
+            this.mCustomViewCallback.onCustomViewHidden();
+            this.mCustomViewCallback = null;
+        }
+
+        public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
+            if (this.mCustomView != null) {
+                onHideCustomView();
+                return;
+            }
+            this.mCustomView = paramView;
+            this.mOriginalSystemUiVisibility = getWindow().getDecorView().getSystemUiVisibility();
+            this.mOriginalOrientation = getRequestedOrientation();
+            this.mCustomViewCallback = paramCustomViewCallback;
+            ((FrameLayout) getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
+            getWindow().getDecorView().setSystemUiVisibility(3846 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mWebView.saveState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mWebView.restoreState(savedInstanceState);
     }
 
     @Override
     public void onBackPressed() {
-        if (mWebView.canGoBack()) {
-            mWebView.goBack();
-        } else {
-            super.onBackPressed();
-        }
+        if (mWebView != null && mWebView.canGoBack())
+            mWebView.goBack();// if there is previous page open it
+        else
+            super.onBackPressed();//if there is no previous page, close app
     }
 
 }
