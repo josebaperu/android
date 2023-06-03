@@ -1,12 +1,12 @@
 package com.webview.myapplication;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
-import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     WebView mWebView;
     StringBuilder adservers;
 
+    Activity mainActivity = this; // If you are in activity
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -51,6 +52,10 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('div#header').style.display = 'none';})()");
                 mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('.clean-gray').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('.card-description').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('nav').style.display = 'none';})()");
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('div.footer').style.display = 'none';})()");
@@ -61,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('h3').style.display = 'none';})()");
                 mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('body').setAttribute('data-theme','dark')\n;})()");
+                        "document.querySelector('body').style.backgroundColor = 'black';})()");
+//              mWebView.loadUrl("javascript:(function() { " +
+//                      "document.querySelector('body').setAttribute('data-theme','dark');})()");
             }
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -74,14 +81,54 @@ public class MainActivity extends AppCompatActivity {
                 return super.shouldInterceptRequest(view, request);
             }
         });
-        mWebView.setWebChromeClient(new MyChrome());
+        mWebView.setWebChromeClient(new WebChromeClient()
+        {
+            private View mCustomView;
+            private WebChromeClient.CustomViewCallback mCustomViewCallback;
+            private int mOriginalOrientation;
+            private int mOriginalSystemUiVisibility;
+
+            public Bitmap getDefaultVideoPoster()
+            {
+                if (mainActivity == null) {
+                    return null;
+                }
+                return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
+            }
+
+            public void onHideCustomView()
+            {
+                ((FrameLayout)mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
+                this.mCustomView = null;
+                mainActivity.getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
+                mainActivity.setRequestedOrientation(this.mOriginalOrientation);
+                this.mCustomViewCallback.onCustomViewHidden();
+                this.mCustomViewCallback = null;
+            }
+
+            public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback)
+            {
+                if (this.mCustomView != null)
+                {
+                    onHideCustomView();
+                    return;
+                }
+                this.mCustomView = paramView;
+                this.mOriginalSystemUiVisibility = mainActivity.getWindow().getDecorView().getSystemUiVisibility();
+                this.mOriginalOrientation = mainActivity.getRequestedOrientation();
+                this.mCustomViewCallback = paramCustomViewCallback;
+                ((FrameLayout)mainActivity.getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
+                mainActivity.getWindow().getDecorView().setSystemUiVisibility(3846);
+            }
+        });
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
         webSettings.setMediaPlaybackRequiresUserGesture(true);
-
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webSettings.setBlockNetworkLoads(false);
 
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://canales.online/");
@@ -104,46 +151,6 @@ public class MainActivity extends AppCompatActivity {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private class MyChrome extends WebChromeClient {
-        private View mCustomView;
-        private WebChromeClient.CustomViewCallback mCustomViewCallback;
-        protected FrameLayout mFullscreenContainer;
-        private int mOriginalOrientation;
-        private int mOriginalSystemUiVisibility;
-
-        MyChrome() {
-        }
-
-        public Bitmap getDefaultVideoPoster() {
-            if (mCustomView == null) {
-                return null;
-            }
-            return BitmapFactory.decodeResource(getApplicationContext().getResources(), 2130837573);
-        }
-
-        public void onHideCustomView() {
-            ((FrameLayout) getWindow().getDecorView()).removeView(this.mCustomView);
-            this.mCustomView = null;
-            getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
-            //setRequestedOrientation(this.mOriginalOrientation);
-            this.mCustomViewCallback.onCustomViewHidden();
-            this.mCustomViewCallback = null;
-        }
-
-        public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
-            if (this.mCustomView != null) {
-                onHideCustomView();
-                return;
-            }
-            this.mCustomView = paramView;
-            this.mOriginalSystemUiVisibility = getWindow().getDecorView().getSystemUiVisibility();
-            this.mOriginalOrientation = getRequestedOrientation();
-            this.mCustomViewCallback = paramCustomViewCallback;
-            ((FrameLayout) getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
-            getWindow().getDecorView().setSystemUiVisibility(3846 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
     }
 
