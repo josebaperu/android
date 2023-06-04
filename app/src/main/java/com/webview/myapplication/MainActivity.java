@@ -17,6 +17,8 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewFeature;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -129,7 +131,9 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setBlockNetworkLoads(false);
-
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
+        }
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://canales.online/");
         }
