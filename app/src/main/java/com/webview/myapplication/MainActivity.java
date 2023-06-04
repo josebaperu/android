@@ -17,9 +17,6 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.webkit.WebSettingsCompat;
-import androidx.webkit.WebViewFeature;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -49,6 +46,11 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('body').style.backgroundColor = 'black';})()");
+            }
             @Override
             public void onPageFinished(WebView view, String url) {
                 mWebView.loadUrl("javascript:(function() { " +
@@ -131,9 +133,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setBlockNetworkLoads(false);
-        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
-            WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
-        }
+
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://canales.online/");
         }
