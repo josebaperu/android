@@ -35,10 +35,13 @@ public class MainActivity extends AppCompatActivity {
     StringBuilder adservers;
 
     Activity mainActivity = this; // If you are in activity
+
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
+        serviceIntent.setAction("START");
         ContextCompat.startForegroundService(this, serviceIntent);
     }
+
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {

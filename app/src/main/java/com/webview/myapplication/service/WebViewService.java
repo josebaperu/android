@@ -14,7 +14,6 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.myapplication.MainActivity;
 import com.webview.myapplication.R;
 
 public class WebViewService extends Service {
@@ -29,42 +28,50 @@ public class WebViewService extends Service {
      * Returns the instance of the service
      */
     public class LocalBinder extends Binder {
-        public WebViewService getServiceInstance(){
+        public WebViewService getServiceInstance() {
             return WebViewService.this;
         }
     }
+
     private final IBinder mBinder = new LocalBinder();      // IBinder
 
     @Override
     public void onCreate() {
         super.onCreate();
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,"INSERT_YOUR_APP_NAME:wakelock");
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "INSERT_YOUR_APP_NAME:wakelock");
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        createNotificationChannel();
-        Intent notificationIntent = new Intent(this, WebViewService.class);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                0, notificationIntent, 0);
+        final String action = intent.getAction();
+        if (action != null) {
+            if (action.equals("DESTROY")) {
+                destroyService();
+            } else if (action.equals("START")) {
+                createNotificationChannel();
+                Intent notificationIntent = new Intent(this, WebViewService.class);
+                PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                        0, notificationIntent, 0);
 
-        Intent deleteIntent = new Intent(this, WebViewService.class);
-        PendingIntent deletePendingIntent = PendingIntent.getService(this,
-                0,
-                deleteIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-        Notification notification = new NotificationCompat.Builder(this, ID)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setContentTitle("TVnow Playback")
-                .setSmallIcon(R.drawable.ic_launcher_background)
-                .setContentIntent(pendingIntent)
-                .setDeleteIntent(deletePendingIntent)
-                .setAutoCancel(true)
-                .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                .build();
-        startForeground(1, notification);
-        return START_NOT_STICKY;
+                Intent deleteIntent = new Intent(this, WebViewService.class);
+                deleteIntent.setAction("DESTROY");
+                PendingIntent deletePendingIntent = PendingIntent.getService(this,
+                        0,
+                        deleteIntent,
+                        PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                Notification notification = new NotificationCompat.Builder(this, ID)
+                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setSmallIcon(R.drawable.ic_launcher_background)
+                        .setContentIntent(pendingIntent)
+                        .setDeleteIntent(deletePendingIntent)
+                        .setAutoCancel(true)
+                        .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
+                        .build();
+                startForeground(1, notification);
+            }
+        }
+        return START_STICKY;
     }
 
     @SuppressLint("WakelockTimeout")
@@ -84,6 +91,7 @@ public class WebViewService extends Service {
         }
         super.onDestroy();
     }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
@@ -92,7 +100,16 @@ public class WebViewService extends Service {
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
+            serviceChannel.setSound(null, null);
+            serviceChannel.setImportance(NotificationManager.IMPORTANCE_MIN);
             manager.createNotificationChannel(serviceChannel);
         }
     }
+
+    private void destroyService() {
+        stopForeground(true);
+        stopSelf();
+        System.exit(0);
+    }
+
 }
