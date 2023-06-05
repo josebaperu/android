@@ -17,6 +17,9 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.webview.myapplication.webview.MediaWebView;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -25,7 +28,7 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
 
-    WebView mWebView;
+    MediaWebView mWebView;
     StringBuilder adservers;
 
     Activity mainActivity = this; // If you are in activity
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar.hide();
         setContentView(R.layout.activity_main);
 
+        mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
@@ -51,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('body').style.backgroundColor = 'black';})()");
             }
+
             @Override
             public void onPageFinished(WebView view, String url) {
                 mWebView.loadUrl("javascript:(function() { " +
@@ -74,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 //              mWebView.loadUrl("javascript:(function() { " +
 //                      "document.querySelector('body').setAttribute('data-theme','dark');})()");
             }
+
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 ByteArrayInputStream EMPTY = new ByteArrayInputStream("".getBytes());
@@ -85,24 +91,21 @@ public class MainActivity extends AppCompatActivity {
                 return super.shouldInterceptRequest(view, request);
             }
         });
-        mWebView.setWebChromeClient(new WebChromeClient()
-        {
+        mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
             private WebChromeClient.CustomViewCallback mCustomViewCallback;
             private int mOriginalOrientation;
             private int mOriginalSystemUiVisibility;
 
-            public Bitmap getDefaultVideoPoster()
-            {
+            public Bitmap getDefaultVideoPoster() {
                 if (mainActivity == null) {
                     return null;
                 }
                 return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
             }
 
-            public void onHideCustomView()
-            {
-                ((FrameLayout)mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
+            public void onHideCustomView() {
+                ((FrameLayout) mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
                 this.mCustomView = null;
                 mainActivity.getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
                 mainActivity.setRequestedOrientation(this.mOriginalOrientation);
@@ -110,10 +113,8 @@ public class MainActivity extends AppCompatActivity {
                 this.mCustomViewCallback = null;
             }
 
-            public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback)
-            {
-                if (this.mCustomView != null)
-                {
+            public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
+                if (this.mCustomView != null) {
                     onHideCustomView();
                     return;
                 }
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 this.mOriginalSystemUiVisibility = mainActivity.getWindow().getDecorView().getSystemUiVisibility();
                 this.mOriginalOrientation = mainActivity.getRequestedOrientation();
                 this.mCustomViewCallback = paramCustomViewCallback;
-                ((FrameLayout)mainActivity.getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
+                ((FrameLayout) mainActivity.getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
                 mainActivity.getWindow().getDecorView().setSystemUiVisibility(3846);
             }
         });
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
     private void readAdServers() {
         String line = "";
         adservers = new StringBuilder();
@@ -146,7 +148,7 @@ public class MainActivity extends AppCompatActivity {
         InputStream is = this.getResources().openRawResource(R.raw.adblockserverlist);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-        if(is != null) {
+        if (is != null) {
             try {
                 while ((line = br.readLine()) != null) {
                     adservers.append(line);
@@ -177,5 +179,4 @@ public class MainActivity extends AppCompatActivity {
         else
             super.onBackPressed();//if there is no previous page, close app
     }
-
 }
