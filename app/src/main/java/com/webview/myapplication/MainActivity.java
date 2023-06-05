@@ -2,6 +2,7 @@ package com.webview.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -17,7 +18,9 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
+import com.webview.myapplication.service.WebViewService;
 import com.webview.myapplication.webview.MediaWebView;
 
 import java.io.BufferedReader;
@@ -32,7 +35,10 @@ public class MainActivity extends AppCompatActivity {
     StringBuilder adservers;
 
     Activity mainActivity = this; // If you are in activity
-
+    private void startService() {
+        Intent serviceIntent = new Intent(this, WebViewService.class);
+        ContextCompat.startForegroundService(this, serviceIntent);
+    }
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
+        startService();
         readAdServers();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
