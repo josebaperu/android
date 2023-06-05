@@ -1,4 +1,4 @@
-package com.webview.myapplication;
+package com.webview.youtube;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -20,8 +20,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.webview.myapplication.service.WebViewService;
-import com.webview.myapplication.webview.MediaWebView;
+import com.webview.youtube.service.WebViewService;
+import com.webview.youtube.webview.MediaWebView;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -68,24 +68,6 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('div#header').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('.clean-gray').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('.card-description').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('nav').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('div.footer').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('#buscar').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('h1').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('h3').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('body').style.backgroundColor = 'black';})()");
 //              mWebView.loadUrl("javascript:(function() { " +
 //                      "document.querySelector('body').setAttribute('data-theme','dark');})()");
             }
@@ -144,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setBlockNetworkLoads(false);
-
+        webSettings.setUserAgentString("Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0");
         if (savedInstanceState == null) {
-            mWebView.loadUrl("https://canales.online/");
+            mWebView.loadUrl("https://m.youtube.com");
         }
 
     }
