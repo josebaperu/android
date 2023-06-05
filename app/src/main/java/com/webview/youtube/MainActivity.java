@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
 
     MediaWebView mWebView;
     StringBuilder adservers;
+    StringBuilder youtubeAds;
     Activity mainActivity = this; // If you are in activity
 
     private void startService() {
@@ -51,7 +52,8 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
-        readAdServers();
+        adservers = fileToSb(R.raw.adblockserverlist);
+        youtubeAds = fileToSb(R.raw.noadsyoutube);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
@@ -62,13 +64,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('body').style.backgroundColor = 'black';})()");
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-//              mWebView.loadUrl("javascript:(function() { " +
-//                      "document.querySelector('body').setAttribute('data-theme','dark');})()");
+                        youtubeAds.toString() +
+                        ";})()");
             }
 
             @Override
@@ -132,23 +129,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void readAdServers() {
+    private StringBuilder fileToSb(int resource) {
         String line = "";
-        adservers = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
 
-        InputStream is = this.getResources().openRawResource(R.raw.adblockserverlist);
+        InputStream is = this.getResources().openRawResource(resource);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
         if (is != null) {
             try {
                 while ((line = br.readLine()) != null) {
-                    adservers.append(line);
-                    adservers.append("\n");
+                    sb.append(line);
+                    sb.append("\n");
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        return sb;
     }
 
     @Override

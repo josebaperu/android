@@ -6,7 +6,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.webview.myapplication"
+        applicationId "com.webview.youtube"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1

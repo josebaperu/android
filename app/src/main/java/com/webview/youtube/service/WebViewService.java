@@ -18,10 +18,8 @@ import com.webview.youtube.R;
 
 public class WebViewService extends Service {
 
-    private static final String ID = "foregroundService";                        // The id of the notification
+    private static final String ID = "foregroundServiceYT";                        // The id of the notification
 
-    private NotificationCompat.Builder builder;
-    private NotificationManager mNotificationManager;
     private PowerManager.WakeLock wakeLock;                 // PARTIAL_WAKELOCK
 
     /**
