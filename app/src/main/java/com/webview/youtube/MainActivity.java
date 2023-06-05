@@ -33,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
     MediaWebView mWebView;
     StringBuilder adservers;
-
     Activity mainActivity = this; // If you are in activity
 
     private void startService() {
