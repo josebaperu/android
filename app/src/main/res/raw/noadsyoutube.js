@@ -1,11 +1,18 @@
 let ogVolume=1;
 let pbRate = 1;
 document.cookie="VISITOR_INFO1_LIVE=oKckVSqvaGw; path=/; domain=.youtube.com";
+let click = new Event('click');
 
 setInterval(function(){
     const skip = document.querySelector('.videoAdUiSkipButtonExperimentalText');
     if (skip) skip.click();
     if(document.getElementsByClassName("video-stream html5-main-video")[0]!==undefined){
+    	let arr = Array.from(document.querySelectorAll('.ytd-popup-container'));
+    	let elem = arr[1]; // the popup
+    	if(elem) {
+    		let a = document.querySelector('#confirm-button'); // find the actual button
+    		a.dispatchEvent(click); // DIE
+    	}
         let ad = document.getElementsByClassName("video-ads ytp-ad-module")[0];
         let vid = document.getElementsByClassName("video-stream html5-main-video")[0];
         if(ad==undefined){
