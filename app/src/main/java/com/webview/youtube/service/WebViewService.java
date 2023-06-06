@@ -60,6 +60,7 @@ public class WebViewService extends Service {
                         PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                 Notification notification = new NotificationCompat.Builder(this, ID)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setSmallIcon(android.R.color.transparent)
                         .setContentIntent(pendingIntent)
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
