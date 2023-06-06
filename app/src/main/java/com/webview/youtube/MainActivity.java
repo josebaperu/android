@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
             }
-
+            @Override
             public void onHideCustomView() {
                 ((FrameLayout) mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
                 this.mCustomView = null;
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 this.mCustomViewCallback.onCustomViewHidden();
                 this.mCustomViewCallback = null;
             }
-
+            @Override
             public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
                 if (this.mCustomView != null) {
                     onHideCustomView();
