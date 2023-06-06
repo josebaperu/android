@@ -67,6 +67,12 @@ public class MainActivity extends AppCompatActivity {
                         youtubeAds.toString() +
                         ";})()");
             }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        youtubeAds.toString() +
+                        ";})()");
+            }
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
