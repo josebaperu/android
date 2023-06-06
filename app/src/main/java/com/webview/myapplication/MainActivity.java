@@ -85,9 +85,11 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('h3').style.display = 'none';})()");
                 mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('footer').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('body').style.backgroundColor = 'black';})()");
-//              mWebView.loadUrl("javascript:(function() { " +
-//                      "document.querySelector('body').setAttribute('data-theme','dark');})()");
+              mWebView.loadUrl("javascript:(function() { " +
+                      "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('html body div a.btn.btn-md').forEach(function(el) {el.classList.remove('btn-md');});})()");
             }
 
             @Override
