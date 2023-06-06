@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -30,11 +31,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
-
-    MediaWebView mWebView;
-    StringBuilder adservers;
-    StringBuilder youtubeAds;
-    Activity mainActivity = this; // If you are in activity
+    private MediaWebView mWebView;
+    private StringBuilder adservers;
+    private StringBuilder youtubeAds;
+    private Activity mainActivity = this; // If you are in activity
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -114,6 +114,7 @@ public class MainActivity extends AppCompatActivity {
                 mainActivity.getWindow().getDecorView().setSystemUiVisibility(3846);
             }
         });
+        CookieManager.getInstance().setAcceptThirdPartyCookies(mWebView, true);
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
@@ -122,6 +123,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setBlockNetworkLoads(false);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setDatabaseEnabled(true);
         webSettings.setUserAgentString("Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0");
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://m.youtube.com");

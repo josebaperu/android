@@ -1,7 +1,10 @@
 let ogVolume=1;
 let pbRate = 1;
+document.cookie="VISITOR_INFO1_LIVE=oKckVSqvaGw; path=/; domain=.youtube.com";
 
 setInterval(function(){
+    const skip = document.querySelector('.videoAdUiSkipButtonExperimentalText');
+    if (skip) skip.click();
     if(document.getElementsByClassName("video-stream html5-main-video")[0]!==undefined){
         let ad = document.getElementsByClassName("video-ads ytp-ad-module")[0];
         let vid = document.getElementsByClassName("video-stream html5-main-video")[0];
