@@ -12,18 +12,18 @@ var sleep = function () { var now = new Date().getTime(); while ( new Date().get
 
 window.adSkipTimer = window.setInterval(function() {
 
-        if (document.querySelector(".ytp-ad-skip-button.ytp-button") != null) {
-            document.querySelector(".ytp-ad-skip-button.ytp-button").click();
-        }if (document.querySelector(".ytp-ad-overlay-close-button") != null) {
-            document.querySelector(".ytp-ad-overlay-close-button").click();
-        }
-        if (document.querySelector(".style-scope.ytd-popup-container yt-confirm-dialog-renderer a.yt-simple-endpoint.style-scope.yt-button-renderer") != null) {
-            document.querySelector(".style-scope.ytd-popup-container yt-confirm-dialog-renderer a.yt-simple-endpoint.style-scope.yt-button-renderer").click();
-        }
-        if (document.querySelector(".ytd-mealbar-promo-renderer #dismiss-button a.yt-simple-endpoint.style-scope.ytd-button-renderer") != null) {
-            document.querySelector(".ytd-mealbar-promo-renderer #dismiss-button a.yt-simple-endpoint.style-scope.ytd-button-renderer").click();
-            document.querySelector(".ytd-mealbar-promo-renderer").parentElement.remove();
-        }
+    if (document.querySelector(".ytp-ad-skip-button.ytp-button") != null) {
+        document.querySelector(".ytp-ad-skip-button.ytp-button").click();
+    }if (document.querySelector(".ytp-ad-overlay-close-button") != null) {
+        document.querySelector(".ytp-ad-overlay-close-button").click();
+    }
+    if (document.querySelector(".style-scope.ytd-popup-container yt-confirm-dialog-renderer a.yt-simple-endpoint.style-scope.yt-button-renderer") != null) {
+        document.querySelector(".style-scope.ytd-popup-container yt-confirm-dialog-renderer a.yt-simple-endpoint.style-scope.yt-button-renderer").click();
+    }
+    if (document.querySelector(".ytd-mealbar-promo-renderer #dismiss-button a.yt-simple-endpoint.style-scope.ytd-button-renderer") != null) {
+        document.querySelector(".ytd-mealbar-promo-renderer #dismiss-button a.yt-simple-endpoint.style-scope.ytd-button-renderer").click();
+        document.querySelector(".ytd-mealbar-promo-renderer").parentElement.remove();
+    }
 
 
     if(document.getElementsByClassName("video-stream html5-main-video")[0]!==undefined){
