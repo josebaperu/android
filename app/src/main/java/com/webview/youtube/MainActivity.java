@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private StringBuilder adservers;
     private StringBuilder youtubeAds;
+    private StringBuilder continueWatching;
     private Activity mainActivity = this; // If you are in activity
 
     private void startService() {
@@ -54,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         startService();
         adservers = fileToSb(R.raw.adblockserverlist);
         youtubeAds = fileToSb(R.raw.noadsyoutube);
+        continueWatching = fileToSb(R.raw.continuewatching);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
@@ -61,16 +63,19 @@ public class MainActivity extends AppCompatActivity {
         mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        youtubeAds.toString() +
-                        ";})()");
-            }
+//            @Override
+//            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+//                mWebView.loadUrl("javascript:(function() { " +
+//                        youtubeAds.toString() +
+//                        ";})()");
+//            }
             @Override
             public void onPageFinished(WebView view, String url) {
                 mWebView.loadUrl("javascript:(function() { " +
                         youtubeAds.toString() +
+                        ";})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        continueWatching.toString() +
                         ";})()");
             }
 
