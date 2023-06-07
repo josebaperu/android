@@ -17,15 +17,6 @@ window.adSkipTimer = window.setInterval(function() {
         }if (document.querySelector(".ytp-ad-overlay-close-button") != null) {
             document.querySelector(".ytp-ad-overlay-close-button").click();
         }
-        if (document.querySelector(".ytp-ad-button-icon") != null) {
-            document.querySelector(".ytp-ad-button-icon").click();
-            sleep();
-            document.querySelector(".ytp-ad-button.ytp-ad-info-dialog-mute-button.ytp-ad-button-link").click();
-            sleep();
-            document.querySelectorAll(".ytp-ad-feedback-dialog-reason-input")[2].click();
-            sleep();
-            document.querySelector(".ytp-ad-feedback-dialog-confirm-button").click();
-        }
         if (document.querySelector(".style-scope.ytd-popup-container yt-confirm-dialog-renderer a.yt-simple-endpoint.style-scope.yt-button-renderer") != null) {
             document.querySelector(".style-scope.ytd-popup-container yt-confirm-dialog-renderer a.yt-simple-endpoint.style-scope.yt-button-renderer").click();
         }
@@ -35,8 +26,7 @@ window.adSkipTimer = window.setInterval(function() {
         }
 
 
-	    const skip = document.querySelector('.videoAdUiSkipButtonExperimentalText');
-        if (skip) skip.click();
+    if(document.getElementsByClassName("video-stream html5-main-video")[0]!==undefined){
         let ad = document.getElementsByClassName("video-ads ytp-ad-module")[0];
         let vid = document.getElementsByClassName("video-stream html5-main-video")[0];
         if(ad==undefined){
@@ -72,9 +62,7 @@ window.adSkipTimer = window.setInterval(function() {
                 }
             }
         }
-
-
-
+    }
 
 }, adSkipperRepeatInterval);
 
