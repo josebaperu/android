@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black, this.getTheme()));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
@@ -78,12 +78,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
-//            @Override
-//            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-//                mWebView.loadUrl("javascript:(function() { " +
-//                        youtubeAds.toString() +
-//                        ";})()");
-//            }
             @Override
             public void onPageFinished(WebView view, String url) {
                 mWebView.loadUrl("javascript:(function() { " +
