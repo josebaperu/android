@@ -8,6 +8,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
@@ -164,6 +165,18 @@ public class MainActivity extends AppCompatActivity {
         }
         mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setScrollbarFadingEnabled(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().getInsetsController().hide(WindowInsets.Type.systemBars());
+        } else {
+            int uiVisibility = mainActivity.getWindow().getDecorView().getSystemUiVisibility();
+
+            uiVisibility |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+            uiVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+            uiVisibility |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
+            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+            mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
+        }
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://www.youtube.com");
         }
