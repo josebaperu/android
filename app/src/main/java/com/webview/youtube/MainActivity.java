@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder adservers;
     private StringBuilder youtubeAds;
     private StringBuilder continueWatching;
+    private StringBuilder scroll;
     private Activity mainActivity = this; // If you are in activity
 
     private void startService() {
@@ -71,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         adservers = fileToSb(R.raw.adblockserverlist);
         youtubeAds = fileToSb(R.raw.noadsyoutube);
         continueWatching = fileToSb(R.raw.continuewatching);
+        scroll = fileToSb(R.raw.scroll);
+
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
@@ -85,6 +88,9 @@ public class MainActivity extends AppCompatActivity {
                         ";})()");
                 mWebView.loadUrl("javascript:(function() { " +
                         continueWatching.toString() +
+                        ";})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        scroll.toString() +
                         ";})()");
             }
 
