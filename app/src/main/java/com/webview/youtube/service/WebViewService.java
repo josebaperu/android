@@ -107,6 +107,7 @@ public class WebViewService extends Service {
     private void destroyService() {
         stopForeground(true);
         stopSelf();
+        onDestroy();
         System.exit(0);
     }
 
