@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.webview.youtube">
+    package="com.webview.openspotify">
 
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission-sdk-23 android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -23,31 +23,48 @@
 
     <application
         android:allowBackup="true"
+        android:showOnLockScreen="true"
+        android:appCategory="audio"
+        android:exported="true"
         android:hardwareAccelerated="true"
         android:fullBackupContent="true"
         android:usesCleartextTraffic="true"
-        android:icon="@mipmap/ic_yt"
+        android:icon="@mipmap/spotify_ic"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApplication"
-        tools:targetApi="m">
+        android:theme="@style/AppTheme"
+        android:launchMode="singleTop"
+        tools:targetApi="o">
         <service
-            android:name="com.webview.youtube.service.WebViewService"
+            android:name="com.webview.openspotify.service.WebViewService"
             android:enabled="true"
-            android:exported="true"
+            android:exported="false"
             android:stopWithTask="true"
             android:foregroundServiceType="mediaPlayback">
         </service>
-    <activity
-        android:name="com.webview.youtube.MainActivity"
-        android:configChanges="orientation|screenSize"
-        android:label="@string/app_name">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
-    </activity>
+        <activity
+            android:name="com.webview.openspotify.MainActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTask"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <receiver android:name=".receiver.ActionReceiver"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED"
+            android:directBootAware="true"
+            android:enabled="true"
+            >
+            <intent-filter>
+                <action android:name="TOGGLE" />
+                <action android:name="NEXT" />
+                <action android:name="DESTROY" />
+            </intent-filter>
+        </receiver>
     </application>
 
 
