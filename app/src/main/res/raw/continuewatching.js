@@ -1,23 +1,10 @@
-function eventFire(el, etype){
-  if (el.fireEvent) {
-    el.fireEvent('on' + etype);
-  } else {
-    var evObj = document.createEvent('Events');
-    evObj.initEvent(etype, true, false);
-    el.dispatchEvent(evObj);
-  }
-}
-
-function fire() {
-  btn = document.getElementById('confirm-button');
-  if (btn !== null) {
-    dlg = btn.parentElement.parentElement.parentElement.parentElement;
-    if (dlg.style["display"] !== "none") {
-      eventFire(btn, 'click');
-      console.log('vid unpaused, HA-HA YT!');
+setInterval(function() {
+    'use strict';
+    if (document.getElementsByClassName('line-text style-scope yt-confirm-dialog-renderer').length >= 1) {
+        for (let i = 0; i < document.getElementsByClassName('line-text style-scope yt-confirm-dialog-renderer').length; i++) {
+            if (document.getElementsByClassName('line-text style-scope yt-confirm-dialog-renderer')[i].innerText == "Video paused. Continue watching?") {
+                document.getElementsByClassName('line-text style-scope yt-confirm-dialog-renderer')[i].parentNode.parentNode.parentNode.querySelector('#confirm-button').click()
+            }
+        }
     }
-  }
-  setTimeout(fire, 250);
-}
-
-setTimeout(fire, 250);
+}, 250)();

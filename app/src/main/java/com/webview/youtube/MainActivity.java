@@ -2,7 +2,6 @@ package com.webview.youtube;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -43,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder continueWatching;
     private StringBuilder scroll;
     private Activity mainActivity = this; // If you are in activity
+    private final static String UA_KK = "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0";
+    private final static String UA_MOBILE = "Mozilla/5.0 (Linux; Android 9; LGwebOSTV Build/PKQ1.180904.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/85.0.4183.101 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/287.0.0.50.119;]";
+
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -145,23 +146,21 @@ public class MainActivity extends AppCompatActivity {
         CookieManager.getInstance().setAcceptThirdPartyCookies(mWebView, true);
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
-        webSettings.setAllowFileAccess(true);
-        webSettings.setAppCacheEnabled(true);
+        webSettings.setAllowFileAccess(false);
+        webSettings.setAppCacheEnabled(false);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
         webSettings.setMediaPlaybackRequiresUserGesture(true);
-        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setBlockNetworkLoads(false);
-        webSettings.setDomStorageEnabled(true);
-        webSettings.setDatabaseEnabled(true);
+        webSettings.setDomStorageEnabled(false);
+        webSettings.setDatabaseEnabled(false);
 
-        webSettings.setUseWideViewPort(true);
+        webSettings.setUseWideViewPort(false);
         webSettings.setLoadWithOverviewMode(true);
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        // TV user agent
-        //webSettings.setUserAgentString("Mozilla/5.0 (PS4; Leanback Shell) Gecko/20100101 Firefox/65.0 LeanbackShell/01.00.01.75 Sony PS4/ (PS4, , no, CH)");
-        webSettings.setUserAgentString("Mozilla/5.0 (Linux; Android 9; LGwebOSTV Build/PKQ1.180904.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/85.0.4183.101 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/287.0.0.50.119;]");
+        webSettings.setUserAgentString(UA_KK);
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
         }
@@ -179,9 +178,7 @@ public class MainActivity extends AppCompatActivity {
             uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
         }
-        mWebView.clearCache(true);
-        mWebView.clearHistory();
-        clearCookies(this);
+
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://www.youtube.com");
         }
@@ -226,23 +223,5 @@ public class MainActivity extends AppCompatActivity {
             mWebView.goBack();// if there is previous page open it
         else
             super.onBackPressed();//if there is no previous page, close app
-    }
-    @SuppressWarnings("deprecation")
-    private static void clearCookies(Context context)
-    {
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            CookieManager.getInstance().removeAllCookies(null);
-            CookieManager.getInstance().flush();
-        } else
-        {
-            CookieSyncManager cookieSyncMngr=CookieSyncManager.createInstance(context);
-            cookieSyncMngr.startSync();
-            CookieManager cookieManager=CookieManager.getInstance();
-            cookieManager.removeAllCookie();
-            cookieManager.removeSessionCookie();
-            cookieSyncMngr.stopSync();
-            cookieSyncMngr.sync();
-        }
     }
 }
