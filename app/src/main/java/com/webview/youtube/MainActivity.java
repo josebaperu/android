@@ -43,9 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder continueWatching;
     private StringBuilder scroll;
     private Activity mainActivity = this; // If you are in activity
-    private final static String UA_KK = "Mozilla/5.0 (Android 4.4; Mobile; rv:41.0) Gecko/41.0 Firefox/41.0";
-    private final static String UA_MOBILE = "Mozilla/5.0 (Linux; Android 9; LGwebOSTV Build/PKQ1.180904.001; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/85.0.4183.101 Mobile Safari/537.36 [FB_IAB/FB4A;FBAV/287.0.0.50.119;]";
-
+    private final static String UA_MOBILE = "Mozilla/5.0 (Linux; Android 5.0.2; LG-V410/V41020c Build/LRX22G) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/34.0.1847.118 Safari/537.36";
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -165,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDisplayZoomControls(false);
 
 
-        webSettings.setUserAgentString(UA_KK);
+        webSettings.setUserAgentString(UA_MOBILE);
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
         }
