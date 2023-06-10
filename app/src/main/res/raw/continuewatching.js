@@ -1,10 +1,7 @@
-setInterval(function() {
-    'use strict';
-    if (document.getElementsByClassName('line-text style-scope yt-confirm-dialog-renderer').length >= 1) {
-        for (let i = 0; i < document.getElementsByClassName('line-text style-scope yt-confirm-dialog-renderer').length; i++) {
-            if (document.getElementsByClassName('line-text style-scope yt-confirm-dialog-renderer')[i].innerText == "Video paused. Continue watching?") {
-                document.getElementsByClassName('line-text style-scope yt-confirm-dialog-renderer')[i].parentNode.parentNode.parentNode.querySelector('#confirm-button').click()
-            }
-        }
+const yesButton = document.querySelector("button.yt-spec-button-shape-next.yt-spec-button-shape-next--text.yt-spec-button-shape-next--mono.yt-spec-button-shape-next--size-m[aria-label='Yes']");
+setInterval(() => {
+    if(!!yesButton) {
+        yesButton.click();
+        console.log("unpaused");
     }
-}, 250)();
+}, 100);
