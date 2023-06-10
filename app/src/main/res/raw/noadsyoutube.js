@@ -1,47 +1,51 @@
-if (window.adSkipTimer != null) {
-	window.clearInterval(window.adSkipTimer);
-}
-var sleepInterval = 100;
-var adSkipperRepeatInterval = sleepInterval * 2.5;
-var sleep = function () { var now = new Date().getTime(); while ( new Date().getTime() < now + sleepInterval ) {} };
+const observer = new MutationObserver(mutations => {
+  let author = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(2)");
+  let track = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(1)");
+  if (!!author && !!track) {
+      console.log("Playing : " + author.title + " - " + track.title);
+  }
+  let muteButton = document.querySelector('button.ytp-unmute.ytp-popup.ytp-button');
+  if(!!muteButton && muteButton.style.display === '') {
+      muteButton.click();
+  }
+  let dismissBtn = document.querySelector('yt-button-renderer.dismiss-button.style-scope.ytmusic-mealbar-promo-renderer > yt-button-shape > button > div');
+  if(!!dismissBtn){
+    dismissBtn.click();
+  }
 
-window.adSkipTimer = window.setInterval(function() {
-    if(document.getElementsByClassName("video-stream html5-main-video")[0]!==undefined){
-        let ad = document.getElementsByClassName("video-ads ytp-ad-module")[0];
-        let vid = document.getElementsByClassName("video-stream html5-main-video")[0];
-        if(ad==undefined){
-            pbRate = vid.playbackRate;
-        }
-        let closeAble = document.getElementsByClassName("ytp-ad-overlay-close-button");
-        for(let i=0;i<closeAble.length;i++){
-            closeAble[i].click();
-        }
-        if(document.getElementsByClassName("style-scope ytd-watch-next-secondary-results-renderer sparkles-light-cta GoogleActiveViewElement")[0]!==undefined){
-            let sideAd=document.getElementsByClassName("style-scope ytd-watch-next-secondary-results-renderer sparkles-light-cta GoogleActiveViewElement")[0];
-            sideAd.style.display="none";
-        }
-        if(document.getElementsByClassName("style-scope ytd-item-section-renderer sparkles-light-cta")[0]!==undefined){
-            let sideAd_ = document.getElementsByClassName("style-scope ytd-item-section-renderer sparkles-light-cta")[0];
-            sideAd_.style.display="none";
-        }
-        if(document.getElementsByClassName("ytp-ad-text ytp-ad-skip-button-text")[0]!==undefined){
-            let skipBtn=document.getElementsByClassName("ytp-ad-text ytp-ad-skip-button-text")[0];
-            skipBtn.click();
-        }
-        if(document.getElementsByClassName("ytp-ad-message-container")[0]!==undefined){
-            let incomingAd=document.getElementsByClassName("ytp-ad-message-container")[0];
-            incomingAd.style.display="none";
-        }
-        if(document.getElementsByClassName("style-scope ytd-companion-slot-renderer")[0]!==undefined){
-            document.getElementsByClassName("style-scope ytd-companion-slot-renderer")[0].remove();
-        }
-        if(ad!==undefined){
-            if(ad.children.length>0){
-                if(document.getElementsByClassName("ytp-ad-text ytp-ad-preview-text")[0]!==undefined){
-                    vid.playbackRate=16;
-                }
-            }
-        }
+  let movie_player = document.querySelector('ytmusic-player#player');
+  if(!!movie_player) {
+      movie_player.style.display = 'none';
+  }
+
+
+  let player_container = document.querySelector('#main-panel.ytmusic-player-page');
+  if(!!player_container){
+      player_container.style.height = 'unset';
+  }
+
+  let ad = document.querySelector('.ad-showing');
+
+  if (ad) {
+    let video = document.querySelector('video');
+
+    if (video) {
+		video.currentTime = video.duration;
+
+		let skipButtons = document.querySelectorAll(".ytp-ad-skip-button");
+
+		for (let skipButton of skipButtons) {
+		  skipButton.click();
+		}
     }
+  }
 
-}, adSkipperRepeatInterval);
+  let overlayAds = document.querySelectorAll(".ytp-ad-overlay-slot");
+
+  for (let overlayAd of overlayAds) {
+    overlayAd.style.visibility = "hidden";
+  }
+
+
+});
+observer.observe(document, { subtree: true, childList: true });
