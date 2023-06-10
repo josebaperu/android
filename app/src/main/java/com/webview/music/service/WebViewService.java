@@ -1,4 +1,4 @@
-package com.webview.youtube.service;
+package com.webview.music.service;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -13,8 +13,6 @@ import android.os.IBinder;
 import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
-
-import com.webview.youtube.R;
 
 public class WebViewService extends Service {
 
