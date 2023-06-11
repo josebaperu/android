@@ -214,7 +214,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mWebView.restoreState(savedInstanceState);
+        //mWebView.restoreState(savedInstanceState);
+        savedInstanceState.clear();
     }
 
     @Override

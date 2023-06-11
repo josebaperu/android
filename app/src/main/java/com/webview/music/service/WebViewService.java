@@ -57,7 +57,7 @@ public class WebViewService extends Service {
 
                 Intent mainIntent = new Intent (this, MainActivity.class);
                 PendingIntent mainPendingIntent = PendingIntent.getActivity(this,
-                        0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+                        0, mainIntent, 0);
                 Intent deleteIntent = new Intent(this, WebViewService.class);
                 deleteIntent.setAction("DESTROY");
                 PendingIntent deletePendingIntent = PendingIntent.getService(this,
