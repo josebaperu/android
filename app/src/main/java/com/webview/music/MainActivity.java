@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder continueWatching;
     private StringBuilder scroll;
     private Activity mainActivity = this; // If you are in activity
+    boolean isImmersive = false;
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
 
     private void startService() {
@@ -167,18 +168,21 @@ public class MainActivity extends AppCompatActivity {
         }
         mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setScrollbarFadingEnabled(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().getInsetsController().hide(WindowInsets.Type.systemBars());
-        } else {
-            int uiVisibility = mainActivity.getWindow().getDecorView().getSystemUiVisibility();
+        if(isImmersive) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                getWindow().getInsetsController().hide(WindowInsets.Type.systemBars());
+            } else {
+                int uiVisibility = mainActivity.getWindow().getDecorView().getSystemUiVisibility();
 
-            uiVisibility |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
-            uiVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN;
-            uiVisibility |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
-            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
+                uiVisibility |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                uiVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+                uiVisibility |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
+                uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+                mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
+            }
         }
+
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://music.youtube.com");
         }
