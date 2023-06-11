@@ -208,14 +208,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mWebView.saveState(outState);
+        outState.clear();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        //mWebView.restoreState(savedInstanceState);
-        savedInstanceState.clear();
+        mWebView.restoreState(savedInstanceState);
     }
 
     @Override
