@@ -2,7 +2,6 @@ package com.webview.youtube;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
-import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -43,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder continueWatching;
     private StringBuilder scroll;
     private Activity mainActivity = this; // If you are in activity
-    private final static String UA = "Mozilla/2.0 (intax; Android 7.0; F427 Build/MRA58K) AppleWebKit/378.33 (KHTML, like Gecko) Fairfax/153.0.357.589 Mobile Safari/135.33";
+    private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -181,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
             uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
         }
-        clearCookies(this);
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://www.youtube.com");
         }
@@ -230,24 +227,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        clearCookies(this);
     }
-    @SuppressWarnings("deprecation")
-    private static void clearCookies(Context context)
-    {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-            CookieManager.getInstance().removeAllCookies(null);
-            CookieManager.getInstance().flush();
-        } else
-        {
-            CookieSyncManager cookieSyncMngr=CookieSyncManager.createInstance(context);
-            cookieSyncMngr.startSync();
-            CookieManager cookieManager=CookieManager.getInstance();
-            cookieManager.removeAllCookie();
-            cookieManager.removeSessionCookie();
-            cookieSyncMngr.stopSync();
-            cookieSyncMngr.sync();
-        }
-    }
 }
