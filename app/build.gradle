@@ -6,7 +6,7 @@ android {
     compileSdkVersion 30
 
     defaultConfig {
-        applicationId "com.webview.youtubemusic"
+        applicationId "com.webview.music"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1
