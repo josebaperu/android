@@ -13,8 +13,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
-
-import com.webview.youtube.R;
+import com.webview.youtube.MainActivity;
 
 public class WebViewService extends Service {
 
@@ -42,6 +41,9 @@ public class WebViewService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(null == intent) {
+            return START_STICKY;
+        }
         final String action = intent.getAction();
         if (action != null) {
             if (action.equals("DESTROY")) {
@@ -50,7 +52,11 @@ public class WebViewService extends Service {
                 createNotificationChannel();
                 Intent notificationIntent = new Intent(this, WebViewService.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                        0, notificationIntent, 0);
+                        0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+                Intent mainIntent = new Intent (this, MainActivity.class);
+                PendingIntent mainPendingIntent = PendingIntent.getActivity(this,
+                        0, mainIntent, 0);
 
                 Intent deleteIntent = new Intent(this, WebViewService.class);
                 deleteIntent.setAction("DESTROY");
@@ -65,6 +71,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "YOUTUBE", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }

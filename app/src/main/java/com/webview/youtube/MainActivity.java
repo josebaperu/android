@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder youtubeAds;
     private StringBuilder continueWatching;
     private StringBuilder scroll;
-    private Activity mainActivity = this; // If you are in activity
+    private final Activity mainActivity = this; // If you are in activity
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
 
     private void startService() {
@@ -181,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
         }
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://www.youtube.com");
+        } else {
+            mWebView.restoreState(savedInstanceState);
         }
 
     }
