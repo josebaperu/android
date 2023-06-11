@@ -42,11 +42,31 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder scroll;
     private final Activity mainActivity = this; // If you are in activity
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
-
+    private boolean isImmersive = false;
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
         ContextCompat.startForegroundService(this, serviceIntent);
+    }
+    @Override
+    protected void onUserLeaveHint() {
+        //super.onUserLeaveHint(); revert
+        this.onResume();
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        this.onResume(); // revert
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        this.onResume();// revert
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -167,17 +187,20 @@ public class MainActivity extends AppCompatActivity {
         }
         mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setScrollbarFadingEnabled(false);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().getInsetsController().hide(WindowInsets.Type.systemBars());
-        } else {
-            int uiVisibility = mainActivity.getWindow().getDecorView().getSystemUiVisibility();
 
-            uiVisibility |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
-            uiVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN;
-            uiVisibility |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
-            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
-            uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
-            mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
+        if(isImmersive) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                getWindow().getInsetsController().hide(WindowInsets.Type.systemBars());
+            } else {
+                int uiVisibility = mainActivity.getWindow().getDecorView().getSystemUiVisibility();
+
+                uiVisibility |= View.SYSTEM_UI_FLAG_LOW_PROFILE;
+                uiVisibility |= View.SYSTEM_UI_FLAG_FULLSCREEN;
+                uiVisibility |= View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
+                uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE;
+                uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+                mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
+            }
         }
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://www.youtube.com");
