@@ -181,10 +181,7 @@ public class MainActivity extends AppCompatActivity {
         }
         if (savedInstanceState == null) {
             mWebView.loadUrl("https://www.youtube.com");
-        } else {
-            mWebView.restoreState(savedInstanceState);
         }
-
     }
 
     private StringBuilder fileToSb(int resource) {
@@ -210,13 +207,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mWebView.saveState(outState);
+        outState.clear();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        mWebView.restoreState(savedInstanceState);
     }
 
     @Override
