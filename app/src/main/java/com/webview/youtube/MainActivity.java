@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private StringBuilder scroll;
     private final Activity mainActivity = this; // If you are in activity
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
+    public final static String RECEIVER = "YOUTUBE";
     private boolean isImmersive = false;
 
     private BroadcastReceiver receiver;
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
         ContextCompat.startForegroundService(this, serviceIntent);
-        registerReceiver(receiver, new IntentFilter("onDestroyYT"));
+        registerReceiver(receiver, new IntentFilter(RECEIVER));
 
     }
 

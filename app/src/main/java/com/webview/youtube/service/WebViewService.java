@@ -1,5 +1,7 @@
 package com.webview.youtube.service;
 
+import static com.webview.youtube.MainActivity.RECEIVER;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -121,7 +123,7 @@ public class WebViewService extends Service {
     }
 
     private void sendMessageToActivity() {
-        Intent intent = new Intent("onDestroyYT");
+        Intent intent = new Intent(RECEIVER);
         sendBroadcast(intent);
     }
 
