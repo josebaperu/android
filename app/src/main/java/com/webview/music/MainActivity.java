@@ -63,7 +63,8 @@ public class MainActivity extends AppCompatActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                ((MainActivity) context).onDestroy();
+                save("url", mWebView.getUrl());
+                unregisterReceiver(receiver);
                 finishAndRemoveTask();
             }
         };
@@ -256,8 +257,7 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         save("url", mWebView.getUrl());
         unregisterReceiver(receiver);
-        int pid = android.os.Process.myPid();
-        android.os.Process.killProcess(pid);
+
     }
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
