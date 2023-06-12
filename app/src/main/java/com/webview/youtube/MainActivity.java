@@ -56,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
         ContextCompat.startForegroundService(this, serviceIntent);
+        registerReceiver(receiver, new IntentFilter("onDestroyYT"));
+
     }
 
     @Override
@@ -70,11 +72,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+
     }
     @Override
     public void onStart(){
         super.onStart();
-        registerReceiver(receiver, new IntentFilter("onDestroyYT"));
     }
 
 
@@ -220,9 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
             }
         }
-        if (savedInstanceState == null) {
-            mWebView.loadUrl(getValue("url"));
-        }
+        mWebView.loadUrl(getValue("url"));
     }
 
     private StringBuilder fileToSb(int resource) {
@@ -263,7 +263,6 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         save("url", mWebView.getUrl());
-        unregisterReceiver(receiver);
     }
 
 
