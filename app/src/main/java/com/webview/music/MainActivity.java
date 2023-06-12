@@ -245,20 +245,14 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         registerReceiver(receiver, new IntentFilter("onDestroy"));
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            System.exit(1);
-        }
-
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
         save("url", mWebView.getUrl());
         unregisterReceiver(receiver);
+        int pid = android.os.Process.myPid();
+        android.os.Process.killProcess(pid);
     }
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
