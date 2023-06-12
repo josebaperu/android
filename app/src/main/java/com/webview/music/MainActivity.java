@@ -244,6 +244,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
         registerReceiver(receiver, new IntentFilter("onDestroy"));
     }
     @Override
