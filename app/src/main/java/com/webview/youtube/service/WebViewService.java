@@ -121,7 +121,7 @@ public class WebViewService extends Service {
     }
 
     private void sendMessageToActivity() {
-        Intent intent = new Intent("onDestroy");
+        Intent intent = new Intent("onDestroyYT");
         sendBroadcast(intent);
     }
 

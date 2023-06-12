@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
-        registerReceiver(receiver, new IntentFilter("onDestroy"));
+        registerReceiver(receiver, new IntentFilter("onDestroyYT"));
 
     }
 
@@ -84,12 +84,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 ((MainActivity) context).onDestroy();
-                try {
-                    Thread.sleep(300);
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                System.exit(0);
             }
         };
         getWindow().setFlags(
@@ -265,6 +259,14 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         save("url", mWebView.getUrl());
         unregisterReceiver(receiver);
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            System.exit(1);
+
+        }
     }
 
 

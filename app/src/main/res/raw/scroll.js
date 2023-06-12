@@ -9,4 +9,4 @@ setInterval (() => {
         window.scrollBy(0, -1);
         val = false;
     }
-}, 30000);
+}, 60000);
