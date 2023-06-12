@@ -64,12 +64,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 ((MainActivity) context).onDestroy();
-                try {
-                    Thread.sleep(300);
-                    finish();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
             }
         };
         getWindow().setFlags(
@@ -251,6 +245,13 @@ public class MainActivity extends AppCompatActivity {
     public void onResume(){
         super.onResume();
         registerReceiver(receiver, new IntentFilter("onDestroy"));
+        try {
+            Thread.sleep(300);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            System.exit(1);
+        }
 
     }
     @Override
