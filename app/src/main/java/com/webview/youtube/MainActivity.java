@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
+                ((MainActivity) context).onDestroy();
                 finishAndRemoveTask();
             }
         };
