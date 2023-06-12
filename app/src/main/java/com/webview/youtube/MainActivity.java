@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart(){
         super.onStart();
-        registerReceiver(receiver, new IntentFilter("onDestroyYT"));
+        //registerReceiver(receiver, new IntentFilter("onDestroyYT"));
     }
 
 
@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
-        startService();
+       // startService();
         adservers = fileToSb(R.raw.adblockserverlist);
         youtubeAds = fileToSb(R.raw.noadsyoutube);
         continueWatching = fileToSb(R.raw.continuewatching);
@@ -261,9 +261,8 @@ public class MainActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         save("url", mWebView.getUrl());
-        unregisterReceiver(receiver);
-        int pid = android.os.Process.myPid();
-        android.os.Process.killProcess(pid);
+        //unregisterReceiver(receiver);
+
     }
 
 
