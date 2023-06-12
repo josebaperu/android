@@ -2,11 +2,16 @@ package com.webview.music;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -43,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private Activity mainActivity = this; // If you are in activity
     boolean isImmersive = false;
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
+    private BroadcastReceiver receiver;
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -54,6 +60,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                ((MainActivity) context).onDestroy();
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.exit(0);
+            }
+        };
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -184,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (savedInstanceState == null) {
-            mWebView.loadUrl("https://music.youtube.com");
+            mWebView.loadUrl(getValue("url"));
         }
 
     }
@@ -213,6 +231,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.clear();
+        save("url", mWebView.getUrl());
     }
 
     @Override
@@ -229,7 +248,28 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();//if there is no previous page, close app
     }
     @Override
+    public void onResume(){
+        super.onResume();
+        registerReceiver(receiver, new IntentFilter("onDestroy"));
+
+    }
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        save("url", mWebView.getUrl());
+        unregisterReceiver(receiver);
+    }
+    private void save(String key, String value) {
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    private String getValue(String key) {
+        return getSharedPreferences().getString(key, "https://music.youtube.com");
+    }
+
+    private SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(this);
     }
 }
