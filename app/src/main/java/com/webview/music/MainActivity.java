@@ -48,12 +48,14 @@ public class MainActivity extends AppCompatActivity {
     private Activity mainActivity = this; // If you are in activity
     boolean isImmersive = false;
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
+    public final static String RECEIVER = "YOUTUBE_MUSIC";
     private BroadcastReceiver receiver;
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
         ContextCompat.startForegroundService(this, serviceIntent);
+        registerReceiver(receiver, new IntentFilter(RECEIVER));
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -196,10 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
             }
         }
-
-        if (savedInstanceState == null) {
-            mWebView.loadUrl(getValue("url"));
-        }
+        mWebView.loadUrl(getValue("url"));
 
     }
 
@@ -250,13 +249,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        registerReceiver(receiver, new IntentFilter("onDestroy"));
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
         save("url", mWebView.getUrl());
-        unregisterReceiver(receiver);
 
     }
     private void save(String key, String value) {

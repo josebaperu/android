@@ -1,5 +1,7 @@
 package com.webview.music.service;
 
+import static com.webview.music.MainActivity.RECEIVER;
+
 import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -118,7 +120,7 @@ public class WebViewService extends Service {
         onDestroy();
     }
     private void sendMessageToActivity() {
-        Intent intent = new Intent("onDestroy");
+        Intent intent = new Intent(RECEIVER);
         sendBroadcast(intent);
     }
 
