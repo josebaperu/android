@@ -60,12 +60,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        receiver = new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                ((MainActivity) context).onDestroy();
-//            }
-//        };
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                finishAndRemoveTask();
+            }
+        };
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
-        //startService();
+        startService();
         adservers = fileToSb(R.raw.adblockserverlist);
         youtubeAds = fileToSb(R.raw.noadsyoutube);
         continueWatching = fileToSb(R.raw.continuewatching);
@@ -248,15 +248,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-        //registerReceiver(receiver, new IntentFilter("onDestroy"));
+        registerReceiver(receiver, new IntentFilter("onDestroy"));
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
         save("url", mWebView.getUrl());
-//        unregisterReceiver(receiver);
-//        int pid = android.os.Process.myPid();
-//        android.os.Process.killProcess(pid);
+        unregisterReceiver(receiver);
+        int pid = android.os.Process.myPid();
+        android.os.Process.killProcess(pid);
     }
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
