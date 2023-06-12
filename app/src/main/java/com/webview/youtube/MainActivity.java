@@ -2,11 +2,16 @@ package com.webview.youtube;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -43,36 +48,50 @@ public class MainActivity extends AppCompatActivity {
     private final Activity mainActivity = this; // If you are in activity
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
     private boolean isImmersive = false;
+
+    private BroadcastReceiver receiver;
+
+
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
         ContextCompat.startForegroundService(this, serviceIntent);
     }
-    @Override
-    protected void onUserLeaveHint() {
-        //super.onUserLeaveHint(); revert
-        this.onResume();
-    }
+
     @Override
     public void onPause() {
         super.onPause();
-        this.onResume(); // revert
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        this.onResume();// revert
     }
     @Override
     public void onResume(){
         super.onResume();
+        registerReceiver(receiver, new IntentFilter("onDestroy"));
+
     }
+
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                ((MainActivity) context).onDestroy();
+                try {
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                System.exit(0);
+            }
+        };
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -203,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (savedInstanceState == null) {
-            mWebView.loadUrl("https://www.youtube.com");
+            mWebView.loadUrl(getValue("url"));
         }
     }
 
@@ -231,11 +250,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.clear();
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
+        save("url", mWebView.getUrl());
     }
 
     @Override
@@ -248,6 +263,22 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        save("url", mWebView.getUrl());
+        unregisterReceiver(receiver);
     }
 
+
+    private void save(String key, String value) {
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+
+    private String getValue(String key) {
+        return getSharedPreferences().getString(key, "https://www.youtube.com");
+    }
+
+    private SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(this);
+    }
 }
