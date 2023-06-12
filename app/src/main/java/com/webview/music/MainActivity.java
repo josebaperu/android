@@ -66,10 +66,10 @@ public class MainActivity extends AppCompatActivity {
                 ((MainActivity) context).onDestroy();
                 try {
                     Thread.sleep(300);
+                    finish();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                System.exit(0);
             }
         };
         getWindow().setFlags(
