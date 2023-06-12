@@ -70,8 +70,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume(){
         super.onResume();
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
         registerReceiver(receiver, new IntentFilter("onDestroyYT"));
-
     }
 
 
@@ -259,14 +262,8 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         save("url", mWebView.getUrl());
         unregisterReceiver(receiver);
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            System.exit(1);
-
-        }
+        int pid = android.os.Process.myPid();
+        android.os.Process.killProcess(pid);
     }
 
 
