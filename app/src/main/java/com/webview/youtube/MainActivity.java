@@ -115,6 +115,12 @@ public class MainActivity extends AppCompatActivity {
                         scroll.toString() +
                         ";})()");
             }
+            @Override
+            public void doUpdateVisitedHistory (WebView view,
+                                                String url,
+                                                boolean isReload) {
+                saveCurrentUrl(url);
+            }
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -230,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.clear();
-        saveCurrentUrl();    }
+    }
 
     @Override
     public void onBackPressed() {
@@ -242,13 +248,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        saveCurrentUrl();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        saveCurrentUrl();
     }
     @Override
     public void onResume(){
@@ -262,7 +266,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        saveCurrentUrl();
     }
 
 
@@ -271,8 +274,8 @@ public class MainActivity extends AppCompatActivity {
         editor.putString(key, value);
         editor.apply();
     }
-    private void saveCurrentUrl () {
-        save("url", mWebView.getUrl());
+    private void saveCurrentUrl (String url) {
+        save("url", url);
     }
 
 
