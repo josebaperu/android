@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowInsets;
@@ -110,6 +111,12 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         scroll.toString() +
                         ";})()");
+            }
+            @Override
+            public void doUpdateVisitedHistory (WebView view,
+                                                String url,
+                                                boolean isReload) {
+                saveCurrentUrl(url);
             }
 
             @Override
@@ -226,7 +233,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.clear();
-        saveCurrentUrl();
     }
 
     @Override
@@ -253,21 +259,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        saveCurrentUrl();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        saveCurrentUrl();
     }
     @Override
     public void onDestroy() {
         super.onDestroy();
-        saveCurrentUrl();
     }
-    private void saveCurrentUrl() {
-        save("url", mWebView.getUrl());
+    private void saveCurrentUrl(String url) {
+        save("url", url);
     }
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
