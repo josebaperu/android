@@ -61,28 +61,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        saveCurrentUrl();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        saveCurrentUrl();
-    }
-    @Override
-    public void onResume(){
-        super.onResume();
-
-    }
-    @Override
-    public void onStart(){
-        super.onStart();
-    }
-
-
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,8 +230,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.clear();
-        save("url", mWebView.getUrl());
-    }
+        saveCurrentUrl();    }
 
     @Override
     public void onBackPressed() {
@@ -261,6 +238,26 @@ public class MainActivity extends AppCompatActivity {
             mWebView.goBack();// if there is previous page open it
         else
             super.onBackPressed();//if there is no previous page, close app
+    }
+    @Override
+    public void onPause() {
+        super.onPause();
+        saveCurrentUrl();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveCurrentUrl();
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
+
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
     }
     @Override
     public void onDestroy() {
