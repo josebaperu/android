@@ -226,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.clear();
-        save("url", mWebView.getUrl());
+        saveCurrentUrl();
     }
 
     @Override
@@ -251,10 +251,23 @@ public class MainActivity extends AppCompatActivity {
         super.onStart();
     }
     @Override
+    public void onPause() {
+        super.onPause();
+        saveCurrentUrl();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        saveCurrentUrl();
+    }
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        saveCurrentUrl();
+    }
+    private void saveCurrentUrl() {
         save("url", mWebView.getUrl());
-
     }
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
