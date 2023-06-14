@@ -21,3 +21,8 @@ twitch.tv
 ttvnw.net
 stream
 live
+hdplayer
+tutele
+hd
+canal
+jquery
