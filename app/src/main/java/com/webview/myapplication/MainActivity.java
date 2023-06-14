@@ -30,11 +30,14 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
 
     MediaWebView mWebView;
-    StringBuilder adservers;
+    List<String> whiteHostList;
 
     Activity mainActivity = this; // If you are in activity
 
@@ -48,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        whiteHostList = getWhiteHostList();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -65,7 +69,6 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
-        readAdServers();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
@@ -107,15 +110,23 @@ public class MainActivity extends AppCompatActivity {
                         "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.classList.remove('button');});})()");
             }
 
+
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                ByteArrayInputStream EMPTY = new ByteArrayInputStream("".getBytes());
-                String kk5 = String.valueOf(adservers);
 
-                if (kk5.contains(":::::" + request.getUrl().getHost())) {
-                    return new WebResourceResponse("text/plain", "utf-8", EMPTY);
+
+                String hostRequest = request.getUrl().getHost();
+                boolean isAllowed = false;
+                for(String whiteListHost : whiteHostList) {
+                    if(hostRequest.contains(whiteListHost)){
+                        System.out.println("NOTINTERCEPTED :" + hostRequest);
+                        isAllowed = true;
+                        break;
+                    } else {
+                        System.out.println("INTERCEPTED :" + hostRequest);
+                    }
                 }
-                return super.shouldInterceptRequest(view, request);
+                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -179,22 +190,21 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void readAdServers() {
+    private List<String>  getWhiteHostList() {
         String line = "";
-        adservers = new StringBuilder();
+        List<String> list = new ArrayList<>();
 
-        InputStream is = this.getResources().openRawResource(R.raw.adblockserverlist);
+        InputStream is = this.getResources().openRawResource(R.raw.whitelisthosts);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-        if (is != null) {
-            try {
-                while ((line = br.readLine()) != null) {
-                    adservers.append(line);
-                    adservers.append("\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            while ((line = br.readLine()) != null) {
+                list.add(line);
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            return list;
         }
     }
 
