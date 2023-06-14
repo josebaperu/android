@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
 
     Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "TVNOW";
+
+    private final static String BASE_URL = "https://canales.online/";
     private BroadcastReceiver receiver;
 
 
@@ -135,8 +137,6 @@ public class MainActivity extends AppCompatActivity {
                                                 boolean isReload) {
                 saveCurrentUrl(url);
             }
-
-
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
 
@@ -239,10 +239,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mWebView != null && mWebView.canGoBack())
-            mWebView.goBack();// if there is previous page open it
-        else
-            super.onBackPressed();//if there is no previous page, close app
+        if (mWebView != null && !getValue("url").equals(BASE_URL)) {
+            mWebView.loadUrl(BASE_URL);
+            save("url", BASE_URL);
+        } else {
+            unregisterReceiver(receiver);
+            finishAndRemoveTask();
+        }
     }
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
@@ -253,9 +256,8 @@ public class MainActivity extends AppCompatActivity {
         save("url", url);
     }
 
-
     private String getValue(String key) {
-        return getSharedPreferences().getString(key, "https://www.canales.online");
+        return getSharedPreferences().getString(key, BASE_URL);
     }
 
     private SharedPreferences getSharedPreferences() {
