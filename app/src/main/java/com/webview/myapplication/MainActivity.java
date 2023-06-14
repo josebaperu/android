@@ -2,11 +2,17 @@ package com.webview.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -34,23 +40,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
-
+    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
+    private final static String LOG = "TVnow";
     MediaWebView mWebView;
     List<String> whiteHostList;
 
     Activity mainActivity = this; // If you are in activity
+    public final static String RECEIVER = "TVNOW";
+    private BroadcastReceiver receiver;
+
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
         ContextCompat.startForegroundService(this, serviceIntent);
+        registerReceiver(receiver, new IntentFilter(RECEIVER));
+
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        receiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                save("url", mWebView.getUrl());
+                unregisterReceiver(receiver);
+                finishAndRemoveTask();
+            }
+        };
         whiteHostList = getWhiteHostList();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -65,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black, this.getTheme()));
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
@@ -109,6 +129,12 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.classList.remove('button');});})()");
             }
+            @Override
+            public void doUpdateVisitedHistory (WebView view,
+                                                String url,
+                                                boolean isReload) {
+                saveCurrentUrl(url);
+            }
 
 
             @Override
@@ -119,11 +145,11 @@ public class MainActivity extends AppCompatActivity {
                 boolean isAllowed = false;
                 for(String whiteListHost : whiteHostList) {
                     if(hostRequest.contains(whiteListHost)){
-                        System.out.println("NOTINTERCEPTED :" + hostRequest);
+                        Log.d(LOG, "NOTINTERCEPTED :" + hostRequest);
                         isAllowed = true;
                         break;
                     } else {
-                        System.out.println("INTERCEPTED :" + hostRequest);
+                        Log.d(LOG, "INTERCEPTED :" + hostRequest);
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
@@ -184,9 +210,7 @@ public class MainActivity extends AppCompatActivity {
             uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
         }
-        if (savedInstanceState == null) {
-            mWebView.loadUrl("https://canales.online/");
-        }
+        mWebView.loadUrl(getValue("url"));
 
     }
 
@@ -203,21 +227,14 @@ public class MainActivity extends AppCompatActivity {
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            return list;
         }
+        return list;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mWebView.saveState(outState);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        mWebView.restoreState(savedInstanceState);
+        outState.clear();
     }
 
     @Override
@@ -226,5 +243,22 @@ public class MainActivity extends AppCompatActivity {
             mWebView.goBack();// if there is previous page open it
         else
             super.onBackPressed();//if there is no previous page, close app
+    }
+    private void save(String key, String value) {
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+    private void saveCurrentUrl (String url) {
+        save("url", url);
+    }
+
+
+    private String getValue(String key) {
+        return getSharedPreferences().getString(key, "https://www.canales.online");
+    }
+
+    private SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(this);
     }
 }

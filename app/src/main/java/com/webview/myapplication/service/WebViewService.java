@@ -1,4 +1,5 @@
 package com.webview.myapplication.service;
+import static com.webview.myapplication.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -14,7 +15,7 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.myapplication.R;
+import com.webview.myapplication.MainActivity;
 
 public class WebViewService extends Service {
 
@@ -44,15 +45,23 @@ public class WebViewService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        if(null == intent) {
+            return START_STICKY;
+        }
         final String action = intent.getAction();
         if (action != null) {
             if (action.equals("DESTROY")) {
                 destroyService();
             } else if (action.equals("START")) {
                 createNotificationChannel();
+
                 Intent notificationIntent = new Intent(this, WebViewService.class);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this,
-                        0, notificationIntent, 0);
+                        0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+                Intent mainIntent = new Intent (this, MainActivity.class);
+                PendingIntent mainPendingIntent = PendingIntent.getActivity(this,
+                        0, mainIntent, 0);
 
                 Intent deleteIntent = new Intent(this, WebViewService.class);
                 deleteIntent.setAction("DESTROY");
@@ -60,6 +69,9 @@ public class WebViewService extends Service {
                         0,
                         deleteIntent,
                         PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+
+
                 Notification notification = new NotificationCompat.Builder(this, ID)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setSmallIcon(android.R.color.transparent)
@@ -67,11 +79,12 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "TVnow", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }
         }
-        return START_NOT_STICKY;
+        return START_STICKY;
     }
 
     @SuppressLint("WakelockTimeout")
@@ -107,9 +120,14 @@ public class WebViewService extends Service {
     }
 
     private void destroyService() {
+        sendMessageToActivity();
         stopForeground(true);
         stopSelf();
-        System.exit(0);
+        onDestroy();
     }
 
+    private void sendMessageToActivity() {
+        Intent intent = new Intent(RECEIVER);
+        sendBroadcast(intent);
+    }
 }
