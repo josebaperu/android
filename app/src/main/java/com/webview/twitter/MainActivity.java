@@ -157,10 +157,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mWebView != null && mWebView.canGoBack())
+        if (mWebView != null && mWebView.canGoBack()){
             mWebView.goBack();// if there is previous page open it
-        else
-            super.onBackPressed();//if there is no previous page, close app
+        } else {
+            if(getValue("url").contains("twitter.com")){
+                super.onBackPressed();//if there is no previous page, close app
+            } {
+                mWebView.loadUrl(BASE_URL);
+            }
+        }
     }
 
     private void save(String key, String value) {
