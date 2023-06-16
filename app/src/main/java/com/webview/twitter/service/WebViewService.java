@@ -1,6 +1,6 @@
-package com.webview.youtube.service;
+package com.webview.twitter.service;
 
-import static com.webview.youtube.MainActivity.RECEIVER;
+import static com.webview.twitter.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -8,7 +8,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
@@ -17,7 +16,7 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.youtube.MainActivity;
+import com.webview.twitter.MainActivity;
 
 public class WebViewService extends Service {
 
@@ -40,7 +39,7 @@ public class WebViewService extends Service {
     public void onCreate() {
         super.onCreate();
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "YT:wakelock");
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TW:wakelock");
     }
 
     @Override
@@ -75,7 +74,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "YOUTUBE", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "TWITTER", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }

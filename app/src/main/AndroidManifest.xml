@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.webview.youtube">
+    package="com.webview.twitter">
 
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission-sdk-23 android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -26,7 +26,7 @@
         android:hardwareAccelerated="true"
         android:fullBackupContent="true"
         android:usesCleartextTraffic="true"
-        android:icon="@mipmap/ic_yt"
+        android:icon="@mipmap/ic_tw"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -34,14 +34,14 @@
         android:launchMode="singleTop"
         tools:targetApi="m">
         <service
-            android:name="com.webview.youtube.service.WebViewService"
+            android:name="com.webview.twitter.service.WebViewService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="true"
             android:foregroundServiceType="mediaPlayback">
         </service>
     <activity
-        android:name="com.webview.youtube.MainActivity"
+        android:name="com.webview.twitter.MainActivity"
         android:configChanges="orientation|screenSize"
         android:launchMode="singleTask"
         android:label="@string/app_name">
