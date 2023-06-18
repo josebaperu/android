@@ -63,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
         ContextCompat.startForegroundService(this, serviceIntent);
         registerReceiver(receiver, new IntentFilter(RECEIVER));
     }
-
+    private void handleObserverDestroy () {
+        save("url", mWebView.getUrl());
+        unregisterReceiver(receiver);
+        finishAndRemoveTask();
+        receiver = null;
+    }
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,9 +77,7 @@ public class MainActivity extends AppCompatActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                save("url", mWebView.getUrl());
-                unregisterReceiver(receiver);
-                finishAndRemoveTask();
+                handleObserverDestroy();
             }
         };
         getWindow().setFlags(
@@ -252,7 +255,11 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         mWebView.restoreState(savedInstanceState);
     }
-
+    @Override
+    public void onDestroy() {
+        handleObserverDestroy();
+        super.onDestroy();
+    }
     @Override
     public void onBackPressed() {
         if (mWebView != null && mWebView.canGoBack())
