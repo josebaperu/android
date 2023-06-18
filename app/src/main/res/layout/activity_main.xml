@@ -4,14 +4,8 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <com.webview.youtube.layout.CursorLayout
-        android:id="@+id/cursorLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
         <com.webview.youtube.webview.MediaWebView
             android:id="@+id/activity_main_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-    </com.webview.youtube.layout.CursorLayout>
 </RelativeLayout>
