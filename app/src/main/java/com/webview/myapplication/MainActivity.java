@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
             mWebView.loadUrl(BASE_URL);
             save("url", BASE_URL);
         } else {
-            onDestroy();
+            super.onBackPressed();
         }
     }
     @Override
