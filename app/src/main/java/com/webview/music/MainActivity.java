@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
@@ -133,11 +132,8 @@ public class MainActivity extends AppCompatActivity {
                 boolean isAllowed = false;
                 for(String whiteListHost : whiteHostList) {
                     if(hostRequest.contains(whiteListHost)){
-                        Log.d(LOG, "NOTINTERCEPTED :" + hostRequest);
                         isAllowed = true;
                         break;
-                    } else {
-                        Log.d(LOG, "INTERCEPTED :" + hostRequest);
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
