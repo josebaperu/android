@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private String getValue(String key) {
-        return getSharedPreferences().getString(key, "https://music.youtube.com");
+        return getSharedPreferences().getString(key, BASE_URL);
     }
 
     private SharedPreferences getSharedPreferences() {
