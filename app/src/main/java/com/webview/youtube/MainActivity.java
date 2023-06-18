@@ -60,6 +60,12 @@ public class MainActivity extends AppCompatActivity {
         ContextCompat.startForegroundService(this, serviceIntent);
         registerReceiver(receiver, new IntentFilter(RECEIVER));
     }
+    private void handleObserverDestroy () {
+        save("url", mWebView.getUrl());
+        unregisterReceiver(receiver);
+        finishAndRemoveTask();
+        receiver = null;
+    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -69,9 +75,7 @@ public class MainActivity extends AppCompatActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                save("url", mWebView.getUrl());
-                unregisterReceiver(receiver);
-                finishAndRemoveTask();
+                handleObserverDestroy();
             }
         };
         getWindow().setFlags(
@@ -252,28 +256,10 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();//if there is no previous page, close app
     }
     @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-    }
-    @Override
-    public void onResume(){
-        super.onResume();
-
-    }
-    @Override
-    public void onStart(){
-        super.onStart();
-    }
-    @Override
     public void onDestroy() {
+        handleObserverDestroy();
         super.onDestroy();
     }
-
 
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
