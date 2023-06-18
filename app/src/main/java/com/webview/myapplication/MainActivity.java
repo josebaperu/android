@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -41,7 +40,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
-    private final static String LOG = "TVnow";
     MediaWebView mWebView;
     List<String> whiteHostList;
 
@@ -50,6 +48,12 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String BASE_URL = "https://canales.online/";
     private BroadcastReceiver receiver;
+    private void handleObserverDestroy () {
+        save("url", mWebView.getUrl());
+        unregisterReceiver(receiver);
+        finishAndRemoveTask();
+        receiver = null;
+    }
 
 
     private void startService() {
@@ -68,9 +72,7 @@ public class MainActivity extends AppCompatActivity {
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                save("url", mWebView.getUrl());
-                unregisterReceiver(receiver);
-                finishAndRemoveTask();
+                handleObserverDestroy();
             }
         };
         whiteHostList = getWhiteHostList();
@@ -145,11 +147,8 @@ public class MainActivity extends AppCompatActivity {
                 boolean isAllowed = false;
                 for(String whiteListHost : whiteHostList) {
                     if(hostRequest.contains(whiteListHost)){
-                        Log.d(LOG, "NOTINTERCEPTED :" + hostRequest);
                         isAllowed = true;
                         break;
-                    } else {
-                        Log.d(LOG, "INTERCEPTED :" + hostRequest);
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
@@ -243,9 +242,13 @@ public class MainActivity extends AppCompatActivity {
             mWebView.loadUrl(BASE_URL);
             save("url", BASE_URL);
         } else {
-            unregisterReceiver(receiver);
-            finishAndRemoveTask();
+            onDestroy();
         }
+    }
+    @Override
+    public void onDestroy() {
+        handleObserverDestroy();
+        super.onDestroy();
     }
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
