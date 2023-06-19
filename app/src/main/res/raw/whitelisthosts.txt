@@ -26,3 +26,5 @@ tutele
 hd
 canal
 jquery
+techflower
+jwplatform
