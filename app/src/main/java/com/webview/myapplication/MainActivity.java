@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
@@ -48,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String BASE_URL = "https://canales.online/";
     private BroadcastReceiver receiver;
+
+    private final static String TAG = "MainActivity";
     private void handleObserverDestroy () {
         save("url", mWebView.getUrl());
         unregisterReceiver(receiver);
@@ -143,12 +146,15 @@ public class MainActivity extends AppCompatActivity {
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
 
 
-                String hostRequest = request.getUrl().getHost();
+                String hostRequest = request.getUrl().toString();
                 boolean isAllowed = false;
                 for(String whiteListHost : whiteHostList) {
                     if(hostRequest.contains(whiteListHost)){
                         isAllowed = true;
+                        Log.i(TAG, "ALLOWED_TRUE " + hostRequest );
                         break;
+                    } else {
+                        Log.i(TAG, "ALLOWED_FALSE " + hostRequest );
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;

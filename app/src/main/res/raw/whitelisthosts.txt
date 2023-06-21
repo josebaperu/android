@@ -28,3 +28,4 @@ canal
 jquery
 techflower
 jwplatform
+cluxuran
