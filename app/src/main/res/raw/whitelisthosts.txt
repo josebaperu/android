@@ -1,2 +1,6 @@
 spotify
 scdn
+google
+facebook
+apple
+recaptcha

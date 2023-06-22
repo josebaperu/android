@@ -49,12 +49,10 @@ public class MainActivity extends AppCompatActivity {
     private Activity mainActivity = this; // If you are in activity
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
     public final static String RECEIVER = "OPENSPOTIFY";
-
     private final static String BASE_URL = "https://open.spotify.com/";
     private final static String LOG = "MainActivity";
     private List<String> whiteHostList;
     private BroadcastReceiver receiver;
-
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
