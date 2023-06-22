@@ -1,8 +1,2 @@
-youtube
-googlevideo
-ytimg
-accounts.google.com
-.google.com
-gstatic
-googleapis
-googleusercontent
+spotify
+scdn

@@ -5,7 +5,7 @@
     tools:context=".MainActivity">
 
 
-        <com.webview.music.webview.MediaWebView
+        <com.webview.openspotify.webview.MediaWebView
             android:id="@+id/activity_main_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

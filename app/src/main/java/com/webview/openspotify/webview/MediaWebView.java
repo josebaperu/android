@@ -1,4 +1,4 @@
-package com.webview.music.webview;
+package com.webview.openspotify.webview;
 
 import android.content.Context;
 import android.util.AttributeSet;

@@ -1,4 +1,4 @@
-package com.webview.music;
+package com.webview.openspotify;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,9 +12,11 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
+import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
@@ -29,8 +31,8 @@ import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.webview.music.service.WebViewService;
-import com.webview.music.webview.MediaWebView;
+import com.webview.openspotify.service.WebViewService;
+import com.webview.openspotify.webview.MediaWebView;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -44,15 +46,12 @@ public class MainActivity extends AppCompatActivity {
 
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
-    private StringBuilder youtubeAds;
-    private StringBuilder continueWatching;
-    private StringBuilder scroll;
     private Activity mainActivity = this; // If you are in activity
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
-    public final static String RECEIVER = "YOUTUBE_MUSIC";
+    public final static String RECEIVER = "OPENSPOTIFY";
 
-    private final static String BASE_URL = "https://music.youtube.com/";
-    private final static String LOG = "YouTube Music";
+    private final static String BASE_URL = "https://open.spotify.com/";
+    private final static String LOG = "MainActivity";
     private List<String> whiteHostList;
     private BroadcastReceiver receiver;
 
@@ -96,9 +95,6 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
-        youtubeAds = fileToSb(R.raw.noadsyoutube);
-        continueWatching = fileToSb(R.raw.continuewatching);
-        scroll = fileToSb(R.raw.scroll);
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -109,15 +105,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        youtubeAds.toString() +
-                        ";})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        continueWatching.toString() +
-                        ";})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        scroll.toString() +
-                        ";})()");
+
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -128,12 +116,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String hostRequest = request.getUrl().getHost();
+                String url = request.getUrl().toString();
                 boolean isAllowed = false;
                 for(String whiteListHost : whiteHostList) {
-                    if(hostRequest.contains(whiteListHost)){
+                    if(url.contains(whiteListHost)){
                         isAllowed = true;
+                        Log.i(LOG, "ALLOWED_TRUE " + url);
                         break;
+                    } else {
+                        Log.i(LOG, "ALLOWED_FALSE " + url);
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
@@ -150,6 +141,18 @@ public class MainActivity extends AppCompatActivity {
                     return null;
                 }
                 return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
+            }
+            @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                String[] resources = request.getResources();
+                for (int i = 0; i < resources.length; i++) {
+                    if (PermissionRequest.RESOURCE_PROTECTED_MEDIA_ID.equals(resources[i])) {
+                        request.grant(resources);
+                        return;
+                    }
+                }
+
+                super.onPermissionRequest(request);
             }
             @Override
             public void onHideCustomView() {

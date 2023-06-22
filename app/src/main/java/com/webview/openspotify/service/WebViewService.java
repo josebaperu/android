@@ -1,6 +1,6 @@
-package com.webview.music.service;
+package com.webview.openspotify.service;
 
-import static com.webview.music.MainActivity.RECEIVER;
+import static com.webview.openspotify.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -16,11 +16,11 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.music.MainActivity;
+import com.webview.openspotify.MainActivity;
 
 public class WebViewService extends Service {
 
-    private static final String ID = "foregroundServiceYT";                        // The id of the notification
+    private static final String ID = "foregroundServiceOpenSpotify";                        // The id of the notification
 
     private PowerManager.WakeLock wakeLock;                 // PARTIAL_WAKELOCK
 
@@ -39,7 +39,7 @@ public class WebViewService extends Service {
     public void onCreate() {
         super.onCreate();
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "YT:wakelock");
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OS:wakelock");
     }
 
     @Override
@@ -73,7 +73,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "YOUTUBE MUSIC", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "OPEN SPOTIFY", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }
