@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.PermissionRequest;
 import android.webkit.WebChromeClient;
@@ -104,24 +105,42 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
+                //android.util.Log.d("LOG_ON_PAGE_FINISHED ", url);
                 mWebView.loadUrl("javascript:(function() { " +
                         script +
                         ";})()");
+
+                //android.util.Log.d("LOG_ON_COOKIES ",cookies != null ? cookies: "noCookies");
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
                                                 boolean isReload) {
+                //android.util.Log.d("LOG_URL_UPDATE_VISIT", url);
                 saveCurrentUrl(url);
             }
 
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
+
+                if(url.contains("reloadthispage")){
+                    //android.util.Log.d("LOG_REDIRECT", url);
+                    final WebView finalWebView = mWebView;
+                    //Handler handler = new Handler(Looper.getMainLooper());
+                    mWebView.post(() -> {
+                        String savedUrl = getValue("url");
+                        //android.util.Log.d("LOG_URL_LOAD", savedUrl);
+                       finalWebView.loadUrl(savedUrl);
+                    }
+                    );
+                    return webResourceResponse;
+                }
                 boolean isAllowed = false;
                 for(String whiteListHost : whiteHostList) {
                     if(url.contains(whiteListHost)){
                         isAllowed = true;
+                        //android.util.Log.d("LOGURL_URL", url);
                         break;
                     }
                 }
@@ -139,6 +158,11 @@ public class MainActivity extends AppCompatActivity {
                     return null;
                 }
                 return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
+            }
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                android.util.Log.d("LOG_CONSOLE", consoleMessage.message());
+                return true;
             }
             @Override
             public void onPermissionRequest(PermissionRequest request) {
@@ -193,7 +217,6 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-
 
         webSettings.setUserAgentString(UA);
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
