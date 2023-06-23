@@ -1,11 +1,27 @@
+function set_cookie(name, value) {
+  document.cookie = name +'='+ value +'; Path=/;';
+}
+function delete_cookie(name) {
+  document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
 
 setInterval (() => {
-    if('Advertisement' === document.querySelector("[data-testid='npv-header-title']").textContent) {
-        document.cookie = "reload=true";
+    const add = document.querySelector("[data-testid='npv-header-title']");
+    const play = document.querySelector("[data-testid='play-button']");
+    const shuffle = document.querySelector("[data-testid='shuffle-button']");
+
+    if(!!add  &&'Advertisement' === add.textContent) {
+		set_cookie("reload","true");
         window.location.reload();
     }
-    if(document.cookie === "reload=true") {
-        document.cookie = "reload=false";
-        document.querySelector("[data-testid='play-button']").click();
+    if(document.cookie.includes("reload=true")) {
+
+		if(!!play) {
+			play.click();
+			set_cookie("reload","false");
+		} else if(!!shuffle) {
+			shuffle.click();
+			set_cookie("reload","false");
+		}
     }
-}, 500);
+}, 1000);
