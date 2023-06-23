@@ -12,7 +12,6 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
@@ -50,8 +49,9 @@ public class MainActivity extends AppCompatActivity {
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
     public final static String RECEIVER = "OPENSPOTIFY";
     private final static String BASE_URL = "https://open.spotify.com/";
-    private final static String LOG = "MainActivity";
     private List<String> whiteHostList;
+
+    private String script;
     private BroadcastReceiver receiver;
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         whiteHostList = getWhiteHostList();
+        script = fileToString(R.raw.script);
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -103,7 +104,9 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-
+                mWebView.loadUrl("javascript:(function() { " +
+                        script +
+                        ";})()");
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -119,10 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 for(String whiteListHost : whiteHostList) {
                     if(url.contains(whiteListHost)){
                         isAllowed = true;
-                        Log.i(LOG, "ALLOWED_TRUE " + url);
                         break;
-                    } else {
-                        Log.i(LOG, "ALLOWED_FALSE " + url);
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private StringBuilder fileToSb(int resource) {
+    private String fileToString(int resource) {
         String line = "";
         StringBuilder sb = new StringBuilder();
 
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-        return sb;
+        return sb.toString();
     }
     private List<String>  getWhiteHostList() {
         String line = "";
