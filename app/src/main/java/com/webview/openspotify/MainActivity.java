@@ -123,19 +123,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
-
-                if(url.contains("reloadthispage")){
-                    //android.util.Log.d("LOG_REDIRECT", url);
-                    final WebView finalWebView = mWebView;
-                    //Handler handler = new Handler(Looper.getMainLooper());
-                    mWebView.post(() -> {
-                        String savedUrl = getValue("url");
-                        //android.util.Log.d("LOG_URL_LOAD", savedUrl);
-                       finalWebView.loadUrl(savedUrl);
-                    }
-                    );
-                    return webResourceResponse;
-                }
                 boolean isAllowed = false;
                 for(String whiteListHost : whiteHostList) {
                     if(url.contains(whiteListHost)){
