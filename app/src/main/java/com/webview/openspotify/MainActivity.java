@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
-    private Activity mainActivity = this; // If you are in activity
+    private Activity mainActivity = this;
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
     public final static String RECEIVER = "OPENSPOTIFY";
     private final static String BASE_URL = "https://open.spotify.com/";
@@ -105,18 +105,15 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageFinished(WebView view, String url) {
-                //android.util.Log.d("LOG_ON_PAGE_FINISHED ", url);
                 mWebView.loadUrl("javascript:(function() { " +
                         script +
                         ";})()");
 
-                //android.util.Log.d("LOG_ON_COOKIES ",cookies != null ? cookies: "noCookies");
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
                                                 boolean isReload) {
-                //android.util.Log.d("LOG_URL_UPDATE_VISIT", url);
                 saveCurrentUrl(url);
             }
 
@@ -127,7 +124,6 @@ public class MainActivity extends AppCompatActivity {
                 for(String whiteListHost : whiteHostList) {
                     if(url.contains(whiteListHost)){
                         isAllowed = true;
-                        //android.util.Log.d("LOGURL_URL", url);
                         break;
                     }
                 }
@@ -148,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                android.util.Log.d("LOG_CONSOLE", consoleMessage.message());
+                //android.util.Log.d("LOG_CONSOLE", consoleMessage.message());
                 return true;
             }
             @Override
@@ -192,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
         webSettings.setAppCacheEnabled(true);
-        webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setBlockNetworkLoads(false);
@@ -270,9 +266,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (mWebView != null && mWebView.canGoBack())
-            mWebView.goBack();// if there is previous page open it
+            mWebView.goBack();
         else
-            super.onBackPressed();//if there is no previous page, close app
+            super.onBackPressed();
     }
 
     private void saveCurrentUrl(String url) {
