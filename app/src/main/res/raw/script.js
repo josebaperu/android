@@ -3,7 +3,6 @@
         const play = document.querySelector("[data-testid='play-button']");
         const playp = document.querySelector("[data-test-id='play-pause-button']");
         const shuffle = document.querySelector("[data-testid='shuffle-button']");
-		console.log("play " + !!play + " playp " + !!playp + " shuffle " + !!shuffle + " reload " + localStorage.getItem("reload") );
         if(localStorage.getItem("reload") === "true") {
 
             if(!!playp) {
@@ -26,10 +25,18 @@
         const ad = document.querySelector("[data-testid='npv-header-title']");
 
         if(!!ad  &&'Advertisement' === ad.textContent) {
-            console.log("+++++++++++++++++++++++++++");
             localStorage.setItem("reload", "true");
             window.location.reload();
             window.clearInterval(this);
+        }
+        const floatingPlayer = document.querySelectorAll("[data-testid='floating-now-playing-bar'] span");
+        if(!!floatingPlayer && floatingPlayer.length === 2) {
+            console.log("Playing : " + floatingPlayer[1].innerText + " - " + floatingPlayer[0].innerText);
+        } else {
+            const tunePlayer = document.querySelectorAll("[data-testid='npv-metadata-container'] a");
+            if(!!tunePlayer && tunePlayer.length === 2) {
+                console.log("Playing : " + tunePlayer[1].innerText + " - " + tunePlayer[0].innerText);
+            }
         }
 
     }, 1000);

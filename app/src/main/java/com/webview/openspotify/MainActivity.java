@@ -144,7 +144,10 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                //android.util.Log.d("LOG_CONSOLE", consoleMessage.message());
+                String message = consoleMessage.message();
+                if(message.contains("Playing")){
+                    android.util.Log.d("PLAYING", message.substring(10));
+                }
                 return true;
             }
             @Override
