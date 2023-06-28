@@ -3,7 +3,6 @@ package com.webview.openspotify.service;
 import static com.webview.openspotify.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,6 +34,7 @@ public class WebViewService extends Service {
     }
 
     private final IBinder mBinder = new LocalBinder();      // IBinder
+    private NotificationCompat.Builder builder;
 
     @Override
     public void onCreate() {
@@ -51,10 +51,15 @@ public class WebViewService extends Service {
         }
         final String action = intent.getAction();
         if (action != null) {
-            if (action.equals("PLAYING")) {
+            if (action.equals("PLAYING") && null != builder) {
                 Bundle b = intent.getExtras();
                 String msg = b.getString("PLAYING");
                 android.util.Log.d("SERVICE", msg);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    NotificationManager manager = getSystemService(NotificationManager.class);
+                    builder.setContentText(msg);
+                    manager.notify(1, builder.build());
+                }
             }
             if (action.equals("DESTROY")) {
                 destroyService();
@@ -73,7 +78,8 @@ public class WebViewService extends Service {
                         0,
                         deleteIntent,
                         PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-                Notification notification = new NotificationCompat.Builder(this, ID)
+
+                builder = new NotificationCompat.Builder(this, ID)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setContentText(playing)
                         .setSmallIcon(android.R.color.transparent)
@@ -81,9 +87,12 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "OPEN SPOTIFY", mainPendingIntent)
-                        .build();
-                startForeground(1, notification);
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "OPEN SPOTIFY", mainPendingIntent);
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                    NotificationManager manager = getSystemService(NotificationManager.class);
+                    manager.notify(1, builder.build());
+                }
+                startForeground(1, builder.build());
             }
         }
         return START_STICKY;
