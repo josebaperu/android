@@ -62,7 +62,11 @@ public class MainActivity extends AppCompatActivity {
     }
     private void handleObserverDestroy () {
         save("url", mWebView.getUrl());
-        unregisterReceiver(receiver);
+        try {
+            unregisterReceiver(receiver);
+        }catch(Exception ex) {
+
+        }
         finishAndRemoveTask();
         receiver = null;
     }
@@ -272,8 +276,9 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onDestroy() {
-        handleObserverDestroy();
         super.onDestroy();
+        handleObserverDestroy();
+        System.exit(1);
     }
     @Override
     public void onBackPressed() {
