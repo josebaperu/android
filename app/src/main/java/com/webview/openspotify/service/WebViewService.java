@@ -20,9 +20,11 @@ import com.webview.openspotify.MainActivity;
 
 public class WebViewService extends Service {
 
-    private static final String ID = "foregroundServiceOpenSpotify";                        // The id of the notification
+    private static final String CHANNEL_ID = "foregroundServiceOpenSpotify";                        // The id of the notification
 
     private PowerManager.WakeLock wakeLock;                 // PARTIAL_WAKELOCK
+
+    private NotificationManager manager;
 
     /**
      * Returns the instance of the service
@@ -56,7 +58,7 @@ public class WebViewService extends Service {
                 String msg = b.getString("PLAYING");
                 android.util.Log.d("SERVICE", msg);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    NotificationManager manager = getSystemService(NotificationManager.class);
+                    manager = getSystemService(NotificationManager.class);
                     builder.setContentText(msg);
                     manager.notify(1, builder.build());
                 }
@@ -79,7 +81,7 @@ public class WebViewService extends Service {
                         deleteIntent,
                         PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-                builder = new NotificationCompat.Builder(this, ID)
+                builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
                         .setContentText(playing)
                         .setSmallIcon(android.R.color.transparent)
@@ -89,7 +91,7 @@ public class WebViewService extends Service {
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
                         .addAction(android.R.drawable.button_onoff_indicator_on, "OPEN SPOTIFY", mainPendingIntent);
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-                    NotificationManager manager = getSystemService(NotificationManager.class);
+                    manager = getSystemService(NotificationManager.class);
                     manager.notify(1, builder.build());
                 }
                 startForeground(1, builder.build());
@@ -119,19 +121,25 @@ public class WebViewService extends Service {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
-                    ID,
+                    CHANNEL_ID,
                     "Foreground Service Channel",
                     NotificationManager.IMPORTANCE_DEFAULT
             );
-            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager = getSystemService(NotificationManager.class);
             serviceChannel.setSound(null, null);
-            serviceChannel.setImportance(NotificationManager.IMPORTANCE_MIN);
+            serviceChannel.setImportance(NotificationManager.IMPORTANCE_HIGH);
             manager.createNotificationChannel(serviceChannel);
         }
     }
 
     private void destroyService() {
         sendMessageToActivity();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            manager = getSystemService(NotificationManager.class);
+            manager.cancel(1);
+            manager.cancelAll();
+            manager.deleteNotificationChannel(CHANNEL_ID);
+        }
         stopForeground(true);
         stopSelf();
         onDestroy();
