@@ -11,6 +11,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.PowerManager;
 
@@ -44,11 +45,17 @@ public class WebViewService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        String playing = "";
         if(null == intent) {
             return START_STICKY;
         }
         final String action = intent.getAction();
         if (action != null) {
+            if (action.equals("PLAYING")) {
+                Bundle b = intent.getExtras();
+                String msg = b.getString("PLAYING");
+                android.util.Log.d("SERVICE", msg);
+            }
             if (action.equals("DESTROY")) {
                 destroyService();
             } else if (action.equals("START")) {
@@ -68,6 +75,7 @@ public class WebViewService extends Service {
                         PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
                 Notification notification = new NotificationCompat.Builder(this, ID)
                         .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setContentText(playing)
                         .setSmallIcon(android.R.color.transparent)
                         .setContentIntent(pendingIntent)
                         .setDeleteIntent(deletePendingIntent)

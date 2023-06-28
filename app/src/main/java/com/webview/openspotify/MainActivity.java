@@ -66,6 +66,12 @@ public class MainActivity extends AppCompatActivity {
         finishAndRemoveTask();
         receiver = null;
     }
+    private void sendToService(String msg) {
+        Intent serviceIntent = new Intent(this, WebViewService.class);
+        serviceIntent.setAction("PLAYING");
+        serviceIntent.putExtra("PLAYING", msg);
+        startService(serviceIntent);
+    }
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,6 +136,8 @@ public class MainActivity extends AppCompatActivity {
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
+
+
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
             private WebChromeClient.CustomViewCallback mCustomViewCallback;
@@ -146,7 +154,8 @@ public class MainActivity extends AppCompatActivity {
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 String message = consoleMessage.message();
                 if(message.contains("Playing")){
-                    android.util.Log.d("PLAYING", message.substring(10));
+                    String msg = consoleMessage.message().substring(10);
+                    sendToService(msg);
                 }
                 return true;
             }
@@ -290,4 +299,5 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
+
 }
