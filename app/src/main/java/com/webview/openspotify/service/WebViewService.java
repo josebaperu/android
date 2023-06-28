@@ -138,7 +138,6 @@ public class WebViewService extends Service {
             manager = getSystemService(NotificationManager.class);
             manager.cancel(1);
             manager.cancelAll();
-            manager.deleteNotificationChannel(CHANNEL_ID);
         }
         stopForeground(true);
         stopSelf();
