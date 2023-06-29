@@ -33,13 +33,6 @@
         android:theme="@style/Theme.MyApplication"
         android:launchMode="singleTop"
         tools:targetApi="m">
-        <service
-            android:name="com.webview.apuestatotal.service.WebViewService"
-            android:enabled="true"
-            android:exported="true"
-            android:stopWithTask="true"
-            android:foregroundServiceType="mediaPlayback">
-        </service>
     <activity
         android:name="com.webview.apuestatotal.MainActivity"
         android:configChanges="orientation|screenSize"

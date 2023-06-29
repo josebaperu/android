@@ -2,10 +2,6 @@ package com.webview.apuestatotal;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -28,36 +24,19 @@ import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.webview.apuestatotal.service.WebViewService;
 import com.webview.apuestatotal.webview.MediaWebView;
 
 
 public class MainActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "AT";
     private final static String BASE_URL = "https://www.apuestatotal.com/";
-    private BroadcastReceiver receiver;
     private FloatingActionButton floatingActionButton;
-    private void startService() {
-        Intent serviceIntent = new Intent(this, WebViewService.class);
-        serviceIntent.setAction("START");
-        ContextCompat.startForegroundService(this, serviceIntent);
-        registerReceiver(receiver, new IntentFilter(RECEIVER));
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                save("url", mWebView.getUrl());
-                unregisterReceiver(receiver);
-                finishAndRemoveTask();
-            }
-        };
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -74,8 +53,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
-        startService();
-
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
