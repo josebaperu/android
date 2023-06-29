@@ -1,6 +1,6 @@
-package com.webview.twitter.service;
+package com.webview.apuestatotal.service;
 
-import static com.webview.twitter.MainActivity.RECEIVER;
+import static com.webview.apuestatotal.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -16,11 +16,11 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.twitter.MainActivity;
+import com.webview.apuestatotal.MainActivity;
 
 public class WebViewService extends Service {
 
-    private static final String ID = "foregroundServiceYT";                        // The id of the notification
+    private static final String ID = "foregroundServiceAT";                        // The id of the notification
 
     private PowerManager.WakeLock wakeLock;                 // PARTIAL_WAKELOCK
 
@@ -39,7 +39,7 @@ public class WebViewService extends Service {
     public void onCreate() {
         super.onCreate();
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "TW:wakelock");
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AT:wakelock");
     }
 
     @Override
@@ -74,7 +74,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "TWITTER", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "APUESTA TOTAL", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }

@@ -1,11 +1,26 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
+        <ListView
+            android:id="@android:id/list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:src="@android:drawable/btn_default_small"
+            android:layout_marginRight="30dp"
+            android:layout_marginBottom="120dp"
+            android:contentDescription="Mis Apuestas"
+             />
 
-        <com.webview.twitter.webview.MediaWebView
+        <com.webview.apuestatotal.webview.MediaWebView
             android:id="@+id/activity_main_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
-</RelativeLayout>
+
+</FrameLayout>

@@ -1,4 +1,4 @@
-package com.webview.twitter;
+package com.webview.apuestatotal;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -27,16 +27,18 @@ import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.webview.twitter.service.WebViewService;
-import com.webview.twitter.webview.MediaWebView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.webview.apuestatotal.service.WebViewService;
+import com.webview.apuestatotal.webview.MediaWebView;
 
 
 public class MainActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "TWITTER";
-    private final static String BASE_URL = "https://twitter.com/";
+    public final static String RECEIVER = "AT";
+    private final static String BASE_URL = "https://www.apuestatotal.com/";
     private BroadcastReceiver receiver;
+    private FloatingActionButton floatingActionButton;
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
@@ -77,9 +79,9 @@ public class MainActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
-
-        mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
+        floatingActionButton = findViewById(R.id.fab_button);
+        floatingActionButton.setOnClickListener(v -> mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/"));
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -141,12 +143,15 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
+        webSettings.setSavePassword(true);
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
         }
         mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setScrollbarFadingEnabled(false);
+
         mWebView.loadUrl(getValue("url"));
+
     }
 
     @Override
@@ -160,11 +165,7 @@ public class MainActivity extends AppCompatActivity {
         if (mWebView != null && mWebView.canGoBack()){
             mWebView.goBack();// if there is previous page open it
         } else {
-            if(getValue("url").contains("twitter.com")){
-                super.onBackPressed();//if there is no previous page, close app
-            } {
-                mWebView.loadUrl(BASE_URL);
-            }
+            super.onBackPressed();//if there is no previous page, close app
         }
     }
 
