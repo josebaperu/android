@@ -18,6 +18,7 @@
             } else if (!!shuffle) {
 				console.log(".shuffle");
                 shuffle.click();
+                shuffle.click();
 				localStorage.removeItem("reload");
 
             }

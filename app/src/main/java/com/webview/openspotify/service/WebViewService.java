@@ -82,7 +82,7 @@ public class WebViewService extends Service {
                         PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
                 builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setPriority(NotificationCompat.PRIORITY_MAX)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setContentText(playing)
                         .setSmallIcon(android.R.color.transparent)
                         .setContentIntent(pendingIntent)
@@ -127,7 +127,7 @@ public class WebViewService extends Service {
             );
             manager = getSystemService(NotificationManager.class);
             serviceChannel.setSound(null, null);
-            serviceChannel.setImportance(NotificationManager.IMPORTANCE_HIGH);
+            serviceChannel.setImportance(NotificationManager.IMPORTANCE_DEFAULT);
             manager.createNotificationChannel(serviceChannel);
         }
     }
