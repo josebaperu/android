@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
@@ -157,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 String message = consoleMessage.message();
+                //Log.i("JS_CONSOLE", message);
                 if(message.contains("Playing")){
                     String msg = consoleMessage.message().substring(10);
                     sendToService(msg);
