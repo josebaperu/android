@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "series";
 
-    private final static String BASE_URL = "https://watchseriestv.top//";
+    private final static String BASE_URL = "https://watchseriestv.top/";
     private BroadcastReceiver receiver;
 
     private final static String TAG = "MainActivity";
@@ -116,8 +116,10 @@ public class MainActivity extends AppCompatActivity {
                         "document.querySelector('.alert.mb-3').style.display = 'none';})()");
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('body').style.backgroundColor = 'black!important';})()");
-            }
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('div.dropdown-menu.dropdown-menu-new').style.maxHeight = 'unset';})()");
 
+            }
 
             @Override
             public void doUpdateVisitedHistory (WebView view,
