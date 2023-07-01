@@ -117,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('body').style.backgroundColor = 'black!important';})()");
                 mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('div.dropdown-menu.dropdown-menu-new').style.maxHeight = 'unset';})()");
+                        "document.querySelector('div.dropdown-menu.dropdown-menu-new').className = '';})()");
 
             }
 
