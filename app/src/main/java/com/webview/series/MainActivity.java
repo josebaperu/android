@@ -107,20 +107,17 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-
+                applyStyles();
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('.watching_player-control').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('.alert.mb-3').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('body').style.backgroundColor = 'black!important';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('div.dropdown-menu.dropdown-menu-new').className = '';})()");
-
+                applyStyles();
+            }
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                super.onLoadResource(view, url);
+                applyStyles();
             }
 
             @Override
@@ -259,5 +256,18 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+
+    private void applyStyles() {
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.watching_player-control').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.alert.mb-3').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body').style.backgroundColor = 'black!important';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.dropdown-menu.dropdown-menu-new').className = '';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.prebreadcrumb').style.display = 'none';})()");
     }
 }
