@@ -1,4 +1,4 @@
-package com.webview.myapplication;
+package com.webview.series;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -28,8 +28,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.webview.myapplication.service.WebViewService;
-import com.webview.myapplication.webview.MediaWebView;
+import com.webview.series.service.WebViewService;
+import com.webview.series.webview.MediaWebView;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
     List<String> whiteHostList;
 
     Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "TVNOW";
+    public final static String RECEIVER = "123series";
 
-    private final static String BASE_URL = "https://canales.online/";
+    private final static String BASE_URL = "https://123-series.com//";
     private BroadcastReceiver receiver;
 
     private final static String TAG = "MainActivity";

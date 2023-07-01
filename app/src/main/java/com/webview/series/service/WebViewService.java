@@ -1,5 +1,5 @@
-package com.webview.myapplication.service;
-import static com.webview.myapplication.MainActivity.RECEIVER;
+package com.webview.series.service;
+import static com.webview.series.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -15,7 +15,7 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.myapplication.MainActivity;
+import com.webview.series.MainActivity;
 
 public class WebViewService extends Service {
 

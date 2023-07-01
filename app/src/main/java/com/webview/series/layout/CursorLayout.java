@@ -1,4 +1,4 @@
-package com.webview.myapplication.layout;
+package com.webview.series.layout;
 
 import android.content.Context;
 import android.graphics.Canvas;
