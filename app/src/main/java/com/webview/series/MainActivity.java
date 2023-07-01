@@ -111,30 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('div#header').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('.clean-gray').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('.card-description').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('nav').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('div.footer').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('#buscar').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('h1').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('h3').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('footer').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('body').style.backgroundColor = 'black';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('html body div a.btn.btn-md').forEach(function(el) {el.classList.remove('btn-md');});})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.classList.remove('button');});})()");
+
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,

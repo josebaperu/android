@@ -19,7 +19,7 @@ import com.webview.series.MainActivity;
 
 public class WebViewService extends Service {
 
-    private static final String ID = "foregroundService";                        // The id of the notification
+    private static final String ID = "foregroundServiceSeries";                        // The id of the notification
 
     private NotificationCompat.Builder builder;
     private NotificationManager mNotificationManager;
@@ -40,7 +40,7 @@ public class WebViewService extends Service {
     public void onCreate() {
         super.onCreate();
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "INSERT_YOUR_APP_NAME:wakelock");
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "serienow:wakelock");
     }
 
     @Override
@@ -79,7 +79,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "TVnow", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "SeriesNow", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }
