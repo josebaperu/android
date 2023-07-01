@@ -105,15 +105,20 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('body').style.backgroundColor = 'black';})()");
+
             }
 
             @Override
             public void onPageFinished(WebView view, String url) {
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('.watching_player-control').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('.alert.mb-3').style.display = 'none';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('body').style.backgroundColor = 'black!important';})()");
             }
+
+
             @Override
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
