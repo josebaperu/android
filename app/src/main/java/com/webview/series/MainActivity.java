@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
     List<String> whiteHostList;
 
     Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "123series";
+    public final static String RECEIVER = "series";
 
-    private final static String BASE_URL = "https://123-series.com//";
+    private final static String BASE_URL = "https://watchseriestv.top//";
     private BroadcastReceiver receiver;
 
     private final static String TAG = "MainActivity";
