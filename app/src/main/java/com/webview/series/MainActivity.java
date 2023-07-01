@@ -111,7 +111,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('.watching_player-control').style.display = 'none';})()");
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
