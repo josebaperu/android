@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String BASE_URL = "https://watchseriestv.top/";
     private BroadcastReceiver receiver;
 
+    private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
+
     private final static String TAG = "MainActivity";
     private void handleObserverDestroy () {
         save("url", mWebView.getUrl());
@@ -187,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setUserAgentString(UA);
         webSettings.setBlockNetworkLoads(false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             getWindow().getInsetsController().hide(WindowInsets.Type.systemBars());
