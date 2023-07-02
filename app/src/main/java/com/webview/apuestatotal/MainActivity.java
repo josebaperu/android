@@ -58,13 +58,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mWebView = findViewById(R.id.activity_main_webview);
         floatingActionButton = findViewById(R.id.fab_button);
-        floatingActionButton.setOnClickListener(v -> mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/"));
+        floatingActionButton.setOnClickListener(v -> {
+            mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
+        });
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
                                                 boolean isReload) {
                 saveCurrentUrl(url);
+            }
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelectorAll('button.MuiButtonBase-root')[8].click();})()");
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
