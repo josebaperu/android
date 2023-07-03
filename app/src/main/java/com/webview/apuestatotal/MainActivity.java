@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
     private final static String BASE_URL = "https://www.apuestatotal.com/";
     private FloatingActionButton floatingActionButton;
 
-    private boolean shouldApplyStyles = false;
-
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         floatingActionButton = findViewById(R.id.fab_button);
         floatingActionButton.setOnClickListener(v -> {
-            shouldApplyStyles = true;
             mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
         });
         mWebView.setWebViewClient(new WebViewClient() {
@@ -72,13 +69,9 @@ public class MainActivity extends AppCompatActivity {
                 saveCurrentUrl(url);
             }
             @Override
-            public void onPageFinished(WebView view, String url) {
-                if(shouldApplyStyles) {
-                    mWebView.loadUrl("javascript:(function() { " +
-                            "document.querySelectorAll('button.MuiButtonBase-root')[8].click();})()");
-                }
-                shouldApplyStyles = false;
-
+            public void onLoadResource(WebView view, String url) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelectorAll('button.MuiButtonBase-root')[8].click();})()");
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
