@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 saveCurrentUrl(url);
             }
             @Override
-            public void onLoadResource(WebView view, String url) {
+            public void onPageFinished(WebView view, String url) {
                 if(shouldApplyStyles) {
                     mWebView.loadUrl("javascript:(function() { " +
                             "document.querySelectorAll('button.MuiButtonBase-root')[8].click();})()");
