@@ -201,11 +201,7 @@ public class MainActivity extends AppCompatActivity {
             uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
         }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            mWebView.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        } else {
-            mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-        }
+        mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mWebView.loadUrl(getValue("url"));
 
     }
