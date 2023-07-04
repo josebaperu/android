@@ -70,8 +70,12 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onLoadResource(WebView view, String url) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelectorAll('button.MuiButtonBase-root')[8].click();})()");
+                applyStyles();
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                applyStyles();
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -169,5 +173,22 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+    private void applyStyles() {
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelectorAll('button.MuiButtonBase-root')[8].click();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].style.display = 'none';})()");
+
     }
 }
