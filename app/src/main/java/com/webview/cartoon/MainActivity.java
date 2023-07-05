@@ -1,4 +1,4 @@
-package com.webview.series;
+package com.webview.cartoon;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -28,8 +28,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.webview.series.service.WebViewService;
-import com.webview.series.webview.MediaWebView;
+import com.webview.cartoon.service.WebViewService;
+import com.webview.cartoon.webview.MediaWebView;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "series";
 
-    private final static String BASE_URL = "https://watchseriestv.top/";
+    private final static String BASE_URL = "https://watchcartoonsonline.eu/";
     private BroadcastReceiver receiver;
 
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
@@ -126,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
                                                 boolean isReload) {
                 saveCurrentUrl(url);
             }
-            @Override
+/*            @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
 
 
@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
-            }
+            }*/
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
@@ -262,14 +262,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void applyStyles() {
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.watching_player-control').style.display = 'none';})()");
+                "document.querySelector('#main_header').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.alert.mb-3').style.display = 'none';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body').style.backgroundColor = 'black!important';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.dropdown-menu.dropdown-menu-new').className = '';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.prebreadcrumb').style.display = 'none';})()");
-    }
+                "document.querySelector('.headitems.register_active').style.float = 'left';})()");    }
 }

@@ -1,5 +1,5 @@
-package com.webview.series.service;
-import static com.webview.series.MainActivity.RECEIVER;
+package com.webview.cartoon.service;
+import static com.webview.cartoon.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -15,7 +15,7 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.series.MainActivity;
+import com.webview.cartoon.MainActivity;
 
 public class WebViewService extends Service {
 
@@ -79,7 +79,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "SeriesNow", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "Cartoons", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }

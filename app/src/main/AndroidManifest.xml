@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.webview.series">
+    package="com.webview.cartoon">
 
     <uses-permission-sdk-23 android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission-sdk-23 android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -25,7 +25,7 @@
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:usesCleartextTraffic="true"
-        android:icon="@mipmap/ic_series"
+        android:icon="@mipmap/ic_cartoon"
         android:label="@string/app_name"
         android:hardwareAccelerated="true"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -34,14 +34,14 @@
         android:launchMode="singleTop"
         tools:targetApi="m">
         <service
-            android:name="com.webview.series.service.WebViewService"
+            android:name="com.webview.cartoon.service.WebViewService"
             android:enabled="true"
             android:exported="true"
             android:stopWithTask="true"
             android:foregroundServiceType="mediaPlayback">
         </service>
     <activity
-        android:name="com.webview.series.MainActivity"
+        android:name="com.webview.cartoon.MainActivity"
         android:configChanges="orientation|screenSize"
         android:launchMode="singleTask"
         android:label="@string/app_name">
