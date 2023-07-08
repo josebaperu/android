@@ -205,5 +205,15 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('div.CaptionsTopWrapperS').nextSibling.nextSibling.style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('footer').style.display = 'none';})()");
+
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('h2').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelectorAll('img').forEach(e => e.style.display = 'none');})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('[data-testid=KeyboardArrowUpIcon]').parentNode.style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#wcx-chat').style.display = 'none';})()");
+
     }
 }
