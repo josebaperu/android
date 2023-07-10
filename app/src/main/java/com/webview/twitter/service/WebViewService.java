@@ -74,7 +74,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "TWITTER", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "TWATTER", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }
