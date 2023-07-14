@@ -146,15 +146,15 @@ public class MainActivity extends AppCompatActivity {
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
 
 
-                String hostRequest = request.getUrl().toString();
+                String url = request.getUrl().toString();
                 boolean isAllowed = false;
                 for(String whiteListHost : whiteHostList) {
-                    if(hostRequest.contains(whiteListHost)){
+                    if(url.contains(whiteListHost)){
                         isAllowed = true;
-                        Log.i(TAG, "ALLOWED_TRUE " + hostRequest );
+                        Log.i(TAG, "ALLOWED_TRUE " + url );
                         break;
                     } else {
-                        Log.i(TAG, "ALLOWED_FALSE " + hostRequest );
+                        Log.i(TAG, "ALLOWED_FALSE " + url );
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
