@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private final Activity mainActivity = this; // If you are in activity
     private final static String BASE_URL = "https://www.apuestatotal.com/";
     private FloatingActionButton floatingActionButton;
+    private FloatingActionButton floatingActionButtonFavorite;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -60,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton = findViewById(R.id.fab_button);
         floatingActionButton.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
+        });
+        floatingActionButtonFavorite = findViewById(R.id.fav_button);
+        floatingActionButtonFavorite.setOnClickListener(v -> {
+            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-en-vivo/#/live/favorites/");
         });
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
