@@ -42,7 +42,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     MediaWebView mWebView;
-    List<String> whiteHostList;
+    List<String> blackListkeywords;
 
     Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "TVNOW";
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
-        whiteHostList = getWhiteHostList();
+        blackListkeywords = getBlackListKeywords();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -105,36 +105,17 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('body').style.backgroundColor = 'black';})()");
-            }
+                runScripts();
 
+            }
+            @Override
+            public void onPageCommitVisible(WebView view, String url) {
+                runScripts();
+
+            }
             @Override
             public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('div#header').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('.clean-gray').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('.card-description').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('nav').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('div.footer').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('#buscar').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('h1').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('h3').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('footer').style.display = 'none';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "document.querySelector('body').style.backgroundColor = 'black';})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('html body div a.btn.btn-md').forEach(function(el) {el.classList.remove('btn-md');});})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.classList.remove('button');});})()");
+                runScripts();
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -148,13 +129,14 @@ public class MainActivity extends AppCompatActivity {
 
                 String url = request.getUrl().toString();
                 boolean isAllowed = false;
-                for(String whiteListHost : whiteHostList) {
-                    if(url.contains(whiteListHost)){
-                        isAllowed = true;
-                        Log.i(TAG, "ALLOWED_TRUE " + url );
+                for(String blacklistWord : blackListkeywords) {
+                    if(url.contains(blacklistWord)){
+                        isAllowed = false;
+                        Log.i(TAG, "ALLOWED_FALSE " + url );
                         break;
                     } else {
-                        Log.i(TAG, "ALLOWED_FALSE " + url );
+                        isAllowed = true;
+                        Log.i(TAG, "ALLOWED_TRUE " + url );
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
@@ -219,11 +201,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private List<String>  getWhiteHostList() {
+    private List<String> getBlackListKeywords() {
         String line = "";
         List<String> list = new ArrayList<>();
 
-        InputStream is = this.getResources().openRawResource(R.raw.whitelisthosts);
+        InputStream is = this.getResources().openRawResource(R.raw.blacklist);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
         try {
@@ -271,5 +253,37 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+    private void runScripts() {
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body').style.backgroundColor = 'black';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#header').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.clean-gray').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.card-description').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('nav').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.footer').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#buscar').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('h1').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('h3').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.footer').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('footer').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body').style.backgroundColor = 'black';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('html body div a.btn.btn-md').forEach(function(el) {el.classList.remove('btn-md');});})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.classList.remove('button');});})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.opciones').style.display = 'none';})()");
     }
 }
