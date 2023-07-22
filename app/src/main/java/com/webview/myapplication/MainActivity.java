@@ -272,6 +272,8 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('h1').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('h2').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('h3').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.footer').style.display = 'none';})()");
