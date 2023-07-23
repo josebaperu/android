@@ -44,7 +44,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     MediaWebView mWebView;
-    List<String> whiteHostList;
+    List<String> blacklist;
 
     Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "series";
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
-        whiteHostList = getWhiteHostList();
+        blacklist = getBlackList();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -128,23 +128,24 @@ public class MainActivity extends AppCompatActivity {
                                                 boolean isReload) {
                 saveCurrentUrl(url);
             }
-/*            @Override
+            @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
 
 
-                String hostRequest = request.getUrl().toString();
+                String url = request.getUrl().toString();
                 boolean isAllowed = false;
-                for(String whiteListHost : whiteHostList) {
-                    if(hostRequest.contains(whiteListHost)){
-                        isAllowed = true;
-                        Log.i(TAG, "ALLOWED_TRUE " + hostRequest );
+                for(String blackListedWord : blacklist) {
+                    if(url.contains(blackListedWord)){
+                        isAllowed = false;
+                        Log.i(TAG, "ALLOWED_TRUE " + url );
                         break;
                     } else {
-                        Log.i(TAG, "ALLOWED_FALSE " + hostRequest );
+                        isAllowed = true;
+                        Log.i(TAG, "ALLOWED_FALSE " + url );
                     }
                 }
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
-            }*/
+            }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
@@ -211,11 +212,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private List<String>  getWhiteHostList() {
+    private List<String> getBlackList() {
         String line = "";
         List<String> list = new ArrayList<>();
 
-        InputStream is = this.getResources().openRawResource(R.raw.whitelisthosts);
+        InputStream is = this.getResources().openRawResource(R.raw.blacklist);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
         try {
@@ -269,5 +270,19 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#main_header').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.headitems.register_active').style.float = 'left';})()");    }
+                "document.querySelector('.headitems.register_active').style.float = 'left';})()");
+
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.sidebar.right.scrolling').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#info').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#comments').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.content.right').style.minWidth = '100%';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelectorAll('div.logo')[1].style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body').style.backgroundColor = 'black';})()");
+    }
 }
