@@ -293,6 +293,8 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.dt_social_single').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.control').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelectorAll('div.custom_fields').forEach(iframe => iframe.remove());})()");
 
     }
