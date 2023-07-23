@@ -275,14 +275,25 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.sidebar.right.scrolling').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#info').style.display = 'none';})()");
+                "document.querySelector('#info h2').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#comments').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#arc-widget-container').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.content.right').style.minWidth = '100%';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelectorAll('div.logo')[0].style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelectorAll('div.logo')[1].style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.wp-content').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.dt_social_single').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelectorAll('div.custom_fields').forEach(iframe => iframe.remove());})()");
+
     }
 }
