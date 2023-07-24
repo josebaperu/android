@@ -308,6 +308,8 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('iframe#arc-broker').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('iframe#google_esf').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('iframe#aswift_0').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('footer').remove();})()");
@@ -318,7 +320,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.control').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('button.search-button').style.color = '#2c2c2c';})()");
+                "document.querySelector('header.responsive .search a').style.opacity = '0.25';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#playex').style.marginBottom = '4rem';})()");
     }
