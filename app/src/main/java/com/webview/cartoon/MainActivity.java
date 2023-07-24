@@ -306,6 +306,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('iframe#arc-widget-launcher-iframe').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('iframe#arc-broker').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('iframe#aswift_0').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
