@@ -104,18 +104,8 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                runScripts();
-
-            }
-            @Override
-            public void onPageCommitVisible(WebView view, String url) {
-                runScripts();
-
-            }
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                runScripts();
+            public void onLoadResource(WebView view, String url) {
+                applyStyles();
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -254,7 +244,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
-    private void runScripts() {
+    private void applyStyles() {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
