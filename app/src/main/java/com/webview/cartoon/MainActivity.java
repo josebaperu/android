@@ -319,5 +319,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('div.control').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('button.search-button').style.color = '#2c2c2c';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#playex').style.marginBottom = '4rem';})()");
     }
 }
