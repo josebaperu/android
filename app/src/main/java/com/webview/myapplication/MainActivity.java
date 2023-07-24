@@ -248,27 +248,27 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div#header').style.display = 'none';})()");
+                "document.querySelector('div#header').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.clean-gray').style.display = 'none';})()");
+                "document.querySelector('.clean-gray').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.card-description').style.display = 'none';})()");
+                "document.querySelector('.card-description').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('nav').style.display = 'none';})()");
+                "document.querySelector('nav').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.footer').style.display = 'none';})()");
+                "document.querySelector('div.footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#buscar').style.display = 'none';})()");
+                "document.querySelector('#buscar').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h1').style.display = 'none';})()");
+                "document.querySelector('h1').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h2').style.display = 'none';})()");
+                "document.querySelector('h2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h3').style.display = 'none';})()");
+                "document.querySelector('h3').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.footer').style.display = 'none';})()");
+                "document.querySelector('.footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('footer').style.display = 'none';})()");
+                "document.querySelector('footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
@@ -276,6 +276,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.classList.remove('button');});})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.opciones').style.display = 'none';})()");
+                "document.querySelector('.opciones').remove();})()");
     }
 }
