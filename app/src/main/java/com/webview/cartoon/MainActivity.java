@@ -107,18 +107,9 @@ public class MainActivity extends AppCompatActivity {
         mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                applyStyles();
-            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                applyStyles();
-            }
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                super.onLoadResource(view, url);
                 applyStyles();
             }
 
