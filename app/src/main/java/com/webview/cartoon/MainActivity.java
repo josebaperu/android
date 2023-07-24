@@ -322,6 +322,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('header.responsive .search a').style.opacity = '0.25';})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('h1').style.opacity = '0.25';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('a.aresp.nav-resp').style.opacity = '0.25';})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#playex').style.marginBottom = '4rem';})()");
     }
 }
