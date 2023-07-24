@@ -259,51 +259,51 @@ public class MainActivity extends AppCompatActivity {
 
     private void applyStyles() {
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#main_header').remove();})()");
+                "document.querySelector('#main_header').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.headitems.register_active').style.float = 'left';})()");
 
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.sidebar.right.scrolling').remove();})()");
+                "document.querySelector('.sidebar.right.scrolling').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#info h2').remove();})()");
+                "document.querySelector('#info h2').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#info span').remove();})()");
+                "document.querySelector('#info span').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#info .breadcrumbs').remove();})()");
+                "document.querySelector('#info .breadcrumbs').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#comments').remove();})()");
+                "document.querySelector('#comments').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#arc-widget-container').remove();})()");
+                "document.querySelector('#arc-widget-container').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.content.right').style.minWidth = '100%';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('div.logo')[0].remove();})()");
+                "document.querySelectorAll('div.logo')[0].style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('div.logo')[1].remove();})()");
+                "document.querySelectorAll('div.logo')[1].style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.wp-content').remove();})()");
+                "document.querySelector('.wp-content').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.dt_social_single').remove();})()");
+                "document.querySelector('.dt_social_single').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.control').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('div.custom_fields').forEach(iframe => iframe.remove());})()");
+                "document.querySelectorAll('div.custom_fields').forEach(iframe => iframe.style.display = 'none');})()");
 
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.dtuser').remove();})()");
+                "document.querySelector('div.dtuser').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#s').removeAttribute('placeholder');})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('iframe#arc-widget-launcher-iframe').remove();})()");
+                "document.querySelector('iframe#arc-widget-launcher-iframe').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('iframe#arc-broker').remove();})()");
+                "document.querySelector('iframe#arc-broker').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('iframe#google_esf').remove();})()");
+                "document.querySelector('iframe#google_esf').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('iframe#aswift_0').remove();})()");
+                "document.querySelector('iframe#aswift_0').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('footer').remove();})()");
+                "document.querySelector('footer').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
