@@ -80,8 +80,12 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
 
             @Override
-            public void onLoadResource(WebView view, String url) {
+            public void onPageFinished(WebView view, String url) {
                 applyStyles();
+            }
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                applyStylesLoaded();
             }
 
             @Override
@@ -249,10 +253,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.content.right').style.minWidth = '100%';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('div.logo')[0].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('div.logo')[1].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.wp-content').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.dt_social_single').remove();})()");
@@ -291,5 +291,12 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('iframe#google_esf').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('iframe#aswift_0').remove();})()");
+    }
+
+    private void applyStylesLoaded() {
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelectorAll('div.logo')[0].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelectorAll('div.logo')[1].remove();})()");
     }
 }
