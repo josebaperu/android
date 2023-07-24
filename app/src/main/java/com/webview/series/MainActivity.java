@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onLoadResource(WebView view, String url) {
+            public void onPageFinished(WebView view, String url) {
                 super.onLoadResource(view, url);
                 applyStyles();
             }
@@ -253,14 +253,28 @@ public class MainActivity extends AppCompatActivity {
 
     private void applyStyles() {
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.watching_player-control').style.display = 'none';})()");
+                "document.querySelector('.watching_player-control').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.alert.mb-3').style.display = 'none';})()");
+                "document.querySelector('.alert.mb-3').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black!important';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.dropdown-menu.dropdown-menu-new').className = '';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.prebreadcrumb').style.display = 'none';})()");
+                "document.querySelector('div.prebreadcrumb').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#footer').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#mv-keywords').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#mv-keywords').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.elements').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.film_related.film_related-list').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#header_right div#user-slot').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#mobile_menu').remove();})()");
     }
 }
