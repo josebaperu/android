@@ -313,5 +313,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('.content.right').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.control').style.backgroundColor = 'black';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('button.search-button').style.color = '#2c2c2c';})()");
     }
 }
