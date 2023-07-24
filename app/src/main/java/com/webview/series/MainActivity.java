@@ -5,7 +5,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,9 +25,6 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import com.webview.series.service.WebViewService;
 import com.webview.series.webview.MediaWebView;
 
 import java.io.BufferedReader;
@@ -48,38 +44,15 @@ public class MainActivity extends AppCompatActivity {
     public final static String RECEIVER = "series";
 
     private final static String BASE_URL = "https://watchseriestv.top/";
-    private BroadcastReceiver receiver;
-
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
 
     private final static String TAG = "MainActivity";
-    private void handleObserverDestroy () {
-        save("url", mWebView.getUrl());
-        unregisterReceiver(receiver);
-        finishAndRemoveTask();
-        receiver = null;
-    }
-
-
-    private void startService() {
-        Intent serviceIntent = new Intent(this, WebViewService.class);
-        serviceIntent.setAction("START");
-        ContextCompat.startForegroundService(this, serviceIntent);
-        registerReceiver(receiver, new IntentFilter(RECEIVER));
-
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                handleObserverDestroy();
-            }
-        };
         whiteHostList = getWhiteHostList();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -97,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
-        startService();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
@@ -231,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onDestroy() {
-        handleObserverDestroy();
+        finishAndRemoveTask();
         super.onDestroy();
     }
     private void save(String key, String value) {
