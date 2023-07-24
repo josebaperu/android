@@ -281,8 +281,9 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('a.aresp.nav-resp').style.opacity = '0.25';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#playex').style.marginBottom = '4rem';})()");
-
+                "document.querySelector('#playex').style.marginBottom = '2rem';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#playex').style.marginTop = '4rem';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('iframe#arc-widget-launcher-iframe').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
