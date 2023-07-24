@@ -277,6 +277,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#info h2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#info span').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#info .breadcrumbs').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#comments').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#arc-widget-container').remove();})()");
@@ -287,8 +291,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelectorAll('div.logo')[1].remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body').style.backgroundColor = 'black';})()");
-        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.wp-content').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.dt_social_single').remove();})()");
@@ -297,5 +299,19 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelectorAll('div.custom_fields').forEach(iframe => iframe.remove());})()");
 
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.dtuser').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#s').removeAttribute('placeholder');})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('iframe#arc-widget-launcher-iframe').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('footer').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body').style.backgroundColor = 'black';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.content.right').style.backgroundColor = 'black';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.control').style.backgroundColor = 'black';})()");
     }
 }
