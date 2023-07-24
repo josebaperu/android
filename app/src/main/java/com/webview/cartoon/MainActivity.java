@@ -264,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('.headitems.register_active').style.float = 'left';})()");
 
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.sidebar.right.scrolling').style.display = 'none';})()");
+                "document.querySelector('div.sidebar.right.scrolling').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#info h2').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
@@ -294,14 +294,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('div.dtuser').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#s').removeAttribute('placeholder');})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('iframe#arc-widget-launcher-iframe').style.display = 'none';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('iframe#arc-broker').style.display = 'none';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('iframe#google_esf').style.display = 'none';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('iframe#aswift_0').style.display = 'none';})()");
+
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('footer').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
