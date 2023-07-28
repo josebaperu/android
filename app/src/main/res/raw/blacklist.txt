@@ -1,8 +1,3 @@
-celeritascdn
-www.google.com
 analytics.google
 sharethis
 tags
-amung
-pulseadnetwork
-tynt

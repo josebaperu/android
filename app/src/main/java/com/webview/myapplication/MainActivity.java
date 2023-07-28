@@ -272,10 +272,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('html body div a.btn.btn-md').forEach(function(el) {el.classList.remove('btn-md');});})()");
+                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('html body div a.btn.btn-md').forEach(function(el) {el.style.color = 'grey';el.classList.remove('btn-md')});})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.classList.remove('button');});})()");
+                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.style.color = 'grey';el.classList.remove('button')});})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.opciones').remove();})()");
+                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('center').forEach(function(el) {el.remove();});})()");
     }
 }
