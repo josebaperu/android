@@ -24,6 +24,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -42,7 +43,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     MediaWebView mWebView;
-    List<String> blackListkeywords;
+    List<String> blacklistedKeyword;
 
     Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "TVNOW";
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final static String TAG = "MainActivity";
     private void handleObserverDestroy () {
-        save("url", mWebView.getUrl());
+        save(mWebView.getUrl());
         unregisterReceiver(receiver);
         finishAndRemoveTask();
         receiver = null;
@@ -78,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
-        blackListkeywords = getBlackListKeywords();
+        blacklistedKeyword = getBlackListKeywords();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -97,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
         }
         startService();
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.hide();
         setContentView(R.layout.activity_main);
 
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String url = request.getUrl().toString();
                 boolean isAllowed = false;
-                for(String blacklistWord : blackListkeywords) {
+                for(String blacklistWord : blacklistedKeyword) {
                     if(url.contains(blacklistWord)){
                         isAllowed = false;
                         Log.i(TAG, "ALLOWED_FALSE " + url );
@@ -187,12 +189,12 @@ public class MainActivity extends AppCompatActivity {
             uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
         }
-        mWebView.loadUrl(getValue("url"));
+        mWebView.loadUrl(getValue());
 
     }
 
     private List<String> getBlackListKeywords() {
-        String line = "";
+        String line;
         List<String> list = new ArrayList<>();
 
         InputStream is = this.getResources().openRawResource(R.raw.blacklist);
@@ -209,16 +211,16 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.clear();
     }
 
     @Override
     public void onBackPressed() {
-        if (mWebView != null && !getValue("url").equals(BASE_URL)) {
+        if (mWebView != null && !getValue().equals(BASE_URL)) {
             mWebView.loadUrl(BASE_URL);
-            save("url", BASE_URL);
+            save(BASE_URL);
         } else {
             super.onBackPressed();
         }
@@ -228,17 +230,17 @@ public class MainActivity extends AppCompatActivity {
         handleObserverDestroy();
         super.onDestroy();
     }
-    private void save(String key, String value) {
+    private void save(String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
-        editor.putString(key, value);
+        editor.putString("url", value);
         editor.apply();
     }
     private void saveCurrentUrl (String url) {
-        save("url", url);
+        save(url);
     }
 
-    private String getValue(String key) {
-        return getSharedPreferences().getString(key, BASE_URL);
+    private String getValue() {
+        return getSharedPreferences().getString("url", BASE_URL);
     }
 
     private SharedPreferences getSharedPreferences() {
