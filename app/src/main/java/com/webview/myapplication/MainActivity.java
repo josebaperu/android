@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     MediaWebView mWebView;
     List<String> blacklistedKeyword;
     Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "TVNOW";
 
     private final static String BASE_URL = "https://canales.online/";
     private final static String TAG = "MainActivity";
