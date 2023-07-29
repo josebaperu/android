@@ -1,4 +1,4 @@
-package com.webview.myapplication.webview;
+package com.webview.telegratishd.webview;
 
 import android.content.Context;
 import android.util.AttributeSet;

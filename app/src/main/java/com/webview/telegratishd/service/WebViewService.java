@@ -1,5 +1,5 @@
-package com.webview.myapplication.service;
-import static com.webview.myapplication.MainActivity.RECEIVER;
+package com.webview.telegratishd.service;
+import static com.webview.telegratishd.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -15,14 +15,12 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.myapplication.MainActivity;
+import com.webview.telegratishd.MainActivity;
 
 public class WebViewService extends Service {
 
     private static final String ID = "foregroundService";                        // The id of the notification
 
-    private NotificationCompat.Builder builder;
-    private NotificationManager mNotificationManager;
     private PowerManager.WakeLock wakeLock;                 // PARTIAL_WAKELOCK
 
     /**
@@ -79,7 +77,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "TVnow", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "telegratishd", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }
