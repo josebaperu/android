@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
@@ -73,9 +74,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onLoadResource(WebView view, String url) {
+            public void onPageFinished(WebView view, String url) {
                 applyStyles();
             }
+
             @Override
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
@@ -234,6 +236,9 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('div#page_container').style.padding = 'unset';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('a.button').forEach(function(el) {el.style.color = 'grey'; el.classList.remove('button')});})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "const elements = document.querySelector('#canales.row');[0,1,2,3].forEach( i => elements.querySelector('div').remove());})()");
+
     }
 }
 
