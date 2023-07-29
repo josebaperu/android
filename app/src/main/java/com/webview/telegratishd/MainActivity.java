@@ -264,6 +264,9 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('a.btn.btn-secondary').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#page_container').style.padding = 'unset';})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('a.button').forEach(function(el) {el.style.color = 'grey'; el.classList.remove('button')});})()");
     }
 }
+
