@@ -77,7 +77,11 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 applyStyles();
             }
-
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('div.block-title h2').remove();})()");
+            }
             @Override
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
@@ -222,8 +226,6 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('header').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('input#searchbox').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.block-title h2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
