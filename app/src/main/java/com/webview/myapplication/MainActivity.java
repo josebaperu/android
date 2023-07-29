@@ -2,10 +2,6 @@ package com.webview.myapplication;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,9 +23,6 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-
-import com.webview.myapplication.service.WebViewService;
 import com.webview.myapplication.webview.MediaWebView;
 
 import java.io.BufferedReader;
@@ -44,41 +37,16 @@ public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     MediaWebView mWebView;
     List<String> blacklistedKeyword;
-
     Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "TVNOW";
 
     private final static String BASE_URL = "https://canales.online/";
-    private BroadcastReceiver receiver;
-
     private final static String TAG = "MainActivity";
-    private void handleObserverDestroy () {
-        save(mWebView.getUrl());
-        unregisterReceiver(receiver);
-        finishAndRemoveTask();
-        receiver = null;
-    }
-
-
-    private void startService() {
-        Intent serviceIntent = new Intent(this, WebViewService.class);
-        serviceIntent.setAction("START");
-        ContextCompat.startForegroundService(this, serviceIntent);
-        registerReceiver(receiver, new IntentFilter(RECEIVER));
-
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                handleObserverDestroy();
-            }
-        };
         blacklistedKeyword = getBlackListKeywords();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -96,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
-        startService();
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.hide();
@@ -227,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onDestroy() {
-        handleObserverDestroy();
+        finishAndRemoveTask();
         super.onDestroy();
     }
     private void save(String value) {
