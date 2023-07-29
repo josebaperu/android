@@ -199,9 +199,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     @Override
-    public void onDestroy() {
+    public void onPause() {
         finishAndRemoveTask();
-        super.onDestroy();
+        super.onPause();
     }
     private void save(String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
