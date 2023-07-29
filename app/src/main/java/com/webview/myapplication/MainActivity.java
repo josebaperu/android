@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     @Override
-    public void onDestroy() {
+    public void onPause() {
         finishAndRemoveTask();
         super.onDestroy();
     }
@@ -248,4 +248,5 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('center').forEach(function(el) {el.remove();});})()");
     }
+
 }
