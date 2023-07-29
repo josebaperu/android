@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onLoadResource(WebView view, String url) {
-                //applyStyles();
+                applyStyles();
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -250,34 +250,20 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div#header').remove();})()");
+                "document.querySelector('header').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.clean-gray').remove();})()");
+                "document.querySelector('input#searchbox').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.card-description').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('nav').remove();})()");
+                "document.querySelector('div.block-title h2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#buscar').remove();})()");
+                "document.querySelector('html body center p').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h1').remove();})()");
+                "document.querySelector('div.section.mt-2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h2').remove();})()");
+                "document.querySelector('a.btn.btn-secondary').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h3').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.footer').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('footer').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body').style.backgroundColor = 'black';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('html body div a.btn.btn-md').forEach(function(el) {el.style.color = 'grey';el.classList.remove('btn-md')});})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('.button').forEach(function(el) {el.style.color = 'grey';el.classList.remove('button')});})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('center').forEach(function(el) {el.remove();});})()");
+                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('a.button').forEach(function(el) {el.style.color = 'grey'; el.classList.remove('button')});})()");
     }
 }
