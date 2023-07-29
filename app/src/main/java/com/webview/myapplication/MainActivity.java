@@ -250,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div#container').style.width = '100%';})()");
+                "document.querySelector('div#container').style.minWidth = '100%';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div#header').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
