@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onLoadResource(WebView view, String url) {
+            public void onPageFinished(WebView view, String url) {
                 applyStyles();
             }
 
