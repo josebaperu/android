@@ -2,9 +2,6 @@ package com.webview.series;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
     List<String> whiteHostList;
 
     Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "series";
 
     private final static String BASE_URL = "https://watchseriestv.top/";
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
@@ -199,9 +195,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     @Override
-    public void onDestroy() {
+    public void onPause() {
         finishAndRemoveTask();
-        super.onDestroy();
+        super.onPause();
     }
     private void save(String key, String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
