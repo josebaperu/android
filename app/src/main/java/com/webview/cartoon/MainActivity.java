@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     List<String> blacklist;
 
     Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "series";
 
     private final static String BASE_URL = "https://watchcartoonsonline.eu/";
 
