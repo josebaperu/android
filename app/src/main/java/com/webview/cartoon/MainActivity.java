@@ -151,13 +151,12 @@ public class MainActivity extends AppCompatActivity {
         WebSettings webSettings = mWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
-        webSettings.setRenderPriority(WebSettings.RenderPriority.HIGH);
         webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
         webSettings.setMediaPlaybackRequiresUserGesture(true);
-        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
-        webSettings.setUserAgentString(UA);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setBlockNetworkLoads(false);
+        webSettings.setUserAgentString(UA);
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
         }
@@ -173,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
             uiVisibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
             mainActivity.getWindow().getDecorView().setSystemUiVisibility(uiVisibility);
         }
-        mWebView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         mWebView.loadUrl(getValue("url"));
 
     }
