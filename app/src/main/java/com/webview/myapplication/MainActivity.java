@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onPause() {
-        finishAndRemoveTask();
+        finish();
         super.onPause();
     }
     private void save(String value) {
