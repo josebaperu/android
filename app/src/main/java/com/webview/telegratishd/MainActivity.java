@@ -2,7 +2,6 @@ package com.webview.telegratishd;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -42,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
     Activity mainActivity = this; // If you are in activity
     private final static String BASE_URL = "https://telegratishd.com/";
     private final static String TAG = "MainActivity";
-
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -200,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onPause() {
-        finishAndRemoveTask();
+        finish();
         super.onPause();
     }
     private void save(String value) {
