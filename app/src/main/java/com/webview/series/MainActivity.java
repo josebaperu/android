@@ -218,6 +218,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void applyStyles() {
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('span.logo-text').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#header_menu').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.watching_player-control').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.alert.mb-3').remove();})()");
@@ -241,5 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('div#header_right div#user-slot').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div#mobile_menu').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.detail_page-servers').remove();})()");
     }
 }
