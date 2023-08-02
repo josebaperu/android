@@ -77,6 +77,13 @@ public class MainActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 applyStyles();
             }
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('div.dropdown-menu.dropdown-menu-new').className = '';})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "document.querySelector('#servers-list div').remove();})()");
+            }
 
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -227,8 +234,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('.alert.mb-3').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black!important';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.dropdown-menu.dropdown-menu-new').className = '';})()");
+
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.prebreadcrumb').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
@@ -247,5 +253,13 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('div#mobile_menu').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.detail_page-servers').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.text-home').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.float-left').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#slider').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('div.modal-content').forEach(function(el) {el.remove();});})()");
     }
 }
