@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private final static String BASE_URL = "https://www.apuestatotal.com/";
     private FloatingActionButton floatingActionButton;
     private FloatingActionButton floatingActionButtonFavorite;
+    private boolean isOpenBetsTab;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -61,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButton = findViewById(R.id.fab_button);
         floatingActionButton.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
+            isOpenBetsTab = true;
         });
         floatingActionButtonFavorite = findViewById(R.id.fav_button);
         floatingActionButtonFavorite.setOnClickListener(v -> {
@@ -79,8 +81,13 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPageFinished(WebView view, String url) {
-                applyStyles();
+            public void onPageCommitVisible(WebView view, String url) {
+                if(isOpenBetsTab) {
+                    mWebView.loadUrl("javascript:(function() { " +
+                            "document.querySelectorAll('button.MuiButtonBase-root')[7].click();})()");
+                    isOpenBetsTab = false;
+
+                }
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -180,45 +187,44 @@ public class MainActivity extends AppCompatActivity {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
     private void applyStyles() {
+
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('button.MuiButtonBase-root')[8].click();})()");
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].style.display = 'none';})()");
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].style.display = 'none';})()");
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].style.display = 'none';})()");
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].style.display = 'none';})()");
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].style.display = 'none';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].style.display = 'none';})()");
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
 
 
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.animate.first').style.display = 'none';})()");
+                "document.querySelector('div.animate.first').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.animate.two').style.display = 'none';})()");
+                "document.querySelector('div.animate.two').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.left').style.display = 'none';})()");
+                "document.querySelector('div.left').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').style.display = 'none';})()");
+                "document.querySelector('div.CaptionsTopWrapperS').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.style.display = 'none';})()");
+                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.nextSibling.style.display = 'none';})()");
+                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.nextSibling.remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('footer').style.display = 'none';})()");
+                "document.querySelector('footer').remove();})()");
 
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h2').style.display = 'none';})()");
+                "document.querySelector('h2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('img').forEach(e => e.style.display = 'none');})()");
+                "document.querySelectorAll('img').forEach(e => e.remove());})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('[data-testid=KeyboardArrowUpIcon]').parentNode.style.display = 'none';})()");
+                "document.querySelector('[data-testid=KeyboardArrowUpIcon]').parentNode.remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#wcx-chat').style.display = 'none';})()");
+                "document.querySelector('#wcx-chat').remove();})()");
 
     }
 }
