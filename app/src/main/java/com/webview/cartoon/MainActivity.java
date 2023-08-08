@@ -247,8 +247,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('#comments').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#arc-widget-container').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.content.right').style.minWidth = '100%';})()");
+
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.wp-content').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
@@ -278,10 +277,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('a.aresp.nav-resp').style.opacity = '0.25';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#playex').style.marginBottom = '2rem';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#playex').style.marginTop = '4rem';})()");
-        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('iframe#arc-widget-launcher-iframe').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('iframe#arc-broker').remove();})()");
@@ -293,8 +288,24 @@ public class MainActivity extends AppCompatActivity {
 
     private void applyStylesLoaded() {
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('header#header').style.position = 'unset';})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelectorAll('div.logo')[0].remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelectorAll('div.logo')[1].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.content.right').classList.remove('right');})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.content').style.padding = 'unset';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.content').classList.remove('content');})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#dt_contenedor').style.width = 'unset';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#dt_contenedor').style.float = 'unset';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.breadcrumb').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.sbox span').remove();})()");
     }
 }
