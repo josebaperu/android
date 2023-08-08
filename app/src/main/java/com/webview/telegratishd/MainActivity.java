@@ -129,13 +129,13 @@ public class MainActivity extends AppCompatActivity {
                 for(String blacklistWord : blacklistedKeyword) {
                     if(url.contains(blacklistWord)){
                         isAllowed = false;
-                        Log.i(TAG, "ALLOWED_FALSE " + url );
                         break;
                     } else {
                         isAllowed = true;
-                        Log.i(TAG, "ALLOWED_TRUE " + url );
                     }
                 }
+                Log.i(TAG, isAllowed? "ALLOWED_TRUE ":"ALLOWED_FALSE " + url );
+
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
