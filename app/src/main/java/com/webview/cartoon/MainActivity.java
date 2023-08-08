@@ -307,5 +307,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('div.breadcrumb').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.sbox span').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('h1.epih1').style.fontSize = 'unset';})()");
     }
 }
