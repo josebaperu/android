@@ -12,6 +12,8 @@ import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -26,6 +28,10 @@ import androidx.webkit.WebViewFeature;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.webview.apuestatotal.webview.MediaWebView;
 
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity {
     private MediaWebView mWebView;
@@ -34,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton floatingActionButton;
     private FloatingActionButton floatingActionButtonFavorite;
     private boolean isOpenBetsTab;
+    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
+
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -88,6 +96,20 @@ public class MainActivity extends AppCompatActivity {
                     isOpenBetsTab = false;
 
                 }
+            }
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                boolean isAllowed = false;
+                for(String blacklistWord : Arrays.asList(".png",".jpeg",".gif",".webp",".jpg")) {
+                    if(url.contains(blacklistWord)){
+                        isAllowed = false;
+                        break;
+                    } else {
+                        isAllowed = true;
+                    }
+                }
+                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
