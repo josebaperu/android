@@ -33,7 +33,11 @@ import androidx.webkit.WebViewFeature;
 import com.webview.youtube.service.WebViewService;
 import com.webview.youtube.webview.MediaWebView;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -44,6 +48,8 @@ public class MainActivity extends AppCompatActivity {
     public final static String RECEIVER = "YOUTUBE";
     private final static String BASE_URL = "https://www.youtube.com/";
     private final static String LOG = "YouTube";
+
+    private String script;
     private BroadcastReceiver receiver;
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -85,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
-
+        script = fileToStr(R.raw.script);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
@@ -103,6 +109,12 @@ public class MainActivity extends AppCompatActivity {
                     String newUrl = url.replace(".com/watch",".com./watch");
                     mWebView.loadUrl(newUrl);
                 }
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        script +
+                        ";})()");
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -204,5 +216,24 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+    private String fileToStr(int resource) {
+        String line = "";
+        StringBuilder sb = new StringBuilder();
+
+        InputStream is = this.getResources().openRawResource(resource);
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+        if (is != null) {
+            try {
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                    sb.append("\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
     }
 }
