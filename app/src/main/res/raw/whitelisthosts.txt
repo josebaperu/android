@@ -1,6 +1,0 @@
-youtube
-googlevideo.com
-ytimg
-accounts.google.com
-.google.com
-gstatic.com
