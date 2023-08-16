@@ -12,8 +12,10 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
@@ -37,23 +39,20 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 public class MainActivity extends AppCompatActivity {
 
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
-    private StringBuilder youtubeAds;
-    private StringBuilder continueWatching;
-    private StringBuilder scroll;
     private Activity mainActivity = this; // If you are in activity
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
     public final static String RECEIVER = "YOUTUBE_MUSIC";
 
     private final static String BASE_URL = "https://music.youtube.com/";
     private final static String LOG = "YouTube Music";
-    private List<String> whiteHostList;
+    private String script;
+    private String noadsyt;
     private BroadcastReceiver receiver;
 
     private void startService() {
@@ -72,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        whiteHostList = getWhiteHostList();
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
@@ -96,9 +94,9 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
-        youtubeAds = fileToSb(R.raw.noadsyoutube);
-        continueWatching = fileToSb(R.raw.continuewatching);
-        scroll = fileToSb(R.raw.scroll);
+        script = fileToStr(R.raw.script);
+        noadsyt = fileToStr(R.raw.noadsyoutube);
+
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -108,35 +106,31 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onPageFinished(WebView view, String url) {
-                mWebView.loadUrl("javascript:(function() { " +
-                        youtubeAds.toString() +
-                        ";})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        continueWatching.toString() +
-                        ";})()");
-                mWebView.loadUrl("javascript:(function() { " +
-                        scroll.toString() +
-                        ";})()");
-            }
-            @Override
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
                                                 boolean isReload) {
                 saveCurrentUrl(url);
             }
-
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                mWebView.loadUrl("javascript:(function() { " +
+                        script +
+                        ";})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        noadsyt +
+                        ";})()");
+            }
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String hostRequest = request.getUrl().getHost();
-                boolean isAllowed = false;
-                for(String whiteListHost : whiteHostList) {
-                    if(hostRequest.contains(whiteListHost)){
-                        isAllowed = true;
+                String hostRequest = request.getUrl().toString();
+                boolean isBlocked = false;
+                for(String blocked : Arrays.asList("youtube.com/pcs/activeview","youtube.com/pagead","doubleclick","stas","logs","googleapis")) {
+                    if(hostRequest.contains(blocked)){
+                        isBlocked = true;
                         break;
                     }
                 }
-                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
+                return !isBlocked ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -144,6 +138,12 @@ public class MainActivity extends AppCompatActivity {
             private WebChromeClient.CustomViewCallback mCustomViewCallback;
             private int mOriginalOrientation;
             private int mOriginalSystemUiVisibility;
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                String message = consoleMessage.message();
+                Log.i("JS_CONSOLE", message);
+                return true;
+            }
 
             public Bitmap getDefaultVideoPoster() {
                 if (mainActivity == null) {
@@ -204,42 +204,6 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private StringBuilder fileToSb(int resource) {
-        String line = "";
-        StringBuilder sb = new StringBuilder();
-
-        InputStream is = this.getResources().openRawResource(resource);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        if (is != null) {
-            try {
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                    sb.append("\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb;
-    }
-    private List<String>  getWhiteHostList() {
-        String line = "";
-        List<String> list = new ArrayList<>();
-
-        InputStream is = this.getResources().openRawResource(R.raw.whitelisthosts);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        try {
-            while ((line = br.readLine()) != null) {
-                list.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -279,5 +243,24 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+    private String fileToStr(int resource) {
+        String line = "";
+        StringBuilder sb = new StringBuilder();
+
+        InputStream is = this.getResources().openRawResource(resource);
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
+
+        if (is != null) {
+            try {
+                while ((line = br.readLine()) != null) {
+                    sb.append(line);
+                    sb.append("\n");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return sb.toString();
     }
 }
