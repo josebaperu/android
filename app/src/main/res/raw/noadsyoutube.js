@@ -2,7 +2,7 @@ if (window.adSkipTimer != null) {
 	window.clearInterval(window.adSkipTimer);
 }
 var sleepInterval = 100;
-var adSkipperRepeatInterval = sleepInterval * 2.5;
+var adSkipperRepeatInterval = sleepInterval * 3.5;
 var sleep = function () { var now = new Date().getTime(); while ( new Date().getTime() < now + sleepInterval ) {} };
 
 window.adSkipTimer = window.setInterval(function() {
