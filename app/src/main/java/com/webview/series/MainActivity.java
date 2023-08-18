@@ -150,7 +150,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
         webSettings.setMediaPlaybackRequiresUserGesture(true);
-        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
+        webSettings.setCacheMode(WebSettings.LOAD_NO_CACHE);
         webSettings.setBlockNetworkLoads(false);
         webSettings.setUserAgentString(UA);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
