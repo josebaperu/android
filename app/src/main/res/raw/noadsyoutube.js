@@ -6,22 +6,23 @@ var adSkipperRepeatInterval = sleepInterval * 3.5;
 var sleep = function () { var now = new Date().getTime(); while ( new Date().getTime() < now + sleepInterval ) {} };
 
 window.adSkipTimer = window.setInterval(function() {
+
     if(document.getElementsByClassName("video-stream html5-main-video")[0]!==undefined){
         let ad = document.getElementsByClassName("video-ads ytp-ad-module")[0];
         let vid = document.getElementsByClassName("video-stream html5-main-video")[0];
+        let playbackText = document.querySelector("span.subtitle.style-scope.ytmusic-player-bar yt-formatted-string");
+        if(!!playbackText && playbackText.getAttribute("title").includes("Ad •")){
+           vid.volume = 0;
+        } else {
+           vid.volume = 1;
+        }
         if(ad==undefined){
             pbRate = vid.playbackRate;
-            console.log("playbackrate");
         }
         let closeAble = document.getElementsByClassName("ytp-ad-overlay-close-button");
         for(let i=0;i<closeAble.length;i++){
             closeAble[i].click();
-            console.log("closeAble click");
 
-        }
-        let skipAdButton = document.querySelector("button.ytp-ad-skip-button.ytp-button");
-        if(!!skipAdButton){
-	        window.location.reload();
         }
         if(document.getElementsByClassName("style-scope ytd-watch-next-secondary-results-renderer sparkles-light-cta GoogleActiveViewElement")[0]!==undefined){
             let sideAd=document.getElementsByClassName("style-scope ytd-watch-next-secondary-results-renderer sparkles-light-cta GoogleActiveViewElement")[0];
@@ -36,8 +37,6 @@ window.adSkipTimer = window.setInterval(function() {
         if(document.getElementsByClassName("ytp-ad-text ytp-ad-skip-button-text")[0]!==undefined){
             let skipBtn=document.getElementsByClassName("ytp-ad-text ytp-ad-skip-button-text")[0];
             skipBtn.click();
-            console.log("skipBtn click");
-
         }
         if(document.getElementsByClassName("ytp-ad-message-container")[0]!==undefined){
             let incomingAd=document.getElementsByClassName("ytp-ad-message-container")[0];
@@ -48,6 +47,7 @@ window.adSkipTimer = window.setInterval(function() {
             document.getElementsByClassName("style-scope ytd-companion-slot-renderer")[0].remove();
 
         }
+
         if(ad!==undefined){
             if(ad.children.length>0){
                 if(document.getElementsByClassName("ytp-ad-text ytp-ad-preview-text")[0]!==undefined){
