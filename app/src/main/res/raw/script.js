@@ -9,6 +9,9 @@ window.adSkipTimer = window.setInterval(function() {
     if(document.getElementsByClassName("video-stream html5-main-video")[0]!==undefined){
         let ad = document.getElementsByClassName("video-ads ytp-ad-module")[0];
         let vid = document.getElementsByClassName("video-stream html5-main-video")[0];
+        if(!!document.querySelector("span.ytp-ad-duration-remaining")){
+           vid.volume = 0;
+        }
         if(ad==undefined){
             pbRate = vid.playbackRate;
         }
