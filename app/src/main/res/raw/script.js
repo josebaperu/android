@@ -59,7 +59,7 @@ window.adSkipTimer = window.setInterval(function() {
                vid.volume = 1;
             }
         }
-        const muteButton = document.querySelector('button.ytp-unmute.ytp-popup.ytp-button');
+        let muteButton = document.querySelector('button.ytp-unmute.ytp-popup.ytp-button');
         if(!!muteButton && muteButton.style.display === '') {
             muteButton.click();
         }
