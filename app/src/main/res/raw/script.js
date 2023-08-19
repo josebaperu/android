@@ -19,6 +19,10 @@ window.adSkipTimer = window.setInterval(function() {
             console.log("closeAble click");
 
         }
+        const skipAdButton = document.querySelector("button.ytp-ad-skip-button.ytp-button");
+        if(!!skipAdButton){
+            skipAdButton.click();
+        }
         if(document.getElementsByClassName("style-scope ytd-watch-next-secondary-results-renderer sparkles-light-cta GoogleActiveViewElement")[0]!==undefined){
             let sideAd=document.getElementsByClassName("style-scope ytd-watch-next-secondary-results-renderer sparkles-light-cta GoogleActiveViewElement")[0];
             sideAd.style.display="none";
