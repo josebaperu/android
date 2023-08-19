@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
                                                 boolean isReload) {
-                if(!url.contains("searching") && !url.equals(getValue("url"))) {
+                if(!url.contains("searching") && !url.contains("bottom-sheet") && !url.equals(getValue("url"))) {
                     saveCurrentUrl(url);
                     String newUrl = url.replace(".com/watch",".com./watch");
                     mWebView.loadUrl(newUrl);
