@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public final static String RECEIVER = "YOUTUBE";
     private final static String BASE_URL = "https://www.youtube.com/";
     private final static String LOG = "YouTube";
+    private boolean onBack = false;
 
     private String script;
     private BroadcastReceiver receiver;
@@ -104,17 +105,20 @@ public class MainActivity extends AppCompatActivity {
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
                                                 boolean isReload) {
-                if(!url.contains("searching") && !url.contains("bottom-sheet") && !url.equals(getValue("url"))) {
-                    saveCurrentUrl(url);
-                    String newUrl = url.replace(".com/watch",".com./watch");
-                    mWebView.loadUrl(newUrl);
-                }
+
             }
             @Override
             public void onPageFinished(WebView view, String url) {
                 mWebView.loadUrl("javascript:(function() { " +
                         script +
                         ";})()");
+                if(!onBack && !url.contains("searching") && !url.contains("bottom-sheet") && !url.equals(getValue("url"))) {
+                    saveCurrentUrl(url);
+                    String newUrl = url.replace(".com/watch",".com./watch");
+                    mWebView.loadUrl(newUrl);
+                }
+                onBack = false;
+
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -189,10 +193,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mWebView != null && mWebView.canGoBack())
+        onBack = true;
+        if (mWebView != null && mWebView.canGoBack()){
             mWebView.goBack();// if there is previous page open it
-        else
+        } else {
             super.onBackPressed();//if there is no previous page, close app
+        }
     }
     @Override
     public void onDestroy() {
