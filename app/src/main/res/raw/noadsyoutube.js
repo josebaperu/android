@@ -10,11 +10,8 @@ window.adSkipTimer = window.setInterval(function() {
     if(document.getElementsByClassName("video-stream html5-main-video")[0]!==undefined){
         let ad = document.getElementsByClassName("video-ads ytp-ad-module")[0];
         let vid = document.getElementsByClassName("video-stream html5-main-video")[0];
-        let playbackText = document.querySelector("span.subtitle.style-scope.ytmusic-player-bar yt-formatted-string");
-        if(!!playbackText && playbackText.getAttribute("title").includes("Ad •")){
+        if(!document.querySelector("span.badge-style-type-ad-stark.style-scope.ytmusic-player-bar")?.hidden){
            vid.volume = 0;
-        } else {
-           vid.volume = 1;
         }
         if(ad==undefined){
             pbRate = vid.playbackRate;
@@ -52,7 +49,6 @@ window.adSkipTimer = window.setInterval(function() {
             if(ad.children.length>0){
                 if(document.getElementsByClassName("ytp-ad-text ytp-ad-preview-text")[0]!==undefined){
                     vid.playbackRate=16;
-                    console.log("playbackRate 16");
                     vid.volume = 0;
                 }
             } else {
