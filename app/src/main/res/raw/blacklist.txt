@@ -4,3 +4,6 @@ tags
 amung
 pulseadn
 tynt
+googleapis
+gstatic
+googletagmanager
