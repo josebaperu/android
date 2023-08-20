@@ -106,6 +106,13 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
+            public boolean shouldOverrideUrlLoading (WebView view, String url) {
+                if (url.contains("telegratishd")) {
+                    return false;
+                }
+                return true;
+            }
+            @Override
             public void onPageFinished(WebView view, String url) {
                 applyStyles();
             }
