@@ -15,7 +15,9 @@
             android:src="@android:drawable/btn_default_small"
             android:layout_marginRight="24dp"
             android:layout_marginBottom="4dp"
-                     />
+            android:backgroundTint="@android:color/holo_orange_light"
+
+            />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fav_button"
             android:layout_width="wrap_content"
@@ -24,6 +26,28 @@
             android:src="@android:drawable/btn_default_small"
             android:layout_marginLeft="24dp"
             android:layout_marginBottom="4dp"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/live"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:src="@android:drawable/btn_default_small"
+            android:layout_marginLeft="96dp"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="@android:color/holo_blue_light"
+
+            />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/games"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|start"
+            android:src="@android:drawable/btn_default_small"
+            android:layout_marginLeft="172dp"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="@android:color/white"
             />
         <com.webview.apuestatotal.webview.MediaWebView
             android:id="@+id/activity_main_webview"

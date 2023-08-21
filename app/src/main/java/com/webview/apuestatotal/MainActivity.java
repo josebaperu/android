@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String BASE_URL = "https://www.apuestatotal.com/";
     private FloatingActionButton floatingActionButton;
     private FloatingActionButton floatingActionButtonFavorite;
+    private FloatingActionButton floatingActionButtonLive;
+    private FloatingActionButton floatingActionButtonGames;
     private boolean isOpenBetsTab;
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
 
@@ -75,6 +77,15 @@ public class MainActivity extends AppCompatActivity {
         floatingActionButtonFavorite = findViewById(R.id.fav_button);
         floatingActionButtonFavorite.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.apuestatotal.com/apuestas-en-vivo/#/live/favorites/");
+        });
+
+        floatingActionButtonLive = findViewById(R.id.live);
+        floatingActionButtonLive.setOnClickListener(v-> {
+            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/live/sport/66/byleague");
+        });
+        floatingActionButtonGames = findViewById(R.id.games);
+        floatingActionButtonGames .setOnClickListener(v-> {
+            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/prelive");
         });
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
