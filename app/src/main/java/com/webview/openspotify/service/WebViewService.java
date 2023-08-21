@@ -18,10 +18,11 @@ import androidx.core.app.NotificationCompat;
 
 import com.webview.openspotify.MainActivity;
 
+import java.util.UUID;
+
 public class WebViewService extends Service {
 
-    private static final String CHANNEL_ID = "foregroundServiceOpenSpotify";                        // The id of the notification
-
+    private static final String CHANNEL_ID = UUID.randomUUID().toString();
     private PowerManager.WakeLock wakeLock;                 // PARTIAL_WAKELOCK
 
     private NotificationManager manager;
@@ -122,7 +123,7 @@ public class WebViewService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
                     CHANNEL_ID,
-                    "Foreground Service Channel",
+                    UUID.randomUUID().toString(),
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             manager = getSystemService(NotificationManager.class);
