@@ -17,9 +17,11 @@ import androidx.core.app.NotificationCompat;
 
 import com.webview.telegratishd.MainActivity;
 
+import java.util.UUID;
+
 public class WebViewService extends Service {
 
-    private static final String ID = "foregroundService";                        // The id of the notification
+    private static final String ID = UUID.randomUUID().toString();                        // The id of the notification
 
     private PowerManager.WakeLock wakeLock;                 // PARTIAL_WAKELOCK
 
@@ -107,7 +109,7 @@ public class WebViewService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
                     ID,
-                    "Foreground Service Channel",
+                    UUID.randomUUID().toString(),
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
