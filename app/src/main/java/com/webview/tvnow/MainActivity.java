@@ -1,4 +1,4 @@
-package com.webview.myapplication;
+package com.webview.tvnow;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -29,8 +29,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.webview.myapplication.service.WebViewService;
-import com.webview.myapplication.webview.MediaWebView;
+import com.webview.tvnow.service.WebViewService;
+import com.webview.tvnow.webview.MediaWebView;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

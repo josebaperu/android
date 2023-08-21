@@ -1,5 +1,5 @@
-package com.webview.myapplication.service;
-import static com.webview.myapplication.MainActivity.RECEIVER;
+package com.webview.tvnow.service;
+import static com.webview.tvnow.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -15,14 +15,14 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.myapplication.MainActivity;
+import com.webview.tvnow.MainActivity;
+
+import java.util.UUID;
 
 public class WebViewService extends Service {
 
-    private static final String ID = "foregroundService";                        // The id of the notification
+    private static final String ID = UUID.randomUUID().toString();                        // The id of the notification
 
-    private NotificationCompat.Builder builder;
-    private NotificationManager mNotificationManager;
     private PowerManager.WakeLock wakeLock;                 // PARTIAL_WAKELOCK
 
     /**
@@ -109,7 +109,7 @@ public class WebViewService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
                     ID,
-                    "Foreground Service Channel",
+                    UUID.randomUUID().toString(),
                     NotificationManager.IMPORTANCE_DEFAULT
             );
             NotificationManager manager = getSystemService(NotificationManager.class);
