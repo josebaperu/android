@@ -39,7 +39,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private String script;
     private String noadsyt;
     private BroadcastReceiver receiver;
+    private List<String> blacklistedKeyword;
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -77,6 +80,17 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
+        blacklistedKeyword = new ArrayList<>();
+        blacklistedKeyword.add(".mp3");
+        blacklistedKeyword.add("log");
+        blacklistedKeyword.add("play.google");
+        blacklistedKeyword.add("stats");
+        blacklistedKeyword.add("adview");
+        blacklistedKeyword.add("generate");
+        blacklistedKeyword.add("googleads");
+        blacklistedKeyword.add("activeview");
+        blacklistedKeyword.add("pagead");
+
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -122,15 +136,15 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String hostRequest = request.getUrl().toString();
-                boolean isBlocked = false;
-                for(String blocked : Arrays.asList("youtube.com/pcs/activeview","youtube.com/pagead","doubleclick","stas","logs","googleapis")) {
-                    if(hostRequest.contains(blocked)){
-                        isBlocked = true;
-                        break;
+                String url = request.getUrl().toString();
+                boolean isAllowed = false;
+                for(String blacklistedWord : blacklistedKeyword) {
+                    if(!url.contains(blacklistedWord)){
+                        isAllowed = true;
                     }
                 }
-                return !isBlocked ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
+
+                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
