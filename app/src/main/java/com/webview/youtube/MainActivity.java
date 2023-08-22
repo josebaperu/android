@@ -38,6 +38,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -49,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String BASE_URL = "https://m.youtube.com/";
     private final static String LOG = "YouTube";
     private boolean onBack = false;
+
+    private List<String> blacklistedKeyword;
 
     private String script;
     private BroadcastReceiver receiver;
@@ -75,6 +79,16 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
+        blacklistedKeyword = new ArrayList<>();
+        blacklistedKeyword.add(".mp3");
+        blacklistedKeyword.add("log");
+        blacklistedKeyword.add("play.google");
+        blacklistedKeyword.add("stats");
+        blacklistedKeyword.add("adview");
+        blacklistedKeyword.add("generate");
+        blacklistedKeyword.add("googleads");
+        blacklistedKeyword.add("pagead");
+
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -119,6 +133,18 @@ public class MainActivity extends AppCompatActivity {
                 }
                 onBack = false;
 
+            }
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                boolean isAllowed = false;
+                for(String blacklistedWord : blacklistedKeyword) {
+                    if(!url.contains(blacklistedWord)){
+                        isAllowed = true;
+                    }
+                }
+
+                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
