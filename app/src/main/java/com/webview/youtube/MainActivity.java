@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    private final static String UA = "Mozilla/5.0 (Linux; Android 5.1.1; SM-J200H Build/LMY48B; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/81.0.4044.138 Mobile Safari/537.36 Instagram 141.0.0.32.118 Android (22/5.1.1; 240dpi; 540x960; samsung; SM-J200H; j23g; sc8830; fr_FR; 214245288)";
+    private final static String UA = "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.114 Mobile Safari/537.36";
     public final static String RECEIVER = "YOUTUBE";
     private final static String BASE_URL = "https://m.youtube.com/";
     private final static String LOG = "YouTube";
