@@ -40,7 +40,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -48,11 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
     private Activity mainActivity = this;
-    private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
+    private final static String UA = "Mozilla/5.0 (Linux; Android 8.0.0; SM-G955U Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.141 Mobile Safari/537.36";
     public final static String RECEIVER = "OPENSPOTIFY";
     private final static String BASE_URL = "https://open.spotify.com/";
-    private List<String> whiteHostList;
-
     private String script;
     private BroadcastReceiver receiver;
     private void startService() {
@@ -81,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        whiteHostList = getWhiteHostList();
         script = fileToString(R.raw.script);
         receiver = new BroadcastReceiver() {
             @Override
@@ -132,12 +129,15 @@ public class MainActivity extends AppCompatActivity {
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
                 boolean isAllowed = false;
-                for(String whiteListHost : whiteHostList) {
+
+                List<String> whiteList = Arrays.asList("spotify","scdn","google","facebook","apple","recaptcha");
+                for(String whiteListHost : whiteList) {
                     if(url.contains(whiteListHost)){
                         isAllowed = true;
                         break;
                     }
                 }
+
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
@@ -247,22 +247,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return sb.toString();
-    }
-    private List<String>  getWhiteHostList() {
-        String line = "";
-        List<String> list = new ArrayList<>();
-
-        InputStream is = this.getResources().openRawResource(R.raw.whitelisthosts);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        try {
-            while ((line = br.readLine()) != null) {
-                list.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return list;
     }
 
     @Override
