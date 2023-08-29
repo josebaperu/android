@@ -21,7 +21,7 @@ window.adSkipTimer = window.setInterval(function() {
       setTimeout(() => {
         let skipButtons = document.querySelectorAll(".ytp-ad-skip-button");
 
-        for (const skipButton of skipButtons) {
+        for (let skipButton of skipButtons) {
           skipButton.click();
         }
       }, 10)
