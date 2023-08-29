@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 String message = consoleMessage.message();
-                //Log.i("JS_CONSOLE", message);
+                Log.i("JS_CONSOLE", message);
                 if(message.contains("Playing")){
                     String msg = consoleMessage.message().substring(10);
                     sendToService(msg);
