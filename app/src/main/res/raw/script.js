@@ -1,23 +1,47 @@
     let PLAYING = "Playing : ";
+    let attempts = 5;
     window.setInterval (() => {
-        let play = document.querySelector("[data-testid='play-button']");
         if(localStorage.getItem("reload") === "true") {
-            if(!!play) {
+        let floatingBar = document.querySelector("[data-testid='floating-now-playing-bar']");
+        let playButton = document.querySelector("[data-testid='play-button']");
+            if(!!floatingBar) {
+                floatingBar.click();
+                    setTimeout(function() {
+                        let play = document.querySelector("[data-testid='npv-play-button']");
+                        if(!!play){
+                           play.click();
+                            console.log(PLAYING + "AD SKIPPED IF");
+                            localStorage.removeItem("reload");
+                            attempts = 5;
+                        }
+                    }, 1800);
+
+            } else if(!!playButton){
+                playButton.click();
                 setTimeout(function() {
-                    play.click();
- 				    console.log(PLAYING + "AD SKIPPED");
-				    localStorage.removeItem("reload");
+                    let floatingBar = document.querySelector("[data-testid='floating-now-playing-bar']");
+                    if(!!floatingBar) {
+                        floatingBar.click();
+                        console.log(PLAYING + "AD SKIPPED ELSE IF");
+                        localStorage.removeItem("reload");
+                        attempts = 5;
+                    }
+
                 }, 1800);
-            } else  {
-				console.log(PLAYING + "NULL");
+
+            }else if(attempts > 0){
+                attempts--;
+				console.log(PLAYING + "ATTEMPTS " +attempts);
+                window.location.reload(true);
+            } else {
+            	console.log(PLAYING + "ELSE");
             }
         } else {
             let ad = document.querySelector("[data-testid='npv-header-title']");
 
-            if(!!ad  &&'Advertisement' === ad.textContent) {
+            if(!!ad  && 'Advertisement' === ad.textContent) {
                 localStorage.setItem("reload", "true");
-                window.location.reload();
-                window.clearInterval(this);
+                window.location.reload(true);
             }
             let floatingPlayer = document.querySelectorAll("[data-testid='floating-now-playing-bar'] span");
             if(!!floatingPlayer && floatingPlayer.length === 2) {
