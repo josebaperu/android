@@ -12,6 +12,7 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -47,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    private final static String UA = "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.5845.114 Mobile Safari/537.36";
     public final static String RECEIVER = "YOUTUBE";
     private final static String BASE_URL = "https://m.youtube.com/";
     private final static String LOG = "YouTube";
@@ -89,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
         blacklistedKeyword.add("generate");
         blacklistedKeyword.add("googleads");
         blacklistedKeyword.add("pagead");
+        blacklistedKeyword.add("doubleclick.net");
+        blacklistedKeyword.add("track");
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onPageFinished(WebView view, String url) {
+                injectCSS();
                 mWebView.loadUrl("javascript:(function() { " +
                         script +
                         ";})()");
@@ -134,6 +137,25 @@ public class MainActivity extends AppCompatActivity {
                 }
                 onBack = false;
 
+            }
+            private void injectCSS() {
+                try {
+                    InputStream inputStream = getAssets().open("style.css");
+                    byte[] buffer = new byte[inputStream.available()];
+                    inputStream.read(buffer);
+                    inputStream.close();
+                    String encoded = Base64.encodeToString(buffer, Base64.NO_WRAP);
+                    mWebView.loadUrl("javascript:(function() {" +
+                            "var parent = document.getElementsByTagName('head').item(0);" +
+                            "var style = document.createElement('style');" +
+                            "style.type = 'text/css';" +
+                            // Tell the browser to BASE64-decode the string into your script !!!
+                            "style.innerHTML = window.atob('" + encoded + "');" +
+                            "parent.appendChild(style)" +
+                            "})()");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -208,7 +230,6 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setDisplayZoomControls(false);
 
 
-        webSettings.setUserAgentString(UA);
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
         }
