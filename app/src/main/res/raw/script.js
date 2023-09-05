@@ -1,40 +1,38 @@
     let PLAYING = "Playing : ";
-    let attempts = 5;
+    let PROCESSING = false;
     window.setInterval (() => {
-        if(localStorage.getItem("reload") === "true") {
+        if(localStorage.getItem("reload") === "true" && PROCESSING === false) {
         let floatingBar = document.querySelector("[data-testid='floating-now-playing-bar']");
-        let playButton = document.querySelector("[data-testid='play-button']");
             if(!!floatingBar) {
                 floatingBar.click();
                     setTimeout(function() {
                         let play = document.querySelector("[data-testid='npv-play-button']");
+                        let closeBtn = document.querySelector("button[aria-label='Close']");
                         if(!!play){
-                           play.click();
+                            PROCESSING = true;
+                            play.click();
+                            closeBtn.click();
                             console.log(PLAYING + "AD SKIPPED IF");
                             localStorage.removeItem("reload");
-                            attempts = 5;
+                            PROCESSING = false;
                         }
                     }, 1800);
 
-            } else if(!!playButton){
-                playButton.click();
+            } else if(!floatingBar){
                 setTimeout(function() {
-                    let floatingBar = document.querySelector("[data-testid='floating-now-playing-bar']");
-                    if(!!floatingBar) {
-                        floatingBar.click();
+                    let playButton = document.querySelector("[data-testid='play-button']");
+                    if(!!playButton) {
+                        PROCESSING = true;
+                        playButton.click();
                         console.log(PLAYING + "AD SKIPPED ELSE IF");
                         localStorage.removeItem("reload");
-                        attempts = 5;
+                        PROCESSING = false;
                     }
 
                 }, 1800);
 
-            }else if(attempts > 0){
-                attempts--;
-				console.log(PLAYING + "ATTEMPTS " +attempts);
-                window.location.reload(true);
             } else {
-            	console.log(PLAYING + "ELSE");
+            	console.log(PLAYING + "VOID");
             }
         } else {
             let ad = document.querySelector("[data-testid='npv-header-title']");
