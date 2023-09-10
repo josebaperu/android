@@ -3,9 +3,6 @@ package com.webview.rsoccerstreams;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,9 +24,7 @@ import android.widget.FrameLayout;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 
-import com.webview.rsoccerstreams.service.WebViewService;
 import com.webview.rsoccerstreams.webview.MediaWebView;
 
 import java.io.BufferedReader;
@@ -46,39 +41,16 @@ public class MainActivity extends AppCompatActivity {
     List<String> blacklistedKeyword;
 
     Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "rsoccerstreams";
 
     private final static String BASE_URL = "https://rsoccerstreams.net//";
     private BroadcastReceiver receiver;
 
     private final static String TAG = "MainActivity";
-    private void handleObserverDestroy () {
-        save(mWebView.getUrl());
-        unregisterReceiver(receiver);
-        finishAndRemoveTask();
-        receiver = null;
-    }
-
-
-    private void startService() {
-        Intent serviceIntent = new Intent(this, WebViewService.class);
-        serviceIntent.setAction("START");
-        ContextCompat.startForegroundService(this, serviceIntent);
-        registerReceiver(receiver, new IntentFilter(RECEIVER));
-
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                handleObserverDestroy();
-            }
-        };
         blacklistedKeyword = getBlackListKeywords();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -96,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
-        startService();
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.hide();
@@ -105,10 +76,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                applyStylesOnLoad();
-            }
 
             @Override
             public void onPageFinished(WebView view, String url) {
@@ -232,9 +199,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     @Override
-    public void onDestroy() {
-        handleObserverDestroy();
-        super.onDestroy();
+    public void onPause() {
+        finish();
+        super.onPause();
     }
     private void save(String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
@@ -266,8 +233,5 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('body > footer').style.display = 'none'})()");
 
     }
-    private void applyStylesOnLoad() {
 
-
-    }
 }
