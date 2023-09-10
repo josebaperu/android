@@ -1,9 +1,3 @@
-analytics.google
-sharethis
-tags
-amung
-pulseadn
-tynt
-googleapis
+google
 gstatic
-googletagmanager
+youtube
