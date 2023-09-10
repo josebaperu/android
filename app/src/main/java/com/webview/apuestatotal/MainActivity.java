@@ -101,11 +101,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageCommitVisible(WebView view, String url) {
-                if(isOpenBetsTab) {
+                if(url.contains("mis-apuestas-deportivas") && isOpenBetsTab){
                     mWebView.loadUrl("javascript:(function() { " +
                             "document.querySelectorAll('button.MuiButtonBase-root')[7].click();})()");
                     isOpenBetsTab = false;
-
                 }
             }
             @Override
