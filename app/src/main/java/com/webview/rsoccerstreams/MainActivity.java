@@ -1,4 +1,4 @@
-package com.webview.tvnow;
+package com.webview.rsoccerstreams;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -29,8 +29,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.webview.tvnow.service.WebViewService;
-import com.webview.tvnow.webview.MediaWebView;
+import com.webview.rsoccerstreams.service.WebViewService;
+import com.webview.rsoccerstreams.webview.MediaWebView;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -46,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
     List<String> blacklistedKeyword;
 
     Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "TVNOW";
+    public final static String RECEIVER = "rsoccerstreams";
 
-    private final static String BASE_URL = "https://canales.online/";
+    private final static String BASE_URL = "https://rsoccerstreams.net//";
     private BroadcastReceiver receiver;
 
     private final static String TAG = "MainActivity";

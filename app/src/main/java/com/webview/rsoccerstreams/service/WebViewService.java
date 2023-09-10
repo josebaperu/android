@@ -1,5 +1,5 @@
-package com.webview.tvnow.service;
-import static com.webview.tvnow.MainActivity.RECEIVER;
+package com.webview.rsoccerstreams.service;
+import static com.webview.rsoccerstreams.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -15,7 +15,7 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.tvnow.MainActivity;
+import com.webview.rsoccerstreams.MainActivity;
 
 import java.util.UUID;
 
@@ -79,7 +79,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "TVnow", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "rsoccerstreams", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }
