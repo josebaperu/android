@@ -46,9 +46,9 @@ public class MainActivity extends AppCompatActivity {
     List<String> blacklistedKeyword;
 
     Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "rsoccerstreams";
+    public final static String RECEIVER = "soccerlive";
 
-    private final static String BASE_URL = "https://rsoccerstreams.net//";
+    private final static String BASE_URL = "https://soccerlive.app/";
     private BroadcastReceiver receiver;
 
     private final static String TAG = "MainActivity";
@@ -106,13 +106,8 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public void onLoadResource(WebView view, String url) {
-                applyStylesOnLoad();
-            }
-
-            @Override
             public void onPageFinished(WebView view, String url) {
-                applyStyles();
+                applyStyles(url);
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -252,22 +247,37 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
-    private void applyStyles() {
+    private void applyStyles(String url) {
 
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.col-md-12 p').style.display = 'none';})()");
+                "document.querySelector('div.col-md-12 p').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#stream-info').style.display = 'none';})()");
+                "document.querySelector('ul#mini-calendar').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > main > div:nth-child(4) > div.col-md-8 > div:nth-child(3)').style.display = 'none';})()");
+                "document.querySelector('#stream-info').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.col-md-4').style.display = 'none'})()");
+                "document.querySelector('body > main > div:nth-child(4) > div.col-md-8 > div:nth-child(3)').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > footer').style.display = 'none'})()");
+                "document.querySelector('div.col-md-4').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > footer').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.getElementsByTagName('nav')[0].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.getElementsByTagName('nav')[0].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > main > div.row.ml-1.mr-1.pt-2.mb-2').remove();})()");
 
-    }
-    private void applyStylesOnLoad() {
 
+        if(url.contains("watch")){
+            mWebView.loadUrl("javascript:(function() { " +
+                    "document.querySelector('.col-md-9').className = 'col-md-12';})()");
+            mWebView.loadUrl("javascript:(function() { " +
+                    "document.querySelector('div.container').style.minWidth = '100%';})()");
+        } else {
+            mWebView.loadUrl("javascript:(function() { " +
+                    "document.querySelector('.col-md-8').className = 'col-md-12';})()");
+        }
 
     }
 }
