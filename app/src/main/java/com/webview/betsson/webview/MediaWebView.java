@@ -1,4 +1,4 @@
-package com.webview.apuestatotal.webview;
+package com.webview.betsson.webview;
 
 import android.content.Context;
 import android.util.AttributeSet;

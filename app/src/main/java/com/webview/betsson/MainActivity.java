@@ -1,4 +1,4 @@
-package com.webview.apuestatotal;
+package com.webview.betsson;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,22 +21,20 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.webview.apuestatotal.webview.MediaWebView;
+import com.webview.betsson.webview.MediaWebView;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    private final static String BASE_URL = "https://www.apuestatotal.com/";
+    private final static String BASE_URL = "https://www.betsson.com/pe/";
     private FloatingActionButton floatingActionButton;
     private FloatingActionButton floatingActionButtonFavorite;
     private FloatingActionButton floatingActionButtonLive;
