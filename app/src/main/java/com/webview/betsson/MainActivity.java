@@ -39,9 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private FloatingActionButton floatingActionButtonFavorite;
     private FloatingActionButton floatingActionButtonLive;
     private FloatingActionButton floatingActionButtonGames;
-    private boolean isOpenBetsTab;
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
-
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -68,22 +66,21 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mWebView = findViewById(R.id.activity_main_webview);
         floatingActionButton = findViewById(R.id.fab_button);
-        floatingActionButton.setOnClickListener(v -> {
-            mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
-            isOpenBetsTab = true;
-        });
         floatingActionButtonFavorite = findViewById(R.id.fav_button);
-        floatingActionButtonFavorite.setOnClickListener(v -> {
-            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-en-vivo/#/live/favorites/");
+        floatingActionButtonLive = findViewById(R.id.live);
+        floatingActionButtonGames = findViewById(R.id.games);
+        floatingActionButtonLive.setOnClickListener(v-> {
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas");
+        });
+        floatingActionButtonGames.setOnClickListener(v -> {
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/futbol");
         });
 
-        floatingActionButtonLive = findViewById(R.id.live);
-        floatingActionButtonLive.setOnClickListener(v-> {
-            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/live/sport/66/byleague");
+        floatingActionButtonFavorite .setOnClickListener(v-> {
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/en-vivo/futbol");
         });
-        floatingActionButtonGames = findViewById(R.id.games);
-        floatingActionButtonGames .setOnClickListener(v-> {
-            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/prelive");
+        floatingActionButton.setOnClickListener(v -> {
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/historial-de-apuestas");
         });
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
@@ -98,13 +95,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPageCommitVisible(WebView view, String url) {
-                if(url.contains("mis-apuestas-deportivas") && isOpenBetsTab){
-                    mWebView.loadUrl("javascript:(function() { " +
-                            "document.querySelectorAll('button.MuiButtonBase-root')[7].click();})()");
-                    isOpenBetsTab = false;
-                }
-            }
+            public void onPageCommitVisible(WebView view, String url) {}
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
