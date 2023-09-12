@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 boolean isAllowed = false;
                 for(String blacklistWord : Arrays.asList(".png",".jpeg",".gif",".webp",".jpg")) {
                     if(url.contains(blacklistWord)){
-                        isAllowed = false;
+                        isAllowed = true;
                         break;
                     } else {
                         isAllowed = true;
@@ -219,42 +219,24 @@ public class MainActivity extends AppCompatActivity {
     private void applyStyles() {
 
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
-
-
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.animate.first').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.animate.two').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.left').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.nextSibling.remove();})()");
+                "document.querySelector('section.obg-footer-responsible-gaming').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('footer').remove();})()");
-
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h2').remove();})()");
+                "document.querySelector('section.obg-m-play-with-us-section.ng-star-inserted').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('img').forEach(e => e.remove());})()");
+                "document.querySelector('.obg-m-reassurance-section-wrapper.ng-star-inserted').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('[data-testid=KeyboardArrowUpIcon]').parentNode.remove();})()");
+                "document.querySelector('.obg-m-faq-section.ng-star-inserted').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#wcx-chat').remove();})()");
-
+                "document.querySelector('.obg-m-seo-section.ng-star-inserted').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.promotion').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.responsive').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-app-core-layout-container > div > obg-m-home-wrapper-container > obg-lazy-loader > obg-m-home-page-v2-container > obg-m-preview-section:nth-child(5) > section').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-app-core-layout-container > div > obg-m-home-wrapper-container > obg-lazy-loader > obg-m-home-page-v2-container > obg-m-preview-section:nth-child(6) > section').style.display = 'none';})()");
     }
 }
