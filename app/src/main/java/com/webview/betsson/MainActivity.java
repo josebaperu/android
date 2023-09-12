@@ -238,5 +238,9 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-app-core-layout-container > div > obg-m-home-wrapper-container > obg-lazy-loader > obg-m-home-page-v2-container > obg-m-preview-section:nth-child(5) > section').style.display = 'none';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-app-core-layout-container > div > obg-m-home-wrapper-container > obg-lazy-loader > obg-m-home-page-v2-container > obg-m-preview-section:nth-child(6) > section').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.obg-footer-container').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-m-sm-betting-layout-container > obg-m-sm-sportsbook-layout-container > div > obg-m-sm-sportsbook-lobby-container > obg-m-sportsbook-lobby-container > obg-content-links > div').remove();})()");
     }
 }
