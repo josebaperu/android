@@ -13,7 +13,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
@@ -51,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     public final static String RECEIVER = "YOUTUBE";
     private final static String BASE_URL = "https://m.youtube.com/";
     private final static String LOG = "YouTube";
-    private boolean onBack = false;
-
     private List<String> blacklistedKeyword;
 
     private String script;
@@ -130,12 +127,6 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         script +
                         ";})()");
-                if(!onBack && !url.contains("searching") && !url.contains("bottom-sheet") && !url.equals(getValue("url"))) {
-                    saveCurrentUrl(url);
-                    String newUrl = url.replace(".com/watch",".com./watch");
-                    mWebView.loadUrl(newUrl);
-                }
-                onBack = false;
 
             }
             private void injectCSS() {
@@ -246,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        onBack = true;
         if (mWebView != null && mWebView.canGoBack()){
             mWebView.goBack();// if there is previous page open it
         } else {
