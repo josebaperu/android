@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
                 boolean isAllowed = false;
                 for(String blacklistWord : Arrays.asList(".png",".jpeg",".gif",".webp",".jpg")) {
                     if(url.contains(blacklistWord)){
-                        isAllowed = true;
+                        isAllowed = false;
                         break;
                     } else {
                         isAllowed = true;
@@ -208,7 +208,8 @@ public class MainActivity extends AppCompatActivity {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
     private void applyStyles() {
-
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-m-sm-betting-layout-container > obg-m-sm-sportsbook-layout-container > header > obg-smart-app-banner').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('section.obg-footer-responsible-gaming').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
