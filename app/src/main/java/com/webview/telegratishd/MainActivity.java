@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
@@ -79,13 +78,13 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
             @Override
-            public void onPageFinished(WebView view, String url) {
-                applyStyles();
-            }
-            @Override
             public void onLoadResource(WebView view, String url) {
                 mWebView.loadUrl("javascript:(function() { " +
                         "document.querySelector('div.block-title h2').remove();})()");
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                applyStyles(url);
             }
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -222,13 +221,23 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
-    private void applyStyles() {
+    private void applyStyles(String url) {
+        if(isHomePage(url)) {
+            mWebView.loadUrl("javascript:(function() { " +
+                    "document.querySelector('input#searchbox').remove();})()");
+            mWebView.loadUrl("javascript:(function() { " +
+                    "const elements = document.querySelector('#canales.row');[0,1,2,3].forEach( i => elements.querySelector('div').remove());})()");
+        } else {
+            mWebView.loadUrl("javascript:(function() { " +
+                    "document.querySelector('a.btn.btn-secondary').remove();})()");
+            mWebView.loadUrl("javascript:(function() { " +
+                    "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('a.button').forEach(function(el) {el.style.color = 'grey'; el.classList.remove('button')});})()");
+        }
+
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('header').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('input#searchbox').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
@@ -236,14 +245,12 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.section.mt-2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('a.btn.btn-secondary').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div#page_container').style.padding = 'unset';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('a.button').forEach(function(el) {el.style.color = 'grey'; el.classList.remove('button')});})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "const elements = document.querySelector('#canales.row');[0,1,2,3].forEach( i => elements.querySelector('div').remove());})()");
 
+    }
+
+    private boolean isHomePage(String url){
+        return BASE_URL.equals(url);
     }
 }
 
