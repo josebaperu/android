@@ -107,7 +107,9 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public void onLoadResource(WebView view, String url) {
-                applyStylesOnLoad();
+                if (url.contains(BASE_URL)) {
+                    applyStylesOnLoad();
+                }
             }
             @Override
             public boolean shouldOverrideUrlLoading (WebView view, String url) {
@@ -266,8 +268,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('.clean-gray').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('.card-description').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('nav').remove();})()");
+
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
@@ -294,5 +295,7 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('h3').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('nav').remove();})()");
     }
 }
