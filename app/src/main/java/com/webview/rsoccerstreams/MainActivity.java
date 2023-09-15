@@ -267,17 +267,13 @@ public class MainActivity extends AppCompatActivity {
                 "document.getElementsByTagName('nav')[0].remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body > main > div.row.ml-1.mr-1.pt-2.mb-2').remove();})()");
-
-
-        if(url.contains("watch")){
-            mWebView.loadUrl("javascript:(function() { " +
-                    "document.querySelector('.col-md-9').className = 'col-md-12';})()");
-            mWebView.loadUrl("javascript:(function() { " +
-                    "document.querySelector('div.container').style.minWidth = '100%';})()");
-        } else {
-            mWebView.loadUrl("javascript:(function() { " +
-                    "document.querySelector('.col-md-8').className = 'col-md-12';})()");
-        }
-
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.container').style.minWidth = '100%';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.col-md-9').className = 'col-md-12';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.col-md-8').className = 'col-md-12';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body').style.backgroundColor = 'black';})()");
     }
 }
