@@ -1,4 +1,4 @@
-package com.webview.youtube;
+package com.webview.google;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -31,8 +31,8 @@ import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.webview.youtube.service.WebViewService;
-import com.webview.youtube.webview.MediaWebView;
+import com.webview.google.service.WebViewService;
+import com.webview.google.webview.MediaWebView;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -40,6 +40,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -47,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "YOUTUBE";
-    private final static String BASE_URL = "https://m.youtube.com/";
-    private final static String LOG = "YouTube";
+    public final static String RECEIVER = "GOOGLE";
+    private final static String BASE_URL = "https://www.google.com/";
+    private final static String LOG = "Google";
     private List<String> blacklistedKeyword;
 
     private String script;
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
+        /*
         blacklistedKeyword = new ArrayList<>();
         blacklistedKeyword.add(".mp3");
         blacklistedKeyword.add("log");
@@ -88,7 +90,8 @@ public class MainActivity extends AppCompatActivity {
         blacklistedKeyword.add("pagead");
         blacklistedKeyword.add("doubleclick.net");
         blacklistedKeyword.add("track");
-
+        */
+        blacklistedKeyword = new ArrayList<>();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -123,10 +126,10 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public void onPageFinished(WebView view, String url) {
-                injectCSS();
-                mWebView.loadUrl("javascript:(function() { " +
-                        script +
-                        ";})()");
+                //injectCSS();
+                //mWebView.loadUrl("javascript:(function() { " +
+                //        script +
+                //       ";})()");
 
             }
             private void injectCSS() {
@@ -150,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             }
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                /*
                 String url = request.getUrl().toString();
                 boolean isAllowed = false;
                 for(String blacklistedWord : blacklistedKeyword) {
@@ -159,6 +163,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
+                */
+                return super.shouldInterceptRequest(view, request);
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {

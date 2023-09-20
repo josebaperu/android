@@ -1,6 +1,6 @@
-package com.webview.youtube.service;
+package com.webview.google.service;
 
-import static com.webview.youtube.MainActivity.RECEIVER;
+import static com.webview.google.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -16,7 +16,7 @@ import android.os.PowerManager;
 
 import androidx.core.app.NotificationCompat;
 
-import com.webview.youtube.MainActivity;
+import com.webview.google.MainActivity;
 
 import java.util.UUID;
 
@@ -76,7 +76,7 @@ public class WebViewService extends Service {
                         .setDeleteIntent(deletePendingIntent)
                         .setAutoCancel(true)
                         .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                        .addAction(android.R.drawable.button_onoff_indicator_on, "YOUTUBE", mainPendingIntent)
+                        .addAction(android.R.drawable.button_onoff_indicator_on, "GOOGLE", mainPendingIntent)
                         .build();
                 startForeground(1, notification);
             }
