@@ -285,6 +285,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div#page_container').style.padding = 'unset';})()");
 
+        mWebView.loadUrl("javascript:(function() { " +
+                "setTimeout(() => {document.querySelector('div.widget-visible').remove()}, 5000);})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('a.btn.btn-md').forEach(function(el) {el.classList.remove('btn');el.classList.remove('btn-md')});})()");
     }
 
     private boolean isHomePage(String url){
