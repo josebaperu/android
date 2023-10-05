@@ -8,24 +8,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fab_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:src="@android:drawable/btn_default_small"
-            android:layout_marginRight="24dp"
-            android:layout_marginBottom="4dp"
-            android:backgroundTint="@android:color/holo_orange_light"
-
-            />
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fav_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:src="@android:drawable/btn_default_small"
-            android:layout_marginLeft="24dp"
+            android:layout_marginEnd="24dp"
             android:layout_marginBottom="4dp"
+            />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/bets_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:src="@android:drawable/btn_default_small"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="4dp"
+            android:backgroundTint="@android:color/holo_orange_light"
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -34,8 +34,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:src="@android:drawable/btn_default_small"
-            android:layout_marginLeft="96dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="84dp"
             android:backgroundTint="@android:color/holo_blue_light"
 
             />
@@ -45,8 +45,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|start"
             android:src="@android:drawable/btn_default_small"
-            android:layout_marginLeft="172dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="164dp"
             android:backgroundTint="@android:color/white"
             />
         <com.webview.apuestatotal.webview.MediaWebView
