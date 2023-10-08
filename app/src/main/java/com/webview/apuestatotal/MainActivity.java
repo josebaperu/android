@@ -21,7 +21,6 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
@@ -30,7 +29,6 @@ import com.webview.apuestatotal.webview.MediaWebView;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -69,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         actionBar.hide();
         setContentView(R.layout.activity_main);
         mWebView = findViewById(R.id.activity_main_webview);
-        floatingActionButton = findViewById(R.id.fab_button);
+        floatingActionButton = findViewById(R.id.bets_button);
         floatingActionButton.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
             isOpenBetsTab = true;
@@ -103,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
             public void onPageCommitVisible(WebView view, String url) {
                 if(url.contains("mis-apuestas-deportivas") && isOpenBetsTab){
                     mWebView.loadUrl("javascript:(function() { " +
-                            "document.querySelectorAll('button.MuiButtonBase-root')[7].click();})()");
+                            "setTimeout(() => {document.querySelectorAll('button.MuiButtonBase-root')[7].click()}, 1800);})()");
                     isOpenBetsTab = false;
                 }
             }
