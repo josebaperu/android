@@ -15,11 +15,8 @@ import android.preference.PreferenceManager;
 import android.util.Base64;
 import android.view.View;
 import android.view.WindowManager;
-import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -35,24 +32,19 @@ import com.webview.youtube.service.WebViewService;
 import com.webview.youtube.webview.MediaWebView;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
-    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "YOUTUBE";
-    private final static String BASE_URL = "https://m.youtube.com/";
-    private final static String LOG = "YouTube";
-    private List<String> blacklistedKeyword;
-
+    private final static String BASE_URL = "https://www.youtube.com/";
     private String script;
+    private String toggle;
+
     private BroadcastReceiver receiver;
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -60,9 +52,12 @@ public class MainActivity extends AppCompatActivity {
         ContextCompat.startForegroundService(this, serviceIntent);
         registerReceiver(receiver, new IntentFilter(RECEIVER));
     }
-    private void handleObserverDestroy () {
+
+    private void handleObserverDestroy() {
         save("url", mWebView.getUrl());
-        unregisterReceiver(receiver);
+        if(receiver != null){
+            unregisterReceiver(receiver);
+        }
         finishAndRemoveTask();
         receiver = null;
     }
@@ -71,42 +66,46 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        script = fileToStr(R.raw.script);
+        toggle = fileToStr(R.raw.toggle);
+
         receiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                handleObserverDestroy();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if ("TOGGLE".equals(intent.getIdentifier())) {
+                        mWebView.loadUrl("javascript:(function() { " +
+                                toggle +
+                                ";})()");
+                    }
+                    if ("DESTROY".equals(intent.getIdentifier())) {
+                        handleObserverDestroy();
+                    }
+                }
             }
         };
-        blacklistedKeyword = new ArrayList<>();
-        blacklistedKeyword.add(".mp3");
-        blacklistedKeyword.add("log");
-        blacklistedKeyword.add("play.google");
-        blacklistedKeyword.add("stats");
-        blacklistedKeyword.add("adview");
-        blacklistedKeyword.add("generate");
-        blacklistedKeyword.add("googleads");
-        blacklistedKeyword.add("pagead");
-        blacklistedKeyword.add("doubleclick.net");
-        blacklistedKeyword.add("track");
+
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
                         WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
                         WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON
+                );
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black, this.getTheme()));
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
-        script = fileToStr(R.raw.script);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
@@ -116,19 +115,20 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
 
             @Override
-            public void doUpdateVisitedHistory (WebView view,
-                                                String url,
-                                                boolean isReload) {
-
+            public void doUpdateVisitedHistory(WebView view,
+                                               String url,
+                                               boolean isReload) {
+                saveCurrentUrl(url);
             }
+
             @Override
             public void onPageFinished(WebView view, String url) {
                 injectCSS();
                 mWebView.loadUrl("javascript:(function() { " +
                         script +
                         ";})()");
-
             }
+
             private void injectCSS() {
                 try {
                     InputStream inputStream = getAssets().open("style.css");
@@ -148,18 +148,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                boolean isAllowed = false;
-                for(String blacklistedWord : blacklistedKeyword) {
-                    if(!url.contains(blacklistedWord)){
-                        isAllowed = true;
-                    }
-                }
-
-                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
-            }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
@@ -173,11 +161,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
             }
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                android.util.Log.d("JS_CONSOLE", consoleMessage.message());
-                return true;
-            }
+
             @Override
             public void onHideCustomView() {
                 ((FrameLayout) mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
@@ -219,6 +203,8 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
+        //webSettings.setUserAgentString("Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586");
+
 
 
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
@@ -243,6 +229,12 @@ public class MainActivity extends AppCompatActivity {
             super.onBackPressed();//if there is no previous page, close app
         }
     }
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mWebView.restoreState(savedInstanceState);
+    }
+
     @Override
     public void onDestroy() {
         handleObserverDestroy();
@@ -273,15 +265,13 @@ public class MainActivity extends AppCompatActivity {
         InputStream is = this.getResources().openRawResource(resource);
         BufferedReader br = new BufferedReader(new InputStreamReader(is));
 
-        if (is != null) {
-            try {
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                    sb.append("\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try {
+            while ((line = br.readLine()) != null) {
+                sb.append(line);
+                sb.append("\n");
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return sb.toString();
     }
