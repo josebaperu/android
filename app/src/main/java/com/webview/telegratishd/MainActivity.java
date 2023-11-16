@@ -251,6 +251,16 @@ public class MainActivity extends AppCompatActivity {
                 "setTimeout(() => {document.querySelector('div.widget-visible').remove()}, 5000);})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "NodeList.prototype.forEach = Array.prototype.forEach;document.querySelectorAll('a.btn.btn-md').forEach(function(el) {el.classList.remove('btn');el.classList.remove('btn-md')});})()");
+
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('main.container').classList = '';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.items-end').classList = '';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.grid').classList = '';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#page_container').classList = '';})()");
+
     }
 
     private boolean isHomePage(String url){
