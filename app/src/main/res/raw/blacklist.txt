@@ -10,3 +10,5 @@ jsdeliver
 notify
 twl
 favicon
+snake.rip
+tawk.to
