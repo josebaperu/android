@@ -6,6 +6,12 @@ var adSkipperRepeatInterval = sleepInterval * 2;
 var sleep = function () { var now = new Date().getTime(); while ( new Date().getTime() < now + sleepInterval ) {} };
 
 window.adSkipTimer = window.setInterval(function() {
+    if(Array.from(document.querySelectorAll("ytm-button-renderer")).filter( x => !!x.childNode && x.childNode[0] === "Yes")) {
+        let yesButton = document.querySelector("button.yt-spec-button-shape-next.yt-spec-button-shape-next--text.yt-spec-button-shape-next--mono.yt-spec-button-shape-next--size-m[aria-label='Yes']");
+        if(!!yesButton) {
+            yesButton.click();
+        }
+    }
   let muteButton = document.querySelector('button.ytp-unmute.ytp-popup.ytp-button');
   if(!!muteButton && muteButton.style.display === '') {
       muteButton.click();

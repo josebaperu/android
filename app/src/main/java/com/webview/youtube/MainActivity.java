@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> blacklistedKeyword;
 
     private String script;
+
     private BroadcastReceiver receiver;
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
