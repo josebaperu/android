@@ -10,6 +10,11 @@ window.adSkipTimer = window.setInterval(function() {
   if(!!muteButton && muteButton.style.display === '') {
       muteButton.click();
   }
+  let dismissBtn = document.querySelector('yt-button-renderer.dismiss-button.style-scope.ytmusic-mealbar-promo-renderer > yt-button-shape > button > div');
+  if(!!dismissBtn){
+    dismissBtn.click();
+  }
+
   let ad = document.querySelector('.ad-showing');
 
   if (ad) {

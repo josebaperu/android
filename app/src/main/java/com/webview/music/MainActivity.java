@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     public final static String RECEIVER = "YOUTUBE_MUSIC";
     private final static String BASE_URL = "https://music.youtube.com/";
     private final static String LOG = "YouTube Music";
-    private String script;
     private String noadsyt;
     private BroadcastReceiver receiver;
     private List<String> blacklistedKeyword;
@@ -107,9 +106,7 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
-        script = fileToStr(R.raw.script);
         noadsyt = fileToStr(R.raw.noadsyoutube);
-
 
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -127,9 +124,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 injectCSS();
-                mWebView.loadUrl("javascript:(function() { " +
-                        script +
-                        ";})()");
                 mWebView.loadUrl("javascript:(function() { " +
                         noadsyt +
                         ";})()");
@@ -225,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setUserAgentString("Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/45.0.2454.85 Safari/537.36");
+        webSettings.setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15");
 
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
