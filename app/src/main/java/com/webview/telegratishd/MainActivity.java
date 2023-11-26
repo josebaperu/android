@@ -38,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
     MediaWebView mWebView;
     List<String> blacklistedKeyword;
     Activity mainActivity = this; // If you are in activity
-    private final static String BASE_URL = "https://telegratishd.com/";
+    private final static String BASE_URL = "https://www.telegratishd.com/";
     private final static String TAG = "MainActivity";
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading (WebView view, String url) {
-                if (url.contains("telegratishd")) {
+                if (url.contains(BASE_URL)) {
                     return false;
                 }
                 return true;
