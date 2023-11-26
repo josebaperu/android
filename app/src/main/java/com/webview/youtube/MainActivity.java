@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "YOUTUBE";
-    private final static String BASE_URL = "https://m.youtube.com/";
+    private final static String BASE_URL = "https://www.youtube.com/";
     private final static String LOG = "YouTube";
     private List<String> blacklistedKeyword;
 
@@ -220,7 +220,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setUserAgentString("Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586");
+        //webSettings.setUserAgentString("Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586");
 
 
 
