@@ -150,10 +150,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
-                boolean isAllowed = false;
+                boolean isAllowed = true;
                 for(String blacklistedWord : blacklistedKeyword) {
-                    if(!url.contains(blacklistedWord)){
-                        isAllowed = true;
+                    if(url.contains(blacklistedWord)){
+                        isAllowed = false;
+                        break;
                     }
                 }
 
