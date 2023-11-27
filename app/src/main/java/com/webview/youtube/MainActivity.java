@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
                 for(String blacklistedWord : blacklistedKeyword) {
                     if(!url.contains(blacklistedWord)){
                         isAllowed = true;
+                        break;
                     }
                 }
 
