@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     MediaWebView mWebView;
     Activity mainActivity = this; // If you are in activity
-    private final static String BASE_URL = "https://watchseriestv.top/";
+    private final static String BASE_URL = "https://serieshd.watch/";
     private final static String UA = "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.5735.60 Mobile Safari/537.36";
 
     private final static String TAG = "MainActivity";
@@ -175,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void applyStyles() {
-        mWebView.loadUrl("javascript:(function() { " +
+/*        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('span.logo-text').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div#header_menu').remove();})()");
@@ -204,6 +204,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div#mobile_menu').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.detail_page-servers').remove();})()");
+                "document.querySelector('div.detail_page-servers').remove();})()");*/
     }
 }
