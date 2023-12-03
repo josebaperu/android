@@ -38,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
     MediaWebView mWebView;
     List<String> blacklistedKeyword;
     Activity mainActivity = this; // If you are in activity
-
-    private final static String BASE_URL = "https://canales.online/";
+    private final static String BASE_URL = "https://vercanalesonline.com/";
     private final static String TAG = "MainActivity";
 
     @SuppressLint("SetJavaScriptEnabled")
