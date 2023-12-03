@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "TVNOW";
 
-    private final static String BASE_URL = "https://canales.online/";
+    private final static String BASE_URL = "https://vercanalesonline.com/";
     private BroadcastReceiver receiver;
 
     private final static String TAG = "MainActivity";
