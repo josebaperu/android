@@ -1,4 +1,4 @@
-package com.webview.apuestatotal;
+package com.webview.betting;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -25,7 +25,7 @@ import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.webview.apuestatotal.webview.MediaWebView;
+import com.webview.betting.webview.MediaWebView;
 
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
@@ -65,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
         }
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-        setContentView(R.layout.activity_main);
-        mWebView = findViewById(R.id.activity_main_webview);
+        setContentView(R.layout.at_main);
+        mWebView = findViewById(R.id.at_main_webview);
         floatingActionButton = findViewById(R.id.bets_button);
         floatingActionButton.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");

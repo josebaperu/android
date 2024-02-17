@@ -49,8 +49,8 @@
             android:layout_marginBottom="164dp"
             android:backgroundTint="@android:color/white"
             />
-        <com.webview.apuestatotal.webview.MediaWebView
-            android:id="@+id/activity_main_webview"
+        <com.webview.betting.webview.MediaWebView
+            android:id="@+id/at_main_webview"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
