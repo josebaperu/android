@@ -1,0 +1,260 @@
+package com.webview.betting;
+
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.view.View;
+import android.view.WindowManager;
+import android.webkit.CookieManager;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
+
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.webkit.WebSettingsCompat;
+import androidx.webkit.WebViewFeature;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.webview.betting.webview.MediaWebView;
+
+import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+
+
+public class AtActivity extends AppCompatActivity {
+    private MediaWebView mWebView;
+    private final Activity mainActivity = this; // If you are in activity
+    private final static String BASE_URL = "https://www.apuestatotal.com/";
+    private FloatingActionButton floatingActionButton;
+    private FloatingActionButton floatingActionButtonFavorite;
+    private FloatingActionButton floatingActionButtonLive;
+    private FloatingActionButton floatingActionButtonGames;
+    private boolean isOpenBetsTab;
+    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
+
+
+    @SuppressLint("SetJavaScriptEnabled")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getWindow().setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN |
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN |
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                        WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.black, this.getTheme()));
+        } else {
+            getWindow().setStatusBarColor(getResources().getColor(R.color.black));
+        }
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        setContentView(R.layout.activity_at);
+        mWebView = findViewById(R.id.at_main_webview);
+        floatingActionButton = findViewById(R.id.bets_button);
+        floatingActionButton.setOnClickListener(v -> {
+            mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
+            isOpenBetsTab = true;
+        });
+        floatingActionButtonFavorite = findViewById(R.id.fav_button);
+        floatingActionButtonFavorite.setOnClickListener(v -> {
+            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-en-vivo/#/live/favorites/");
+        });
+
+        floatingActionButtonLive = findViewById(R.id.live);
+        floatingActionButtonLive.setOnClickListener(v-> {
+            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/live/sport/66/byleague");
+        });
+        floatingActionButtonGames = findViewById(R.id.games);
+        floatingActionButtonGames .setOnClickListener(v-> {
+            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/prelive");
+        });
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void doUpdateVisitedHistory (WebView view,
+                                                String url,
+                                                boolean isReload) {
+                saveCurrentUrl(url);
+            }
+            @Override
+            public void onLoadResource(WebView view, String url) {
+                applyStyles();
+            }
+
+            @Override
+            public void onPageCommitVisible(WebView view, String url) {
+                if(url.contains("mis-apuestas-deportivas") && isOpenBetsTab){
+                    mWebView.loadUrl("javascript:(function() { " +
+                            "setTimeout(() => {document.querySelectorAll('button.MuiButtonBase-root')[7].click()}, 1800);})()");
+                    isOpenBetsTab = false;
+                }
+            }
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                boolean isAllowed = false;
+                for(String blacklistWord : Arrays.asList(".png",".jpeg",".gif",".webp",".jpg")) {
+                    if(url.contains(blacklistWord)){
+                        isAllowed = false;
+                        break;
+                    } else {
+                        isAllowed = true;
+                    }
+                }
+                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
+            }
+        });
+        mWebView.setWebChromeClient(new WebChromeClient() {
+            private View mCustomView;
+            private WebChromeClient.CustomViewCallback mCustomViewCallback;
+            private int mOriginalOrientation;
+            private int mOriginalSystemUiVisibility;
+
+            public Bitmap getDefaultVideoPoster() {
+                if (mainActivity == null) {
+                    return null;
+                }
+                return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
+            }
+            @Override
+            public void onHideCustomView() {
+                ((FrameLayout) mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
+                this.mCustomView = null;
+                mainActivity.getWindow().getDecorView().setSystemUiVisibility(this.mOriginalSystemUiVisibility);
+                mainActivity.setRequestedOrientation(this.mOriginalOrientation);
+                this.mCustomViewCallback.onCustomViewHidden();
+                this.mCustomViewCallback = null;
+            }
+            @Override
+            public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
+                if (this.mCustomView != null) {
+                    onHideCustomView();
+                    return;
+                }
+                this.mCustomView = paramView;
+                this.mOriginalSystemUiVisibility = mainActivity.getWindow().getDecorView().getSystemUiVisibility();
+                this.mOriginalOrientation = mainActivity.getRequestedOrientation();
+                this.mCustomViewCallback = paramCustomViewCallback;
+                ((FrameLayout) mainActivity.getWindow().getDecorView()).addView(this.mCustomView, new FrameLayout.LayoutParams(-1, -1));
+                mainActivity.getWindow().getDecorView().setSystemUiVisibility(3846);
+            }
+        });
+        CookieManager.getInstance().setAcceptThirdPartyCookies(mWebView, true);
+        WebSettings webSettings = mWebView.getSettings();
+
+        webSettings.setJavaScriptEnabled(true);
+        webSettings.setAllowFileAccess(true);
+        webSettings.setAppCacheEnabled(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
+        webSettings.setMediaPlaybackRequiresUserGesture(true);
+        webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
+        webSettings.setBlockNetworkLoads(false);
+        webSettings.setDomStorageEnabled(true);
+        webSettings.setDatabaseEnabled(true);
+
+        webSettings.setUseWideViewPort(true);
+        webSettings.setLoadWithOverviewMode(true);
+        webSettings.setSupportZoom(true);
+        webSettings.setBuiltInZoomControls(true);
+        webSettings.setDisplayZoomControls(false);
+        webSettings.setSavePassword(true);
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
+            WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
+        }
+        mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
+        mWebView.setScrollbarFadingEnabled(false);
+
+        mWebView.loadUrl(getValue("url"));
+
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.clear();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mWebView != null && mWebView.canGoBack()){
+            mWebView.goBack();// if there is previous page open it
+        } else {
+            super.onBackPressed();//if there is no previous page, close app
+        }
+    }
+
+    private void save(String key, String value) {
+        SharedPreferences.Editor editor = getSharedPreferences().edit();
+        editor.putString(key, value);
+        editor.apply();
+    }
+    private void saveCurrentUrl (String url) {
+        save("url", url);
+    }
+
+
+    private String getValue(String key) {
+        return getSharedPreferences().getString(key, BASE_URL);
+    }
+
+    private SharedPreferences getSharedPreferences() {
+        return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+    private void applyStyles() {
+
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
+
+
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.animate.first').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.animate.two').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.left').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.CaptionsTopWrapperS').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.nextSibling.remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('footer').remove();})()");
+
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('h2').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelectorAll('img').forEach(e => e.remove());})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('[data-testid=KeyboardArrowUpIcon]').parentNode.remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('#wcx-chat').remove();})()");
+
+    }
+}

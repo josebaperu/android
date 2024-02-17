@@ -31,17 +31,15 @@ import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 
 
-public class MainActivity extends AppCompatActivity {
+public class BetssonActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    private final static String BASE_URL = "https://www.apuestatotal.com/";
+    private final static String BASE_URL = "https://www.betsson.com/pe/";
     private FloatingActionButton floatingActionButton;
     private FloatingActionButton floatingActionButtonFavorite;
     private FloatingActionButton floatingActionButtonLive;
     private FloatingActionButton floatingActionButtonGames;
-    private boolean isOpenBetsTab;
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
-
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -65,25 +63,24 @@ public class MainActivity extends AppCompatActivity {
         }
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
-        setContentView(R.layout.at_main);
-        mWebView = findViewById(R.id.at_main_webview);
-        floatingActionButton = findViewById(R.id.bets_button);
-        floatingActionButton.setOnClickListener(v -> {
-            mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
-            isOpenBetsTab = true;
-        });
+        setContentView(R.layout.activity_betsson);
+        mWebView = findViewById(R.id.activity_bettson_webview);
+        floatingActionButton = findViewById(R.id.fab_button);
         floatingActionButtonFavorite = findViewById(R.id.fav_button);
-        floatingActionButtonFavorite.setOnClickListener(v -> {
-            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-en-vivo/#/live/favorites/");
+        floatingActionButtonLive = findViewById(R.id.live);
+        floatingActionButtonGames = findViewById(R.id.games);
+        floatingActionButtonLive.setOnClickListener(v-> {
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas");
+        });
+        floatingActionButtonGames.setOnClickListener(v -> {
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/futbol");
         });
 
-        floatingActionButtonLive = findViewById(R.id.live);
-        floatingActionButtonLive.setOnClickListener(v-> {
-            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/live/sport/66/byleague");
+        floatingActionButtonFavorite .setOnClickListener(v-> {
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/en-vivo/futbol");
         });
-        floatingActionButtonGames = findViewById(R.id.games);
-        floatingActionButtonGames .setOnClickListener(v-> {
-            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/prelive");
+        floatingActionButton.setOnClickListener(v -> {
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/historial-de-apuestas");
         });
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
@@ -98,13 +95,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onPageCommitVisible(WebView view, String url) {
-                if(url.contains("mis-apuestas-deportivas") && isOpenBetsTab){
-                    mWebView.loadUrl("javascript:(function() { " +
-                            "setTimeout(() => {document.querySelectorAll('button.MuiButtonBase-root')[7].click()}, 1800);})()");
-                    isOpenBetsTab = false;
-                }
-            }
+            public void onPageCommitVisible(WebView view, String url) {}
             @Override
             public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
                 String url = request.getUrl().toString();
@@ -217,44 +208,31 @@ public class MainActivity extends AppCompatActivity {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
     private void applyStyles() {
-
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
+                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-m-sm-betting-layout-container > obg-m-sm-sportsbook-layout-container > header > obg-smart-app-banner').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
-
-
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.animate.first').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.animate.two').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.left').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.nextSibling.remove();})()");
+                "document.querySelector('section.obg-footer-responsible-gaming').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('footer').remove();})()");
-
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h2').remove();})()");
+                "document.querySelector('section.obg-m-play-with-us-section.ng-star-inserted').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('img').forEach(e => e.remove());})()");
+                "document.querySelector('.obg-m-reassurance-section-wrapper.ng-star-inserted').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('[data-testid=KeyboardArrowUpIcon]').parentNode.remove();})()");
+                "document.querySelector('.obg-m-faq-section.ng-star-inserted').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#wcx-chat').remove();})()");
-
+                "document.querySelector('.obg-m-seo-section.ng-star-inserted').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.promotion').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.responsive').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-app-core-layout-container > div > obg-m-home-wrapper-container > obg-lazy-loader > obg-m-home-page-v2-container > obg-m-preview-section:nth-child(5) > section').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-app-core-layout-container > div > obg-m-home-wrapper-container > obg-lazy-loader > obg-m-home-page-v2-container > obg-m-preview-section:nth-child(6) > section').style.display = 'none';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div.obg-footer-container').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-m-sm-betting-layout-container > obg-m-sm-sportsbook-layout-container > div > obg-m-sm-sportsbook-lobby-container > obg-m-sportsbook-lobby-container > obg-content-links > div').remove();})()");
     }
 }

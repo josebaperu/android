@@ -34,7 +34,7 @@
         android:launchMode="singleTop"
         tools:targetApi="m">
     <activity
-        android:name=".MainActivity"
+        android:name=".AtActivity"
         android:configChanges="orientation|screenSize"
         android:launchMode="singleTask"
         android:label="@string/app_name">
