@@ -2,6 +2,7 @@ package com.webview.betting;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,6 +19,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +27,7 @@ import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.webview.betting.listener.OnSwipeTouchListener;
 import com.webview.betting.webview.MediaWebView;
 
 import java.io.ByteArrayInputStream;
@@ -181,6 +184,17 @@ public class AtActivity extends AppCompatActivity {
         mWebView.setScrollbarFadingEnabled(false);
 
         mWebView.loadUrl(getValue("url"));
+        mWebView.setOnTouchListener(new OnSwipeTouchListener(this) {
+            @Override
+            public void onSwipeLeft() {
+                //Toast.makeText(AtActivity.this, "right", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getBaseContext(), BetssonActivity.class);
+
+                startActivity(intent);
+
+            }
+
+        });
 
     }
 
@@ -205,7 +219,7 @@ public class AtActivity extends AppCompatActivity {
         editor.apply();
     }
     private void saveCurrentUrl (String url) {
-        save("url", url);
+        save("url_at", url);
     }
 
 
