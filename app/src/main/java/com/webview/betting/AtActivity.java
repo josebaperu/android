@@ -1,5 +1,7 @@
 package com.webview.betting;
 
+import static com.webview.betting.constant.BettingConstants.UA_STRING;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -96,7 +98,7 @@ public class AtActivity extends AppCompatActivity {
             }
             @Override
             public void onLoadResource(WebView view, String url) {
-                applyStyles();
+                //applyStyles();
             }
 
             @Override
@@ -176,6 +178,8 @@ public class AtActivity extends AppCompatActivity {
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
         webSettings.setSavePassword(true);
+        webSettings.setUserAgentString(UA_STRING);
+
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
         }
