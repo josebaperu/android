@@ -90,7 +90,12 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
-        mWebView.setWebViewClient(new WebViewClient() {});
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading (WebView view, String url) {
+                return !url.contains(BASE_URL);
+            }
+        });
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
             private WebChromeClient.CustomViewCallback mCustomViewCallback;
