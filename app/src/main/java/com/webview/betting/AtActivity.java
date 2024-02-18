@@ -28,7 +28,6 @@ import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.webview.betting.listener.OnSwipeTouchListener;
 import com.webview.betting.webview.MediaWebView;
 
 import java.io.ByteArrayInputStream;
@@ -78,7 +77,8 @@ public class AtActivity extends AppCompatActivity {
         });
         floatingActionButtonFavorite = findViewById(R.id.fav_button);
         floatingActionButtonFavorite.setOnClickListener(v -> {
-            mWebView.loadUrl("https://www.apuestatotal.com/apuestas-en-vivo/#/live/favorites/");
+            startActivity(new Intent(getBaseContext(), BetssonActivity.class));
+
         });
 
         floatingActionButtonLive = findViewById(R.id.live);
@@ -105,7 +105,7 @@ public class AtActivity extends AppCompatActivity {
             public void onPageCommitVisible(WebView view, String url) {
                 if(url.contains("mis-apuestas-deportivas") && isOpenBetsTab){
                     mWebView.loadUrl("javascript:(function() { " +
-                            "setTimeout(() => {document.querySelectorAll('button.MuiButtonBase-root')[7].click()}, 1800);})()");
+                            "setTimeout(() => {document.querySelectorAll('button.MuiButtonBase-root')[9].click()}, 1800);})()");
                     isOpenBetsTab = false;
                 }
             }
@@ -187,17 +187,6 @@ public class AtActivity extends AppCompatActivity {
         mWebView.setScrollbarFadingEnabled(false);
 
         mWebView.loadUrl(getValue("url"));
-        mWebView.setOnTouchListener(new OnSwipeTouchListener(this) {
-            @Override
-            public void onSwipeLeft() {
-                //Toast.makeText(AtActivity.this, "right", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getBaseContext(), BetssonActivity.class);
-
-                startActivity(intent);
-
-            }
-
-        });
 
     }
 

@@ -28,7 +28,6 @@ import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.webview.betting.listener.OnSwipeTouchListener;
 import com.webview.betting.webview.MediaWebView;
 
 import java.io.ByteArrayInputStream;
@@ -74,14 +73,14 @@ public class BetssonActivity extends AppCompatActivity {
         floatingActionButtonLive = findViewById(R.id.live);
         floatingActionButtonGames = findViewById(R.id.games);
         floatingActionButtonLive.setOnClickListener(v-> {
-            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas");
+            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/en-vivo/futbol");
         });
         floatingActionButtonGames.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/futbol");
         });
 
         floatingActionButtonFavorite .setOnClickListener(v-> {
-            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/en-vivo/futbol");
+            startActivity(new Intent(getBaseContext(), AtActivity.class));
         });
         floatingActionButton.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/historial-de-apuestas");
@@ -178,16 +177,6 @@ public class BetssonActivity extends AppCompatActivity {
         mWebView.setScrollbarFadingEnabled(false);
 
         mWebView.loadUrl(getValue("url_betsson"));
-        mWebView.setOnTouchListener(new OnSwipeTouchListener(this) {
-
-            @Override
-            public void onSwipeRight() {
-                //Toast.makeText(AtActivity.this, "left", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getBaseContext(), AtActivity.class);
-                startActivity(intent);
-            }
-
-        });
 
     }
 
