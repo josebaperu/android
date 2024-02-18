@@ -1,4 +1,4 @@
-package com.webview.youtube;
+package com.webview.liga1;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -12,13 +12,10 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Base64;
 import android.view.View;
 import android.view.WindowManager;
-import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -31,28 +28,18 @@ import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.webview.youtube.service.WebViewService;
-import com.webview.youtube.webview.MediaWebView;
+import com.webview.liga1.service.WebViewService;
+import com.webview.liga1.webview.MediaWebView;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity {
     private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "YOUTUBE";
-    private final static String BASE_URL = "https://www.youtube.com/";
-    private final static String LOG = "YouTube";
-    private List<String> blacklistedKeyword;
-
-    private String script;
+    public final static String RECEIVER = "LIGA1";
+    private final static String BASE_URL = "https://liga1maxtvhd.com/";
 
     private BroadcastReceiver receiver;
     private void startService() {
@@ -78,17 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
-        blacklistedKeyword = new ArrayList<>();
-        blacklistedKeyword.add(".mp3");
-        blacklistedKeyword.add("log");
-        blacklistedKeyword.add("play.google");
-        blacklistedKeyword.add("stats");
-        blacklistedKeyword.add("adview");
-        blacklistedKeyword.add("generate");
-        blacklistedKeyword.add("googleads");
-        blacklistedKeyword.add("pagead");
-        blacklistedKeyword.add("doubleclick.net");
-        blacklistedKeyword.add("track");
+
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -107,62 +84,13 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
         startService();
-        script = fileToStr(R.raw.script);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_main);
 
         mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
-        mWebView.setWebViewClient(new WebViewClient() {
-
-            @Override
-            public void doUpdateVisitedHistory (WebView view,
-                                                String url,
-                                                boolean isReload) {
-
-            }
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                injectCSS();
-                mWebView.loadUrl("javascript:(function() { " +
-                        script +
-                        ";})()");
-
-            }
-            private void injectCSS() {
-                try {
-                    InputStream inputStream = getAssets().open("style.css");
-                    byte[] buffer = new byte[inputStream.available()];
-                    inputStream.read(buffer);
-                    inputStream.close();
-                    String encoded = Base64.encodeToString(buffer, Base64.NO_WRAP);
-                    mWebView.loadUrl("javascript:(function() {" +
-                            "var parent = document.getElementsByTagName('head').item(0);" +
-                            "var style = document.createElement('style');" +
-                            "style.type = 'text/css';" +
-                            // Tell the browser to BASE64-decode the string into your script !!!
-                            "style.innerHTML = window.atob('" + encoded + "');" +
-                            "parent.appendChild(style)" +
-                            "})()");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                boolean isAllowed = true;
-                for(String blacklistedWord : blacklistedKeyword) {
-                    if(url.contains(blacklistedWord)){
-                        isAllowed = false;
-                        break;
-                    }
-                }
-
-                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
-            }
-        });
+        mWebView.setWebViewClient(new WebViewClient() {});
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
             private WebChromeClient.CustomViewCallback mCustomViewCallback;
@@ -175,11 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
             }
-            @Override
-            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                android.util.Log.d("JS_CONSOLE", consoleMessage.message());
-                return true;
-            }
+
             @Override
             public void onHideCustomView() {
                 ((FrameLayout) mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
@@ -258,10 +182,6 @@ public class MainActivity extends AppCompatActivity {
         editor.putString(key, value);
         editor.apply();
     }
-    private void saveCurrentUrl (String url) {
-        save("url", url);
-    }
-
 
     private String getValue(String key) {
         return getSharedPreferences().getString(key, BASE_URL);
@@ -269,24 +189,5 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
-    }
-    private String fileToStr(int resource) {
-        String line = "";
-        StringBuilder sb = new StringBuilder();
-
-        InputStream is = this.getResources().openRawResource(resource);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        if (is != null) {
-            try {
-                while ((line = br.readLine()) != null) {
-                    sb.append(line);
-                    sb.append("\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
     }
 }
