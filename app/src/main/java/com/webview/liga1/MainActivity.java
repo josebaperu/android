@@ -16,7 +16,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -28,18 +27,18 @@ import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.webview.liga1.service.WebViewService;
 import com.webview.liga1.webview.MediaWebView;
 
-import java.io.ByteArrayInputStream;
-
 
 public class MainActivity extends AppCompatActivity {
-    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "LIGA1";
     private final static String BASE_URL = "https://liga1maxtvhd.com/";
+
+    private FloatingActionButton homeButton;
 
     private BroadcastReceiver receiver;
     private void startService() {
@@ -65,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
-
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -160,6 +158,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setScrollbarFadingEnabled(false);
         mWebView.loadUrl(getValue("url"));
+        homeButton = findViewById(R.id.home);
+        homeButton.setOnClickListener( view ->{
+            mWebView.loadUrl(BASE_URL);
+        });
     }
 
     @Override
