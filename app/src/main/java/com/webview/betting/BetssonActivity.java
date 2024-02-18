@@ -92,27 +92,7 @@ public class BetssonActivity extends AppCompatActivity {
                                                 boolean isReload) {
                 saveCurrentUrl(url);
             }
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                //applyStyles();
-            }
 
-            @Override
-            public void onPageCommitVisible(WebView view, String url) {}
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                boolean isAllowed = false;
-                for(String blacklistWord : Arrays.asList(".png",".jpeg",".gif",".webp",".jpg")) {
-                    if(url.contains(blacklistWord)){
-                        isAllowed = false;
-                        break;
-                    } else {
-                        isAllowed = true;
-                    }
-                }
-                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
-            }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
@@ -211,33 +191,5 @@ public class BetssonActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
-    }
-    private void applyStyles() {
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-m-sm-betting-layout-container > obg-m-sm-sportsbook-layout-container > header > obg-smart-app-banner').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('section.obg-footer-responsible-gaming').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('footer').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('section.obg-m-play-with-us-section.ng-star-inserted').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.obg-m-reassurance-section-wrapper.ng-star-inserted').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.obg-m-faq-section.ng-star-inserted').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.obg-m-seo-section.ng-star-inserted').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.promotion').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.responsive').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-app-core-layout-container > div > obg-m-home-wrapper-container > obg-lazy-loader > obg-m-home-page-v2-container > obg-m-preview-section:nth-child(5) > section').style.display = 'none';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-app-core-layout-container > div > obg-m-home-wrapper-container > obg-lazy-loader > obg-m-home-page-v2-container > obg-m-preview-section:nth-child(6) > section').style.display = 'none';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.obg-footer-container').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > obg-app-root > mat-sidenav-container > mat-sidenav-content > obg-m-sm-betting-layout-container > obg-m-sm-sportsbook-layout-container > div > obg-m-sm-sportsbook-lobby-container > obg-m-sportsbook-lobby-container > obg-content-links > div').remove();})()");
     }
 }

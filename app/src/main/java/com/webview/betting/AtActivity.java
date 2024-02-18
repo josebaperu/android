@@ -96,10 +96,6 @@ public class AtActivity extends AppCompatActivity {
                                                 boolean isReload) {
                 saveCurrentUrl(url);
             }
-            @Override
-            public void onLoadResource(WebView view, String url) {
-                //applyStyles();
-            }
 
             @Override
             public void onPageCommitVisible(WebView view, String url) {
@@ -108,20 +104,10 @@ public class AtActivity extends AppCompatActivity {
                             "setTimeout(() => {document.querySelectorAll('button.MuiButtonBase-root')[9].click()}, 1800);})()");
                     isOpenBetsTab = false;
                 }
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                boolean isAllowed = false;
-                for(String blacklistWord : Arrays.asList(".png",".jpeg",".gif",".webp",".jpg")) {
-                    if(url.contains(blacklistWord)){
-                        isAllowed = false;
-                        break;
-                    } else {
-                        isAllowed = true;
-                    }
-                }
-                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
+                mWebView.loadUrl("javascript:(function() { " +
+                        "setTimeout(() => {document.querySelector('.action').remove()}, 1800);})()");
+                mWebView.loadUrl("javascript:(function() { " +
+                        "setTimeout(() => {document.querySelector('.title').remove()}, 1800);})()");
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -221,46 +207,5 @@ public class AtActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
-    }
-    private void applyStyles() {
-
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[2].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[3].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.wrap div.scroll-container.indiana-scroll-container.indiana-scroll-container--hide-scrollbars div').childNodes[4].remove();})()");
-
-
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.animate.first').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.animate.two').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.left').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.CaptionsTopWrapperS').nextSibling.nextSibling.remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('footer').remove();})()");
-
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('h2').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelectorAll('img').forEach(e => e.remove());})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('[data-testid=KeyboardArrowUpIcon]').parentNode.remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#wcx-chat').remove();})()");
-
     }
 }
