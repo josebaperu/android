@@ -38,8 +38,6 @@ public class MainActivity extends AppCompatActivity {
     public final static String RECEIVER = "LIGA1";
     private final static String BASE_URL = "https://liga1maxtvhd.com/";
 
-    private FloatingActionButton homeButton;
-
     private BroadcastReceiver receiver;
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -158,10 +156,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setScrollbarFadingEnabled(false);
         mWebView.loadUrl(getValue("url"));
-        homeButton = findViewById(R.id.home);
-        homeButton.setOnClickListener( view ->{
-            mWebView.loadUrl(BASE_URL);
-        });
     }
 
     @Override
