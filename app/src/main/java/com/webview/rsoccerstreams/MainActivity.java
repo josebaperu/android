@@ -8,13 +8,10 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -26,22 +23,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.webview.rsoccerstreams.webview.MediaWebView;
 
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     MediaWebView mWebView;
-    List<String> blacklistedKeyword;
 
     Activity mainActivity = this; // If you are in activity
 
-    private final static String BASE_URL = "https://soccerlive.app/";
+    private final static String BASE_URL = "https://liga1maxtvhd.com/";
 
     private final static String TAG = "MainActivity";
 
@@ -49,7 +37,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        blacklistedKeyword = getBlackListKeywords();
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
                         WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
@@ -76,32 +63,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView.setWebViewClient(new WebViewClient() {
 
             @Override
-            public void onPageFinished(WebView view, String url) {
-                applyStyles(url);
-            }
-            @Override
             public void doUpdateVisitedHistory (WebView view,
                                                 String url,
                                                 boolean isReload) {
                 saveCurrentUrl(url);
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-
-
-                String url = request.getUrl().toString();
-                boolean isAllowed = false;
-                for(String blacklistWord : blacklistedKeyword) {
-                    if(url.contains(blacklistWord)){
-                        isAllowed = false;
-                        Log.i(TAG, "ALLOWED_FALSE " + url );
-                        break;
-                    } else {
-                        isAllowed = true;
-                        Log.i(TAG, "ALLOWED_TRUE " + url );
-                    }
-                }
-                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -164,22 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private List<String> getBlackListKeywords() {
-        String line;
-        List<String> list = new ArrayList<>();
 
-        InputStream is = this.getResources().openRawResource(R.raw.blacklist);
-        BufferedReader br = new BufferedReader(new InputStreamReader(is));
-
-        try {
-            while ((line = br.readLine()) != null) {
-                list.add(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
@@ -216,34 +166,6 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
-    }
-    private void applyStyles(String url) {
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.col-md-12 p').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('ul#mini-calendar').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('#stream-info').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > main > div:nth-child(4) > div.col-md-8 > div:nth-child(3)').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.col-md-4').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > footer').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.getElementsByTagName('nav')[0].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.getElementsByTagName('nav')[0].remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body > main > div.row.ml-1.mr-1.pt-2.mb-2').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div.container').style.minWidth = '100%';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.col-md-9').className = 'col-md-12';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('.col-md-8').className = 'col-md-12';})()");
-        mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('body').style.backgroundColor = 'black';})()");
     }
 
 }
