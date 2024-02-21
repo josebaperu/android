@@ -68,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
                                                 boolean isReload) {
                 saveCurrentUrl(url);
             }
+            @Override
+            public boolean shouldOverrideUrlLoading (WebView view, String url) {
+                return !url.contains(BASE_URL);
+            }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
