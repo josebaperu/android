@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-        <com.webview.rsoccerstreams.layout.CursorLayout
+        <com.webview.liga1.layout.CursorLayout
             android:id="@+id/cursorLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-                <com.webview.rsoccerstreams.webview.MediaWebView
+                <com.webview.liga1.webview.MediaWebView
                     android:id="@+id/activity_main_webview"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
 
-        </com.webview.rsoccerstreams.layout.CursorLayout>
+        </com.webview.liga1.layout.CursorLayout>
 </RelativeLayout>

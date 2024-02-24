@@ -1,4 +1,4 @@
-package com.webview.rsoccerstreams;
+package com.webview.liga1;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,7 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.webview.rsoccerstreams.webview.MediaWebView;
+import com.webview.liga1.webview.MediaWebView;
 
 
 public class MainActivity extends AppCompatActivity {
