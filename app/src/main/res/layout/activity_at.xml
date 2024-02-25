@@ -11,21 +11,22 @@
             android:id="@+id/fav_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|start"
             android:src="@android:drawable/btn_default_small"
+            android:layout_gravity="bottom|end"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="4dp"
+            android:backgroundTint="@android:color/holo_orange_light"
+
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/bets_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
             android:src="@android:drawable/btn_default_small"
             android:layout_marginEnd="24dp"
             android:layout_marginBottom="4dp"
-            android:backgroundTint="@android:color/holo_orange_light"
+            android:layout_gravity="bottom|start"
             />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

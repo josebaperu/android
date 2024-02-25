@@ -15,8 +15,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -30,21 +28,16 @@ import androidx.webkit.WebViewFeature;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.webview.betting.webview.MediaWebView;
 
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-
 
 public class AtActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
     private final static String BASE_URL = "https://www.apuestatotal.com/";
-    private FloatingActionButton floatingActionButton;
-    private FloatingActionButton floatingActionButtonFavorite;
+    private FloatingActionButton floatingActionButtonMyBets;
+    private FloatingActionButton floatingActionButtonSwitchView;
     private FloatingActionButton floatingActionButtonLive;
     private FloatingActionButton floatingActionButtonGames;
     private boolean isOpenBetsTab;
-    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
-
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -70,36 +63,36 @@ public class AtActivity extends AppCompatActivity {
         actionBar.hide();
         setContentView(R.layout.activity_at);
         mWebView = findViewById(R.id.at_main_webview);
-        floatingActionButton = findViewById(R.id.bets_button);
-        floatingActionButton.setOnClickListener(v -> {
+        floatingActionButtonMyBets = findViewById(R.id.bets_button);
+        floatingActionButtonMyBets.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.apuestatotal.com/cuenta/mis-apuestas-deportivas/");
             isOpenBetsTab = true;
         });
-        floatingActionButtonFavorite = findViewById(R.id.fav_button);
-        floatingActionButtonFavorite.setOnClickListener(v -> {
+        floatingActionButtonSwitchView = findViewById(R.id.fav_button);
+        floatingActionButtonSwitchView.setOnClickListener(v -> {
             startActivity(new Intent(getBaseContext(), BetssonActivity.class));
 
         });
 
         floatingActionButtonLive = findViewById(R.id.live);
-        floatingActionButtonLive.setOnClickListener(v-> {
+        floatingActionButtonLive.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/live/sport/66/byleague");
         });
         floatingActionButtonGames = findViewById(R.id.games);
-        floatingActionButtonGames .setOnClickListener(v-> {
+        floatingActionButtonGames.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.apuestatotal.com/apuestas-deportivas/#/prelive");
         });
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public void doUpdateVisitedHistory (WebView view,
-                                                String url,
-                                                boolean isReload) {
+            public void doUpdateVisitedHistory(WebView view,
+                                               String url,
+                                               boolean isReload) {
                 saveCurrentUrl(url);
             }
 
             @Override
             public void onPageCommitVisible(WebView view, String url) {
-                if(url.contains("mis-apuestas-deportivas") && isOpenBetsTab){
+                if (url.contains("mis-apuestas-deportivas") && isOpenBetsTab) {
                     mWebView.loadUrl("javascript:(function() { " +
                             "setTimeout(() => {document.querySelectorAll('button.MuiButtonBase-root')[9].click()}, 1800);})()");
                     isOpenBetsTab = false;
@@ -122,6 +115,7 @@ public class AtActivity extends AppCompatActivity {
                 }
                 return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
             }
+
             @Override
             public void onHideCustomView() {
                 ((FrameLayout) mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
@@ -131,6 +125,7 @@ public class AtActivity extends AppCompatActivity {
                 this.mCustomViewCallback.onCustomViewHidden();
                 this.mCustomViewCallback = null;
             }
+
             @Override
             public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
                 if (this.mCustomView != null) {
@@ -184,7 +179,7 @@ public class AtActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mWebView != null && mWebView.canGoBack()){
+        if (mWebView != null && mWebView.canGoBack()) {
             mWebView.goBack();// if there is previous page open it
         } else {
             super.onBackPressed();//if there is no previous page, close app
@@ -196,7 +191,8 @@ public class AtActivity extends AppCompatActivity {
         editor.putString(key, value);
         editor.apply();
     }
-    private void saveCurrentUrl (String url) {
+
+    private void saveCurrentUrl(String url) {
         save("url_at", url);
     }
 

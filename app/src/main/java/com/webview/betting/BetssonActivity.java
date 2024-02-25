@@ -15,8 +15,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -30,19 +28,14 @@ import androidx.webkit.WebViewFeature;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.webview.betting.webview.MediaWebView;
 
-import java.io.ByteArrayInputStream;
-import java.util.Arrays;
-
 
 public class BetssonActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
     private final static String BASE_URL = "https://www.betsson.com/pe/";
-    private FloatingActionButton floatingActionButton;
-    private FloatingActionButton floatingActionButtonFavorite;
+    private FloatingActionButton floatingActionButtonSwitchView;
     private FloatingActionButton floatingActionButtonLive;
     private FloatingActionButton floatingActionButtonGames;
-    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -68,28 +61,24 @@ public class BetssonActivity extends AppCompatActivity {
         actionBar.hide();
         setContentView(R.layout.activity_betsson);
         mWebView = findViewById(R.id.activity_bettson_webview);
-        floatingActionButton = findViewById(R.id.fab_button);
-        floatingActionButtonFavorite = findViewById(R.id.fav_button);
+        floatingActionButtonSwitchView = findViewById(R.id.fav_button);
         floatingActionButtonLive = findViewById(R.id.live);
         floatingActionButtonGames = findViewById(R.id.games);
-        floatingActionButtonLive.setOnClickListener(v-> {
+        floatingActionButtonLive.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/en-vivo/futbol");
         });
         floatingActionButtonGames.setOnClickListener(v -> {
             mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/futbol");
         });
 
-        floatingActionButtonFavorite .setOnClickListener(v-> {
+        floatingActionButtonSwitchView.setOnClickListener(v -> {
             startActivity(new Intent(getBaseContext(), AtActivity.class));
-        });
-        floatingActionButton.setOnClickListener(v -> {
-            mWebView.loadUrl("https://www.betsson.com/pe/apuestas-deportivas/historial-de-apuestas");
         });
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
-            public void doUpdateVisitedHistory (WebView view,
-                                                String url,
-                                                boolean isReload) {
+            public void doUpdateVisitedHistory(WebView view,
+                                               String url,
+                                               boolean isReload) {
                 saveCurrentUrl(url);
             }
 
@@ -106,6 +95,7 @@ public class BetssonActivity extends AppCompatActivity {
                 }
                 return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
             }
+
             @Override
             public void onHideCustomView() {
                 ((FrameLayout) mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);
@@ -115,6 +105,7 @@ public class BetssonActivity extends AppCompatActivity {
                 this.mCustomViewCallback.onCustomViewHidden();
                 this.mCustomViewCallback = null;
             }
+
             @Override
             public void onShowCustomView(View paramView, WebChromeClient.CustomViewCallback paramCustomViewCallback) {
                 if (this.mCustomView != null) {
@@ -168,7 +159,7 @@ public class BetssonActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mWebView != null && mWebView.canGoBack()){
+        if (mWebView != null && mWebView.canGoBack()) {
             mWebView.goBack();// if there is previous page open it
         } else {
             super.onBackPressed();//if there is no previous page, close app
@@ -180,7 +171,8 @@ public class BetssonActivity extends AppCompatActivity {
         editor.putString(key, value);
         editor.apply();
     }
-    private void saveCurrentUrl (String url) {
+
+    private void saveCurrentUrl(String url) {
         save("url_betsson", url);
     }
 

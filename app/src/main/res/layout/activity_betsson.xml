@@ -7,34 +7,25 @@
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:src="@android:drawable/btn_default_small"
-        android:layout_marginRight="24dp"
-        android:layout_marginBottom="48dp"
-        android:backgroundTint="@android:color/holo_orange_light"
 
-        />
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fav_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|start"
         android:src="@android:drawable/btn_default_small"
-        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:layout_marginBottom="48dp"
+        android:layout_gravity="bottom|end"
+        android:backgroundTint="@android:color/holo_orange_light"
         />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/live"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
+        android:layout_gravity="bottom|start"
         android:src="@android:drawable/btn_default_small"
-        android:layout_marginRight="96dp"
+        android:layout_marginLeft="96dp"
         android:layout_marginBottom="48dp"
         android:backgroundTint="@android:color/holo_blue_light"
 
@@ -45,7 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:src="@android:drawable/btn_default_small"
-        android:layout_marginLeft="96dp"
+        android:layout_marginLeft="24dp"
         android:layout_marginBottom="48dp"
         android:backgroundTint="@android:color/white"
         />
