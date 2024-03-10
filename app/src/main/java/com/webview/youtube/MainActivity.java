@@ -50,8 +50,6 @@ public class MainActivity extends AppCompatActivity {
     public final static String RECEIVER = "YOUTUBE";
     private final static String BASE_URL = "https://www.youtube.com/";
     private final static String LOG = "YouTube";
-    private List<String> blacklistedKeyword;
-
     private String script;
 
     private BroadcastReceiver receiver;
@@ -78,17 +76,7 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
-        blacklistedKeyword = new ArrayList<>();
-        blacklistedKeyword.add(".mp3");
-        blacklistedKeyword.add("log");
-        blacklistedKeyword.add("play.google");
-        blacklistedKeyword.add("stats");
-        blacklistedKeyword.add("adview");
-        blacklistedKeyword.add("generate");
-        blacklistedKeyword.add("googleads");
-        blacklistedKeyword.add("pagead");
-        blacklistedKeyword.add("doubleclick.net");
-        blacklistedKeyword.add("track");
+
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -148,19 +136,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                boolean isAllowed = true;
-                for(String blacklistedWord : blacklistedKeyword) {
-                    if(url.contains(blacklistedWord)){
-                        isAllowed = false;
-                        break;
-                    }
-                }
-
-                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
