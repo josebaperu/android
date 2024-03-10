@@ -254,13 +254,15 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('h2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('div#header').remove();})()");
+                "document.querySelector('div .slider.round').remove();})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div .nav-page span').textContent = '';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('h3').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('nav').remove();})()");
+                "document.querySelector('nav').style.maxHeight = '0';})()");
     }
 
 }
