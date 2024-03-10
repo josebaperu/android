@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity {
     private final static String LOG = "YouTube Music";
     private String noadsyt;
     private BroadcastReceiver receiver;
-    private List<String> blacklistedKeyword;
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -78,16 +77,7 @@ public class MainActivity extends AppCompatActivity {
                 handleObserverDestroy();
             }
         };
-        blacklistedKeyword = new ArrayList<>();
-        blacklistedKeyword.add(".mp3");
-        blacklistedKeyword.add("log");
-        blacklistedKeyword.add("play.google");
-        blacklistedKeyword.add("stats");
-        blacklistedKeyword.add("adview");
-        blacklistedKeyword.add("generate");
-        blacklistedKeyword.add("googleads");
-        blacklistedKeyword.add("activeview");
-        blacklistedKeyword.add("pagead");
+
 
         getWindow().setFlags(
                 WindowManager.LayoutParams.FLAG_FULLSCREEN |
@@ -146,19 +136,6 @@ public class MainActivity extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-            }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                boolean isAllowed = true;
-                for(String blacklistedWord : blacklistedKeyword) {
-                    if(url.contains(blacklistedWord)){
-                        isAllowed = false;
-                        break;
-                    }
-                }
-
-                return isAllowed ? super.shouldInterceptRequest(view, request) :  webResourceResponse;
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
