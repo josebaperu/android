@@ -61,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                applyStyles();
+            }
 
             @Override
             public void doUpdateVisitedHistory (WebView view,
@@ -171,5 +175,8 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
     }
-
+    private void applyStyles() {
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body.container').style.minWidth = '100%' ;})()");
+    }
 }
