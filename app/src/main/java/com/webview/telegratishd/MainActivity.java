@@ -237,8 +237,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
-                "document.querySelector('header').remove();})()");
-        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div.footer').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('html body center p').remove();})()");
@@ -246,7 +244,6 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('div.section.mt-2').remove();})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div#page_container').style.padding = 'unset';})()");
-
         mWebView.loadUrl("javascript:(function() { " +
                 "setTimeout(() => {document.querySelector('div.widget-visible').remove()}, 5000);})()");
         mWebView.loadUrl("javascript:(function() { " +
@@ -260,7 +257,12 @@ public class MainActivity extends AppCompatActivity {
                 "document.querySelector('.grid').classList = '';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('#page_container').classList = '';})()");
-
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('header a div.logo-text').textContent='back';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('header a div.logo-text').style.fontSize='10px';})()");
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('header a div.logo-text').style.color='grey';})()");
     }
 
     private boolean isHomePage(String url){
