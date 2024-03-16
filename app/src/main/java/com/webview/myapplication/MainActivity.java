@@ -258,6 +258,8 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('div .nav-page span').textContent = '';})()");
         mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('div#center nav').style.textAlign = 'left';})()");
+        mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('body').style.backgroundColor = 'black';})()");
         mWebView.loadUrl("javascript:(function() { " +
                 "document.querySelector('h3').remove();})()");
