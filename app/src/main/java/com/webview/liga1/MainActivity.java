@@ -88,6 +88,10 @@ public class MainActivity extends AppCompatActivity {
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
             @Override
+            public void onPageFinished(WebView view, String url) {
+                applyStyles();
+            }
+            @Override
             public boolean shouldOverrideUrlLoading (WebView view, String url) {
                 return !url.contains(BASE_URL);
             }
@@ -190,5 +194,9 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+    private void applyStyles() {
+        mWebView.loadUrl("javascript:(function() { " +
+                "document.querySelector('body.container').style.minWidth = '100%' ;})()");
     }
 }
