@@ -1,11 +1,7 @@
-package com.webview.youtube;
+package com.webview.youtubetv;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -18,8 +14,6 @@ import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -27,55 +21,29 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.webview.youtube.service.WebViewService;
-import com.webview.youtube.webview.MediaWebView;
+import com.webview.youtubetv.webview.MediaWebView;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.List;
+
 
 
 public class MainActivity extends AppCompatActivity {
-    private final static WebResourceResponse webResourceResponse = new WebResourceResponse("text/plain", "utf-8", new ByteArrayInputStream("".getBytes()));
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    public final static String RECEIVER = "YOUTUBE";
-    private final static String BASE_URL = "https://www.youtube.com/";
-    private final static String LOG = "YouTube";
+    private final static String BASE_URL = "https://www.youtube.com/tv";
     private String script;
 
-    private BroadcastReceiver receiver;
-    private void startService() {
-        Intent serviceIntent = new Intent(this, WebViewService.class);
-        serviceIntent.setAction("START");
-        ContextCompat.startForegroundService(this, serviceIntent);
-        registerReceiver(receiver, new IntentFilter(RECEIVER));
-    }
-    private void handleObserverDestroy () {
-        save("url", mWebView.getUrl());
-        unregisterReceiver(receiver);
-        finishAndRemoveTask();
-        receiver = null;
-    }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        receiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                handleObserverDestroy();
-            }
-        };
 
 
         getWindow().setFlags(
@@ -94,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         } else {
             getWindow().setStatusBarColor(getResources().getColor(R.color.black));
         }
-        startService();
         script = fileToStr(R.raw.script);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -196,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        //webSettings.setUserAgentString("Mozilla/5.0 (Windows Phone 10.0; Android 4.2.1; Microsoft; Lumia 640 LTE) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2486.0 Mobile Safari/537.36 Edge/13.10586");
+        webSettings.setUserAgentString("Mozilla/5.0 (SMART-TV; Linux; Tizen 5.0) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/2.2 Chrome/63.0.3239.84 TV Safari/537.36");
 
 
 
@@ -224,7 +191,6 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     public void onDestroy() {
-        handleObserverDestroy();
         super.onDestroy();
     }
 
