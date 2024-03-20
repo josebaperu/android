@@ -21,7 +21,6 @@ import android.widget.FrameLayout;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
 import com.webview.youtubetv.webview.MediaWebView;
@@ -36,7 +35,7 @@ import java.io.InputStreamReader;
 public class MainActivity extends AppCompatActivity {
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
-    private final static String BASE_URL = "https://www.youtube.com/tv";
+    private final static String BASE_URL = "https://www.youtube.com/tv#/";
     private String script;
 
 
@@ -83,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
                 mWebView.loadUrl("javascript:(function() { " +
                         script +
                         ";})()");
+                save(url);
 
             }
             private void injectCSS() {
@@ -182,27 +182,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        if (mWebView != null && mWebView.canGoBack()){
-            mWebView.goBack();// if there is previous page open it
-        } else {
-            super.onBackPressed();//if there is no previous page, close app
-        }
-    }
-    @Override
     public void onDestroy() {
         super.onDestroy();
     }
 
-    private void save(String key, String value) {
+    private void save(String value) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
-        editor.putString(key, value);
+        editor.putString("url", value);
         editor.apply();
     }
-    private void saveCurrentUrl (String url) {
-        save("url", url);
+    @Override
+    public void onBackPressed() {
+        if (mWebView != null && !getValue().equals(BASE_URL)) {
+            mWebView.loadUrl("https://www.youtube.com/tv");
+            save(BASE_URL);
+        } else {
+            super.onBackPressed();
+        }
     }
-
+    @Override
+    public void onPause() {
+        finish();
+        super.onPause();
+    }
 
     private String getValue(String key) {
         return getSharedPreferences().getString(key, BASE_URL);
@@ -210,6 +212,9 @@ public class MainActivity extends AppCompatActivity {
 
     private SharedPreferences getSharedPreferences() {
         return PreferenceManager.getDefaultSharedPreferences(this);
+    }
+    private String getValue() {
+        return getSharedPreferences().getString("url", BASE_URL);
     }
     private String fileToStr(int resource) {
         String line = "";
