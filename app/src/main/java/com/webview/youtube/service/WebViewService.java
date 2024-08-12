@@ -19,6 +19,7 @@ import android.os.PowerManager;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.support.v4.media.session.PlaybackStateCompat;
+import android.view.KeyEvent;
 
 import androidx.core.app.NotificationCompat;
 import com.webview.youtube.MainActivity;
@@ -33,8 +34,7 @@ public class WebViewService extends Service {
     private NotificationManager manager;
     private androidx.media.app.NotificationCompat.MediaStyle mediaStyle;
     private MediaSessionCompat mediaSession;
-
-
+    private Bitmap ytIcon;
     /**
      * Returns the instance of the service
      */
@@ -51,26 +51,15 @@ public class WebViewService extends Service {
                 | PlaybackStateCompat.ACTION_PLAY_PAUSE
                 | PlaybackStateCompat.ACTION_SKIP_TO_NEXT;
         playbackStateBuilder.setActions(stateActions);
+        ytIcon = BitmapFactory.decodeResource(getResources(), R.drawable.icons8_youtube_48);
 
-        Bitmap ytIcon = BitmapFactory.decodeResource(getResources(), R.drawable.icons8_youtube_48);
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "YT:wakelock");
-        mediaSession = new MediaSessionCompat(getApplicationContext(), "mediaService");
-        mediaSession.setActive(true);
-        mediaSession.setCallback(callback);
-        mediaSession.setPlaybackState(playbackStateBuilder.build());
+        mediaSession = new MediaSessionCompat(getApplicationContext(), "YT:mediaService");
         mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle();
+        mediaSession.setPlaybackState(playbackStateBuilder.build());
         mediaStyle.setShowActionsInCompactView(0, 1, 2);
-        mediaStyle.setShowCancelButton(false);
-        mediaStyle.setMediaSession(mediaSession.getSessionToken());
-        mediaSession.setActive(true);
-        mediaSession.setMetadata(new MediaMetadataCompat.Builder()
-                .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, ytIcon)
-                .putBitmap(MediaMetadata.METADATA_KEY_ART, ytIcon)
-                .putLong(MediaMetadata.METADATA_KEY_DURATION, -1L)
-                .putString(MediaMetadata.METADATA_KEY_TITLE,"YT")
-                .build());
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "YT:wakelock");
+        mediaStyle.setShowCancelButton(true);
     }
 
     @Override
@@ -80,6 +69,7 @@ public class WebViewService extends Service {
         }
         final String action = intent.getAction();
         if (action != null) {
+            mediaStyle.setMediaSession(mediaSession.getSessionToken());
             switch (action) {
                 case "TOGGLE":
                     sendMessageToActivity("TOGGLE");
@@ -92,6 +82,20 @@ public class WebViewService extends Service {
                     break;
                 case "START":
                     createNotificationChannel();
+
+                    mediaSession.setActive(true);
+                    mediaSession.setMetadata(new MediaMetadataCompat.Builder()
+                            .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, ytIcon)
+                            .putBitmap(MediaMetadata.METADATA_KEY_ART, ytIcon)
+                            .putLong(MediaMetadata.METADATA_KEY_DURATION, -1L)
+                            .putString(MediaMetadata.METADATA_KEY_ARTIST, "playback")
+                            .putString(MediaMetadata.METADATA_KEY_TITLE, "YouTube")
+                            .putString(MediaMetadata.METADATA_KEY_ALBUM, "YouTube")
+                            .build());
+                    mediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                            .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
+                            .build());
+                    mediaSession.setCallback(callback);
                     Intent mainIntent = new Intent(this, MainActivity.class);
                     PendingIntent mainPendingIntent = PendingIntent.getActivity(this,
                             0, mainIntent, PendingIntent.FLAG_IMMUTABLE);
@@ -110,25 +114,34 @@ public class WebViewService extends Service {
                             toggleIntent,
                             PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+                    Intent nextIntent = new Intent(this, WebViewService.class);
+                    nextIntent.setAction("NEXT");
+                    PendingIntent nextPendingIntent = PendingIntent.getService(this,
+                            0,
+                            nextIntent,
+                            PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+
                     Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
+                            .setContentIntent(mainPendingIntent)
+                            .setDeleteIntent(deletePendingIntent)
+                            .setSmallIcon(android.R.color.transparent)
                             .setOngoing(true)
                             .setBadgeIconType(androidx.core.app.NotificationCompat.BADGE_ICON_NONE)
                             .setOnlyAlertOnce(true)
                             .setStyle(mediaStyle)
-                            .setSmallIcon(android.R.color.transparent)
                             .setColorized(true)
-                            .setAutoCancel(false)
                             .setAllowSystemGeneratedContextualActions(true)
-                            .setContentText("-- PLAYER --")
                             .setCategory(Notification.CATEGORY_SERVICE)
-                            .setContentIntent(mainPendingIntent)
-                            .setDeleteIntent(deletePendingIntent)
                             .setAutoCancel(true)
+                            .setContentTitle("YouTube")
+                            .setContentText("playback")
+                            .setSubText("YouTube")
                             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
-                            .addAction(android.R.drawable.ic_media_play, "AUDIO", togglePendingIntent)
-                            .addAction(android.R.drawable.ic_popup_sync , "YOUTUBE", mainPendingIntent)
+                            .addAction(android.R.drawable.ic_media_play, "PLAY", togglePendingIntent)
+                            .addAction(android.R.drawable.ic_media_next , "NEXT", nextPendingIntent)
                             .build();
                     startForeground(1, notification);
                     break;
@@ -186,10 +199,9 @@ public class WebViewService extends Service {
     }
 
     private void sendMessageToActivity(String action) {
-        Intent intent = new Intent(RECEIVER);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            intent.setIdentifier(action);
-        }
+        Intent intent = new Intent();
+        intent.setAction(RECEIVER);
+        intent.putExtra("ACTION", action);
         sendBroadcast(intent);
     }
     MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
@@ -203,12 +215,35 @@ public class WebViewService extends Service {
             sendMessageToActivity("TOGGLE");
         }
 
+        @Override
+        public void onSkipToPrevious() {
+            sendMessageToActivity("TOGGLE");
+        }
 
         @Override
         public void onSkipToNext() {
             sendMessageToActivity("NEXT");
         }
 
-    };
+        @Override
+        public boolean onMediaButtonEvent(Intent mediaButtonIntent) {
+            String intentAction = mediaButtonIntent.getAction();
+            if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
+                KeyEvent event = mediaButtonIntent.getParcelableExtra(Intent.EXTRA_KEY_EVENT);
 
+                if (event != null && event.getAction() == KeyEvent.ACTION_DOWN) {
+                    int keycode = event.getKeyCode();
+
+                    if (keycode == KeyEvent.KEYCODE_MEDIA_NEXT) {
+                        sendMessageToActivity("NEXT");
+                    }
+
+                    if (keycode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE || keycode == KeyEvent.KEYCODE_MEDIA_PLAY || keycode == KeyEvent.KEYCODE_MEDIA_PAUSE || keycode == KeyEvent.KEYCODE_MEDIA_PREVIOUS || keycode == KeyEvent.KEYCODE_HEADSETHOOK) {
+                        sendMessageToActivity("TOGGLE");
+                    }
+                }
+            }
+            return true;
+        }
+    };
 }

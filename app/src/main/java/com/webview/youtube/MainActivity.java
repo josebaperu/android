@@ -2,13 +2,10 @@ package com.webview.youtube;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewFeature;
 
+import com.webview.youtube.receiver.ActionReceiver;
 import com.webview.youtube.service.WebViewService;
 import com.webview.youtube.webview.MediaWebView;
 
@@ -44,8 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private final static String BASE_URL = "https://www.youtube.com/";
     private String script;
     private String toggle;
-
-    private BroadcastReceiver receiver;
+    private String next;
+    private ActionReceiver receiver;
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
         serviceIntent.setAction("START");
@@ -55,6 +53,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleObserverDestroy() {
         save("url", mWebView.getUrl());
+        mWebView.loadUrl("javascript:(function() { " +
+                toggle +
+                ";})()");
         if(receiver != null){
             unregisterReceiver(receiver);
         }
@@ -68,19 +69,24 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         script = fileToStr(R.raw.script);
         toggle = fileToStr(R.raw.toggle);
+        next = fileToStr(R.raw.next);
 
-        receiver = new BroadcastReceiver() {
+        receiver = new ActionReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    if ("TOGGLE".equals(intent.getIdentifier())) {
-                        mWebView.loadUrl("javascript:(function() { " +
-                                toggle +
-                                ";})()");
-                    }
-                    if ("DESTROY".equals(intent.getIdentifier())) {
-                        handleObserverDestroy();
-                    }
+                String extra = intent.getStringExtra("ACTION");
+                if ("TOGGLE".equals(extra)) {
+                    mWebView.loadUrl("javascript:(function() { " +
+                            toggle +
+                            ";})()");
+                }
+                if ("NEXT".equals(extra)) {
+                    mWebView.loadUrl("javascript:(function() { " +
+                            next +
+                            ";})()");
+                }
+                if ("DESTROY".equals(extra)) {
+                    handleObserverDestroy();
                 }
             }
         };
@@ -154,13 +160,6 @@ public class MainActivity extends AppCompatActivity {
             private WebChromeClient.CustomViewCallback mCustomViewCallback;
             private int mOriginalOrientation;
             private int mOriginalSystemUiVisibility;
-
-            public Bitmap getDefaultVideoPoster() {
-                if (mainActivity == null) {
-                    return null;
-                }
-                return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
-            }
 
             @Override
             public void onHideCustomView() {
