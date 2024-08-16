@@ -53,9 +53,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleObserverDestroy() {
         save("url", mWebView.getUrl());
-        mWebView.loadUrl("javascript:(function() { " +
-                toggle +
-                ";})()");
         if(receiver != null){
             unregisterReceiver(receiver);
         }
@@ -86,6 +83,9 @@ public class MainActivity extends AppCompatActivity {
                             ";})()");
                 }
                 if ("DESTROY".equals(extra)) {
+                    mWebView.loadUrl("javascript:(function() { " +
+                            toggle +
+                            ";})()");
                     handleObserverDestroy();
                 }
             }
@@ -236,8 +236,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onDestroy() {
-        handleObserverDestroy();
         super.onDestroy();
+        mWebView.loadUrl("javascript:(function() { " +
+                toggle +
+                ";})()");
+        handleObserverDestroy();
     }
 
     private void save(String key, String value) {
