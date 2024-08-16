@@ -7,8 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -54,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
                 save("url", mWebView.getUrl());
                 unregisterReceiver(receiver);
                 finishAndRemoveTask();
+                System.exit(1);
             }
         };
         getWindow().setFlags(
@@ -94,12 +93,6 @@ public class MainActivity extends AppCompatActivity {
             private int mOriginalOrientation;
             private int mOriginalSystemUiVisibility;
 
-            public Bitmap getDefaultVideoPoster() {
-                if (mainActivity == null) {
-                    return null;
-                }
-                return BitmapFactory.decodeResource(mainActivity.getApplicationContext().getResources(), 2130837573);
-            }
             @Override
             public void onHideCustomView() {
                 ((FrameLayout) mainActivity.getWindow().getDecorView()).removeView(this.mCustomView);

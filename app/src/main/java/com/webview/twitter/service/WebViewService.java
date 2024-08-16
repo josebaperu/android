@@ -115,10 +115,11 @@ public class WebViewService extends Service {
     }
 
     private void destroyService() {
+        this.onDestroy();
         sendMessageToActivity();
         stopForeground(true);
         stopSelf();
-        onDestroy();
+
     }
 
     private void sendMessageToActivity() {
