@@ -83,9 +83,6 @@ public class MainActivity extends AppCompatActivity {
                             ";})()");
                 }
                 if ("DESTROY".equals(extra)) {
-                    mWebView.loadUrl("javascript:(function() { " +
-                            toggle +
-                            ";})()");
                     handleObserverDestroy();
                 }
             }
@@ -237,10 +234,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mWebView.loadUrl("javascript:(function() { " +
-                toggle +
-                ";})()");
         handleObserverDestroy();
+        System.exit(1);
     }
 
     private void save(String key, String value) {
