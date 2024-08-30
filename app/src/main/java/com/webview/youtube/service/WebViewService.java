@@ -51,7 +51,7 @@ public class WebViewService extends Service {
                 | PlaybackStateCompat.ACTION_PLAY_PAUSE
                 | PlaybackStateCompat.ACTION_SKIP_TO_NEXT;
         playbackStateBuilder.setActions(stateActions);
-        ytIcon = BitmapFactory.decodeResource(getResources(), R.drawable.icons8_youtube_48);
+        ytIcon = BitmapFactory.decodeResource(getResources(), R.drawable.youtube);
 
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "YT:wakelock");
