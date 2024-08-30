@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
 
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
-        webSettings.setAppCacheEnabled(true);
+        //webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);

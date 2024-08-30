@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaMetadata;
 import android.os.Binder;
 import android.os.Build;
@@ -56,7 +57,7 @@ public class WebViewService extends Service {
         super.onCreate();
 
 
-        spotifyIcon = BitmapFactory.decodeResource(getResources(), R.drawable.icons8_spotify_48);
+        spotifyIcon = BitmapFactory.decodeResource(getResources(), R.drawable._545516_spotify_logo_socialmedia_user_interface_icon);
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OS:wakelock");
         mediaSession = new MediaSessionCompat(getApplicationContext(), "OS:mediaService");
@@ -66,9 +67,6 @@ public class WebViewService extends Service {
         mediaSession.setActive(true);
         mediaStyle.setShowActionsInCompactView(0, 1, 2);
         mediaStyle.setShowCancelButton(true);
-    }
-    private String getValue() {
-        return PreferenceManager.getDefaultSharedPreferences(this).getString("PLAYING", "");
     }
 
     private void save(String value) {
@@ -89,8 +87,7 @@ public class WebViewService extends Service {
             if (action.equals("PLAYING") && null != builder) {
                 Bundle b = intent.getExtras();
                 String msg = b != null && b.containsKey("PLAYING") ? b.getString("PLAYING") : "";
-                String value = getValue();
-                if (msg != null && !msg.equals(value)) {
+                if (msg != null) {
                     save(msg);
                     String[] metadataArray = msg.split("-");
                     boolean isValidMetadata = metadataArray.length > 0;
@@ -166,6 +163,8 @@ public class WebViewService extends Service {
                             .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setSmallIcon(android.R.color.transparent)
                             .setContentIntent(mainPendingIntent)
+                            .setLargeIcon(spotifyIcon)
+                            .setColor(Color.parseColor("#45A27D"))
                             .setDeleteIntent(deletePendingIntent)
                             .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
                             .setOngoing(true)

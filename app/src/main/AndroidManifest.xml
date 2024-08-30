@@ -39,7 +39,7 @@
         <service
             android:name="com.webview.openspotify.service.WebViewService"
             android:enabled="true"
-            android:exported="false"
+            android:exported="true"
             android:stopWithTask="true"
             android:foregroundServiceType="mediaPlayback">
         </service>
