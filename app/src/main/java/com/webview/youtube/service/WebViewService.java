@@ -11,6 +11,7 @@ import android.app.Service;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaMetadata;
 import android.os.Binder;
 import android.os.Build;
@@ -128,6 +129,9 @@ public class WebViewService extends Service {
                             .setContentIntent(mainPendingIntent)
                             .setDeleteIntent(deletePendingIntent)
                             .setSmallIcon(android.R.color.transparent)
+                            .setLargeIcon(ytIcon)
+                            .setColorized(true)
+                            .setColor(Color.parseColor("#E77200"))
                             .setOngoing(true)
                             .setBadgeIconType(androidx.core.app.NotificationCompat.BADGE_ICON_NONE)
                             .setOnlyAlertOnce(true)
