@@ -70,10 +70,6 @@ public class WebViewService extends Service {
         mediaStyle.setShowCancelButton(true);
     }
 
-    private String getValue() {
-        return PreferenceManager.getDefaultSharedPreferences(this).getString("PLAYING", "");
-    }
-
     private void save(String value) {
         SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
         editor.putString("PLAYING", value);
@@ -92,8 +88,7 @@ public class WebViewService extends Service {
             if (action.equals("PLAYING") && null != builder) {
                 Bundle b = intent.getExtras();
                 String msg = b != null && b.containsKey("PLAYING") ? b.getString("PLAYING") : "";
-                String value = getValue();
-                if (msg != null && !msg.equals(value)) {
+                if (msg != null ) {
                     save(msg);
                     String[] metadataArray = msg.split("-");
                     boolean isValidMetadata = metadataArray.length > 0;
