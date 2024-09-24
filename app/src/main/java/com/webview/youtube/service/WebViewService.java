@@ -108,11 +108,7 @@ public class WebViewService extends Service {
                             builder.setSubText("YouTube");
                             manager.notify(1, builder.build());
                         }
-
-
                     }
-
-
 
                     Intent mainIntent = new Intent(this, MainActivity.class);
                     PendingIntent mainPendingIntent = PendingIntent.getActivity(this,
