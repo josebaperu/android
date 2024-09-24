@@ -36,6 +36,9 @@ public class WebViewService extends Service {
     private androidx.media.app.NotificationCompat.MediaStyle mediaStyle;
     private MediaSessionCompat mediaSession;
     private Bitmap ytIcon;
+
+    private NotificationCompat.Builder builder;
+
     /**
      * Returns the instance of the service
      */
@@ -59,6 +62,8 @@ public class WebViewService extends Service {
         mediaSession = new MediaSessionCompat(getApplicationContext(), "YT:mediaService");
         mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle();
         mediaSession.setPlaybackState(playbackStateBuilder.build());
+        mediaSession.setCallback(callback);
+        mediaSession.setActive(true);
         mediaStyle.setShowActionsInCompactView(0, 1, 2);
         mediaStyle.setShowCancelButton(true);
     }
@@ -83,20 +88,32 @@ public class WebViewService extends Service {
                     break;
                 case "START":
                     createNotificationChannel();
+                    if( builder != null){
+                        mediaSession.setMetadata(new MediaMetadataCompat.Builder()
+                                .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, ytIcon)
+                                .putBitmap(MediaMetadata.METADATA_KEY_ART, ytIcon)
+                                .putLong(MediaMetadata.METADATA_KEY_DURATION, -1L)
+                                .putString(MediaMetadata.METADATA_KEY_ARTIST, "playback")
+                                .putString(MediaMetadata.METADATA_KEY_TITLE, "YouTube")
+                                .putString(MediaMetadata.METADATA_KEY_ALBUM, "YouTube")
+                                .build());
+                        mediaStyle.setMediaSession(mediaSession.getSessionToken());
+                        mediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
+                                .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
+                                .build());
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+                            manager = getSystemService(NotificationManager.class);
+                            builder.setContentText("playback");
+                            builder.setContentTitle("YouTube");
+                            builder.setSubText("YouTube");
+                            manager.notify(1, builder.build());
+                        }
 
-                    mediaSession.setActive(true);
-                    mediaSession.setMetadata(new MediaMetadataCompat.Builder()
-                            .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, ytIcon)
-                            .putBitmap(MediaMetadata.METADATA_KEY_ART, ytIcon)
-                            .putLong(MediaMetadata.METADATA_KEY_DURATION, -1L)
-                            .putString(MediaMetadata.METADATA_KEY_ARTIST, "playback")
-                            .putString(MediaMetadata.METADATA_KEY_TITLE, "YouTube")
-                            .putString(MediaMetadata.METADATA_KEY_ALBUM, "YouTube")
-                            .build());
-                    mediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                            .setState(PlaybackStateCompat.STATE_PLAYING, 0, 1f)
-                            .build());
-                    mediaSession.setCallback(callback);
+
+                    }
+
+
+
                     Intent mainIntent = new Intent(this, MainActivity.class);
                     PendingIntent mainPendingIntent = PendingIntent.getActivity(this,
                             0, mainIntent, PendingIntent.FLAG_IMMUTABLE);
@@ -123,8 +140,7 @@ public class WebViewService extends Service {
                             PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
 
-                    Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                            .setPriority(NotificationCompat.PRIORITY_MAX)
+                    builder = new NotificationCompat.Builder(this, CHANNEL_ID)                            .setPriority(NotificationCompat.PRIORITY_MAX)
                             .setVisibility(androidx.core.app.NotificationCompat.VISIBILITY_PUBLIC)
                             .setContentIntent(mainPendingIntent)
                             .setDeleteIntent(deletePendingIntent)
@@ -145,9 +161,8 @@ public class WebViewService extends Service {
                             .setSubText("YouTube")
                             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent)
                             .addAction(android.R.drawable.ic_media_play, "PLAY", togglePendingIntent)
-                            .addAction(android.R.drawable.ic_media_next , "NEXT", nextPendingIntent)
-                            .build();
-                    startForeground(1, notification);
+                            .addAction(android.R.drawable.ic_media_next , "NEXT", nextPendingIntent);
+                    startForeground(1, builder.build());
                     break;
             }
         }
