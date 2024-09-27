@@ -1,4 +1,8 @@
 const observer = new MutationObserver(mutations => {
+  let search = document.querySelector("ytmusic-nav-bar[is-mweb]:not([user-logged-in]) .center-content.ytmusic-nav-bar");
+  if(!!search){
+    search.style.display = "block";
+  }
   let author = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(2)");
   let track = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(1)");
   if (!!author && !!track) {
