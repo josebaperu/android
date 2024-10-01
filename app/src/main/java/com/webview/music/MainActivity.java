@@ -16,6 +16,8 @@ import android.view.WindowManager;
 import android.webkit.ConsoleMessage;
 import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -32,12 +34,14 @@ import com.webview.music.service.WebViewService;
 import com.webview.music.webview.MediaWebView;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
-
+    private final static ByteArrayInputStream EMPTY = new ByteArrayInputStream("".getBytes());
+    private final static WebResourceResponse EMPTY_WEBRESOURCE = new WebResourceResponse("text/plain", "utf-8", null);
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "YOUTUBE_MUSIC";
@@ -165,6 +169,18 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                if (url.contains("log") || url.contains("generate") || url.contains("googleusercontent")){
+                    return new WebResourceResponse(
+                            "text/plain",
+                            "UTF-8",
+                            null);
+                } else {
+                    return null;
+                }
+            }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;
@@ -212,7 +228,6 @@ public class MainActivity extends AppCompatActivity {
 
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(true);
-        //webSettings.setAppCacheEnabled(true);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);   // Enable this only if you want pop-ups!
         webSettings.setMediaPlaybackRequiresUserGesture(true);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
@@ -225,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setSupportZoom(true);
         webSettings.setBuiltInZoomControls(true);
         webSettings.setDisplayZoomControls(false);
-        webSettings.setUserAgentString("Mozilla/5.0 (Macintosh; Intel Mac OS X 14_1) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.1 Safari/605.1.15");
+        //webSettings.setUserAgentString("Mozilla/5.0 (X11; Linux i686; rv:130.0) Gecko/20100101 Firefox/130.0");
 
         if (WebViewFeature.isFeatureSupported(WebViewFeature.FORCE_DARK)) {
             WebSettingsCompat.setForceDark(webSettings, WebSettingsCompat.FORCE_DARK_ON);
