@@ -55,6 +55,11 @@ public class WebViewService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        PlaybackStateCompat.Builder playbackStateBuilder = new PlaybackStateCompat.Builder();
+        long stateActions = PlaybackStateCompat.ACTION_PLAY
+                | PlaybackStateCompat.ACTION_PLAY_PAUSE
+                | PlaybackStateCompat.ACTION_SKIP_TO_NEXT;
+        playbackStateBuilder.setActions(stateActions);
 
 
         spotifyIcon = BitmapFactory.decodeResource(getResources(), R.drawable._545516_spotify_logo_socialmedia_user_interface_icon);
@@ -62,7 +67,7 @@ public class WebViewService extends Service {
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "OS:wakelock");
         mediaSession = new MediaSessionCompat(getApplicationContext(), "OS:mediaService");
         mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle();
-
+        mediaSession.setPlaybackState(playbackStateBuilder.build());
         mediaSession.setCallback(callback);
         mediaSession.setActive(true);
         mediaStyle.setShowActionsInCompactView(0, 1, 2);
