@@ -56,7 +56,11 @@ public class WebViewService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        PlaybackStateCompat.Builder playbackStateBuilder = new PlaybackStateCompat.Builder();
+        long stateActions = PlaybackStateCompat.ACTION_PLAY
+                | PlaybackStateCompat.ACTION_PLAY_PAUSE
+                | PlaybackStateCompat.ACTION_SKIP_TO_NEXT;
+        playbackStateBuilder.setActions(stateActions);
 
         ytmIcon = BitmapFactory.decodeResource(getResources(), R.drawable.music);
         PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
@@ -66,6 +70,7 @@ public class WebViewService extends Service {
 
         mediaSession.setCallback(callback);
         mediaSession.setActive(true);
+        mediaSession.setPlaybackState(playbackStateBuilder.build());
         mediaStyle.setShowActionsInCompactView(0, 1, 2);
         mediaStyle.setShowCancelButton(true);
     }

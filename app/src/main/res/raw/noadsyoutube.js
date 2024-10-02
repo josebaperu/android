@@ -1,12 +1,19 @@
 const observer = new MutationObserver(mutations => {
+
   let search = document.querySelector("ytmusic-nav-bar[is-mweb]:not([user-logged-in]) .center-content.ytmusic-nav-bar");
-  if(!!search){
+  if(!!search && search.style.display !== "block"){
     search.style.display = "block";
   }
-  let author = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(2)");
+  let author = document.querySelector("yt-simple-endpoint style-scope yt-formatted-string:nth-child(2)");
   let track = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(1)");
   if (!!author && !!track) {
       console.log("Playing : " + author.title + " - " + track.title);
+  } else {
+    let authDesktop = document.querySelector(".byline.style-scope.ytmusic-player-bar.complex-string").title.split("•")[0];
+    let titleDesktop = document.querySelector(".byline.style-scope.ytmusic-player-bar.complex-string").title.split("•")[1];
+    if (!!authDesktop && !!titleDesktop) {
+        console.log("Playing : " + authDesktop + " - " + titleDesktop);
+    }
   }
   let muteButton = document.querySelector('button.ytp-unmute.ytp-popup.ytp-button');
   if(!!muteButton && muteButton.style.display === '') {
