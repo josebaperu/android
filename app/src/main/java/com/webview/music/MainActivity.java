@@ -169,18 +169,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            @Override
-            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-                String url = request.getUrl().toString();
-                if (url.contains("log") || url.contains("generate") || url.contains("googleusercontent")){
-                    return new WebResourceResponse(
-                            "text/plain",
-                            "UTF-8",
-                            null);
-                } else {
-                    return null;
-                }
-            }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
             private View mCustomView;

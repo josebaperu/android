@@ -1,29 +1,34 @@
-const observer = new MutationObserver(mutations => {
   let search = document.querySelector("ytmusic-nav-bar[is-mweb]:not([user-logged-in]) .center-content.ytmusic-nav-bar");
+  let author = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(2)");
+  let track = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(1)");
+  let muteButton = document.querySelector('button.ytp-unmute.ytp-popup.ytp-button');
+  let dismissBtn = document.querySelector('yt-button-renderer.dismiss-button.style-scope.ytmusic-mealbar-promo-renderer > yt-button-shape > button > div');
+  let movie_player = document.querySelector('ytmusic-player#player');
+  let player_container = document.querySelector('#main-panel.ytmusic-player-page');
+  let skipButtons = document.querySelectorAll(".ytp-ad-skip-button");
+  let overlayAds = document.querySelectorAll(".ytp-ad-overlay-slot");
+
+const observer = new MutationObserver(mutations => {
+  !!document.querySelectorAll('.image') && document.querySelectorAll('.image').length > 0 ? document.querySelectorAll('.image').forEach( i => i.style.display = 'none'): '';
   if(!!search){
     search.style.display = "block";
   }
-  let author = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(2)");
-  let track = document.querySelector("yt-formatted-string.ytmusic-player-controls:nth-child(1)");
+
   if (!!author && !!track) {
       console.log("Playing : " + author.title + " - " + track.title);
   }
-  let muteButton = document.querySelector('button.ytp-unmute.ytp-popup.ytp-button');
   if(!!muteButton && muteButton.style.display === '') {
       muteButton.click();
   }
-  let dismissBtn = document.querySelector('yt-button-renderer.dismiss-button.style-scope.ytmusic-mealbar-promo-renderer > yt-button-shape > button > div');
   if(!!dismissBtn){
     dismissBtn.click();
   }
 
-  let movie_player = document.querySelector('ytmusic-player#player');
   if(!!movie_player) {
       movie_player.style.display = 'none';
   }
 
 
-  let player_container = document.querySelector('#main-panel.ytmusic-player-page');
   if(!!player_container){
       player_container.style.height = 'unset';
   }
@@ -36,7 +41,6 @@ const observer = new MutationObserver(mutations => {
     if (video) {
 		video.currentTime = video.duration;
 
-		let skipButtons = document.querySelectorAll(".ytp-ad-skip-button");
 
 		for (let skipButton of skipButtons) {
 		  skipButton.click();
@@ -44,7 +48,6 @@ const observer = new MutationObserver(mutations => {
     }
   }
 
-  let overlayAds = document.querySelectorAll(".ytp-ad-overlay-slot");
 
   for (let overlayAd of overlayAds) {
     overlayAd.style.visibility = "hidden";
