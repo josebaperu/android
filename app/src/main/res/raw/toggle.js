@@ -1,11 +1,1 @@
-        let toggle = document.querySelector('yt-icon-button.play-pause-button > button:nth-child(1)');
-        let toggleWeb = document.querySelector("#play-pause-button-mweb");
-        let toggleWebDesktop = document.querySelector("#play-pause-button");
-
-        if(!!toggle) {
-            toggle.click();
-         }else if(!!toggleWeb){
-            toggleWeb.click();
-         } else if(!!toggleWebDesktop){
-            toggleWebDesktop.click();
-         }
+let toggle=document.querySelector("yt-icon-button.play-pause-button > button:nth-child(1)"),toggleWeb=document.querySelector("#play-pause-button-mweb"),toggleWebDesktop=document.querySelector("#play-pause-button");toggle?toggle.click():toggleWeb?toggleWeb.click():toggleWebDesktop&&toggleWebDesktop.click();
