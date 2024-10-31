@@ -33,7 +33,7 @@ setInterval(function() {
         search.style.display = "block";
     }
 
-    if (!!muteButton) {
+    if (!!muteButton && muteButton.style.display === '') {
         muteButton.click();
     }
     if (!!dismissBtn) {
