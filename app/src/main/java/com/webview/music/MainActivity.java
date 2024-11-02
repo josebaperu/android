@@ -41,7 +41,7 @@ import java.io.InputStreamReader;
 
 public class MainActivity extends AppCompatActivity {
     private final static ByteArrayInputStream EMPTY = new ByteArrayInputStream("".getBytes());
-    private final static WebResourceResponse EMPTY_WEBRESOURCE = new WebResourceResponse("text/plain", "utf-8", null);
+    private final static WebResourceResponse EMPTY_WEBRESOURCE = new WebResourceResponse("text/plain", "utf-8", EMPTY);
     private MediaWebView mWebView;
     private final Activity mainActivity = this; // If you are in activity
     public final static String RECEIVER = "YOUTUBE_MUSIC";
@@ -134,6 +134,14 @@ public class MainActivity extends AppCompatActivity {
         mWebView = new MediaWebView(MainActivity.this);
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+                String url = request.getUrl().toString();
+                if(url.contains("googleusercontent") || url.contains("img")){
+                    return EMPTY_WEBRESOURCE;
+                }
+                return super.shouldInterceptRequest(view, request);
+            }
 
             @Override
             public void doUpdateVisitedHistory(WebView view,
@@ -175,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
             private WebChromeClient.CustomViewCallback mCustomViewCallback;
             private int mOriginalOrientation;
             private int mOriginalSystemUiVisibility;
+
 
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
