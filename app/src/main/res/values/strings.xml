@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">YT</string>
+    <string name="notifications_denied">Enable notifications to get playback controls</string>
 </resources>
