@@ -15,16 +15,16 @@ function clickSkip(selector) {
     return false;
 }
 
-if (clickSkip(".next-button") || clickSkip("[aria-label='Next']")) {
+if (clickSkip(".previous-button") || clickSkip("[aria-label='Previous']")) {
     // clicked
 } else {
     var bar = document.querySelector("ytmusic-player-bar");
-    if (bar && typeof bar.onNextButtonTap_ === "function") {
-        bar.onNextButtonTap_();
+    if (bar && typeof bar.onPreviousButtonTap_ === "function") {
+        bar.onPreviousButtonTap_();
     } else {
         var api = bar && (bar.playerApi || bar.playerApi_);
-        if (api && typeof api.nextVideo === "function") {
-            api.nextVideo();
+        if (api && typeof api.previousVideo === "function") {
+            api.previousVideo();
         }
     }
 }
