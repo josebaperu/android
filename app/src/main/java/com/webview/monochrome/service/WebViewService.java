@@ -1,6 +1,6 @@
-package com.webview.music.service;
+package com.webview.monochrome.service;
 
-import static com.webview.music.MainActivity.RECEIVER;
+import static com.webview.monochrome.MainActivity.RECEIVER;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
@@ -26,14 +26,14 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
 import androidx.core.content.IntentCompat;
 
-import com.webview.music.MainActivity;
-import com.webview.music.R;
+import com.webview.monochrome.MainActivity;
+import com.webview.monochrome.R;
 
 public class WebViewService extends Service {
 
     /** Watch the transport chain with: adb logcat -s YTM:D */
     private static final String TAG = "YTM";
-    private static final String APP_NAME = "YOUTUBE_MUSIC";
+    private static final String APP_NAME = "MONOCHROME";
     private static final String CHANNEL_ID = APP_NAME + "_CHANNEL_ID";
     private static final String CHANNEL_NAME = APP_NAME + "_CHANNEL_NAME";
     private static final int NOTIFICATION_ID = 1;
@@ -57,14 +57,15 @@ public class WebViewService extends Service {
     public void onCreate() {
         super.onCreate();
         PlaybackStateCompat.Builder playbackStateBuilder = new PlaybackStateCompat.Builder();
-        long stateActions = PlaybackStateCompat.ACTION_PLAY
-                | PlaybackStateCompat.ACTION_PAUSE
-                | PlaybackStateCompat.ACTION_PLAY_PAUSE
-                | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
-                | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS;
-        playbackStateBuilder.setActions(stateActions);
+        playbackStateBuilder
+                .setActions(PlaybackStateCompat.ACTION_PLAY
+                        | PlaybackStateCompat.ACTION_PAUSE
+                        | PlaybackStateCompat.ACTION_PLAY_PAUSE
+                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT
+                        | PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS)
+                .setState(PlaybackStateCompat.STATE_PAUSED, 0, 0f);
 
-        ytmIcon = BitmapFactory.decodeResource(getResources(), R.drawable.music);
+        ytmIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_monochrome);
         manager = getSystemService(NotificationManager.class);
         mediaSession = new MediaSessionCompat(getApplicationContext(), "YTM:mediaService");
         mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle();
@@ -73,121 +74,64 @@ public class WebViewService extends Service {
         mediaSession.setPlaybackState(playbackStateBuilder.build());
         mediaStyle.setShowActionsInCompactView(0, 1, 2);
         mediaStyle.setShowCancelButton(true);
+        // Do not MediaStyle.setMediaSession(): Samsung One UI then owns the
+        // shade entry as Now Playing and hides it when audio pauses or dies.
+        // The session stays active for lockscreen and headset controls.
         mediaSession.setMetadata(new MediaMetadataCompat.Builder()
                 .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, ytmIcon)
                 .putBitmap(MediaMetadata.METADATA_KEY_ART, ytmIcon)
                 .putLong(MediaMetadata.METADATA_KEY_DURATION, -1L)
                 .putString(MediaMetadata.METADATA_KEY_ARTIST, "playback")
-                .putString(MediaMetadata.METADATA_KEY_TITLE, "YouTube Music")
-                .putString(MediaMetadata.METADATA_KEY_ALBUM, "ytMusic")
+                .putString(MediaMetadata.METADATA_KEY_TITLE, "monochrome")
+                .putString(MediaMetadata.METADATA_KEY_ALBUM, "monochrome")
                 .build());
     }
 
     @SuppressLint("InlinedApi")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        if (intent == null) {
+        final String action = intent != null ? intent.getAction() : null;
+        Log.d(TAG, "svc: command " + action + " (startId=" + startId + ")");
+        if ("DESTROY".equals(action)) {
+            destroyService();
+            return START_NOT_STICKY;
+        }
+        // Sticky restart (null intent) and every later command must show the
+        // notification. startForegroundService() also requires startForeground()
+        // even when playback state did not change.
+        ensureNotification();
+        if (action == null) {
             return START_STICKY;
         }
-        final String action = intent.getAction();
-        Log.d(TAG, "svc: command " + action + " (startId=" + startId + ")");
-        if (action != null) {
-            mediaStyle.setMediaSession(mediaSession.getSessionToken());
-            switch (action) {
-                case "TOGGLE":
-                    sendMessageToActivity("TOGGLE");
-                    break;
-                case "PLAY":
-                    sendMessageToActivity("PLAY");
-                    break;
-                case "PAUSE":
-                    sendMessageToActivity("PAUSE");
-                    break;
-                case "STATE_PLAYING":
-                    publishPlaybackState(true);
-                    break;
-                case "STATE_PAUSED":
-                    publishPlaybackState(false);
-                    break;
-                case "METADATA":
-                    publishMetadata(
-                            intent.getStringExtra("AUTHOR"),
-                            intent.getStringExtra("TITLE"));
-                    break;
-                case "NEXT":
-                    sendMessageToActivity("NEXT");
-                    break;
-                case "PREVIOUS":
-                    sendMessageToActivity("PREVIOUS");
-                    break;
-                case "DESTROY":
-                    destroyService();
-                    break;
-                case "START":
-                    createNotificationChannel();
-                    Intent mainIntent = new Intent(this, MainActivity.class);
-                    mainIntent.setAction("OPEN");
-                    PendingIntent mainPendingIntent = PendingIntent.getActivity(this,
-                            0, mainIntent, PendingIntent.FLAG_IMMUTABLE);
-                    Intent deleteIntent = new Intent(this, WebViewService.class);
-                    deleteIntent.setAction("DESTROY");
-                    deletePendingIntent = PendingIntent.getService(this,
-                            0,
-                            deleteIntent,
-                            PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-                    Intent toggleIntent = new Intent(this, WebViewService.class);
-                    toggleIntent.setAction("TOGGLE");
-                    togglePendingIntent = PendingIntent.getService(this,
-                            0,
-                            toggleIntent,
-                            PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-                    Intent nextIntent = new Intent(this, WebViewService.class);
-                    nextIntent.setAction("NEXT");
-                    nextPendingIntent = PendingIntent.getService(this,
-                            0,
-                            nextIntent,
-                            PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-                    Intent previousIntent = new Intent(this, WebViewService.class);
-                    previousIntent.setAction("PREVIOUS");
-                    previousPendingIntent = PendingIntent.getService(this,
-                            0,
-                            previousIntent,
-                            PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-                    builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                            .setPriority(NotificationCompat.PRIORITY_MAX)
-                            .setSmallIcon(R.drawable.ic_notification)
-                            .setContentIntent(mainPendingIntent)
-                            .setLargeIcon(ytmIcon)
-                            .setColor(Color.parseColor("#8C90C8"))
-                            .setDeleteIntent(deletePendingIntent)
-                            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-                            .setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
-                            .setOnlyAlertOnce(true)
-                            .setStyle(mediaStyle)
-                            .setCategory(Notification.CATEGORY_SERVICE)
-                            .setColorized(true)
-                            .setOngoing(true)
-                            .setAllowSystemGeneratedContextualActions(true)
-                            .setContentTitle(title.isEmpty() ? "YouTube Music" : title)
-                            .setContentText(author.isEmpty() ? "playback" : author)
-                            .setSubText(title.isEmpty() ? "YouTube Music" : title)
-                            .addAction(android.R.drawable.ic_media_previous, "PREV", previousPendingIntent)
-                            .addAction(android.R.drawable.ic_media_play, "PLAY", togglePendingIntent)
-                            .addAction(android.R.drawable.ic_media_next, "NEXT", nextPendingIntent)
-                            .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent);
-                    ServiceCompat.startForeground(this, NOTIFICATION_ID, builder.build(),
-                            ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
-                    if (isPlaying != null) {
-                        boolean playing = isPlaying;
-                        isPlaying = null;
-                        publishPlaybackState(playing);
-                    }
-                    break;
-            }
+        switch (action) {
+            case "TOGGLE":
+                sendMessageToActivity("TOGGLE");
+                break;
+            case "PLAY":
+                sendMessageToActivity("PLAY");
+                break;
+            case "PAUSE":
+                sendMessageToActivity("PAUSE");
+                break;
+            case "STATE_PLAYING":
+                publishPlaybackState(true);
+                break;
+            case "STATE_PAUSED":
+                publishPlaybackState(false);
+                break;
+            case "METADATA":
+                publishMetadata(
+                        intent.getStringExtra("AUTHOR"),
+                        intent.getStringExtra("TITLE"));
+                break;
+            case "NEXT":
+                sendMessageToActivity("NEXT");
+                break;
+            case "PREVIOUS":
+                sendMessageToActivity("PREVIOUS");
+                break;
+            case "START":
+                break;
         }
         return START_STICKY;
     }
@@ -196,6 +140,12 @@ public class WebViewService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         return null;
+    }
+
+    @Override
+    public void onTimeout(int startId, int fgsType) {
+        Log.w(TAG, "svc: FGS timeout type=" + fgsType + "; re-asserting notification");
+        ensureNotification();
     }
 
     private void createNotificationChannel() {
@@ -212,6 +162,80 @@ public class WebViewService extends Service {
             serviceChannel.setSound(null, null);
             manager.createNotificationChannel(serviceChannel);
         }
+    }
+
+    private void buildNotification() {
+        createNotificationChannel();
+        Intent mainIntent = new Intent(this, MainActivity.class);
+        mainIntent.setAction("OPEN");
+        PendingIntent mainPendingIntent = PendingIntent.getActivity(this,
+                0, mainIntent, PendingIntent.FLAG_IMMUTABLE);
+        Intent deleteIntent = new Intent(this, WebViewService.class);
+        deleteIntent.setAction("DESTROY");
+        deletePendingIntent = PendingIntent.getService(this,
+                0,
+                deleteIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        Intent toggleIntent = new Intent(this, WebViewService.class);
+        toggleIntent.setAction("TOGGLE");
+        togglePendingIntent = PendingIntent.getService(this,
+                0,
+                toggleIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        Intent nextIntent = new Intent(this, WebViewService.class);
+        nextIntent.setAction("NEXT");
+        nextPendingIntent = PendingIntent.getService(this,
+                0,
+                nextIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        Intent previousIntent = new Intent(this, WebViewService.class);
+        previousIntent.setAction("PREVIOUS");
+        previousPendingIntent = PendingIntent.getService(this,
+                0,
+                previousIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+        builder = new NotificationCompat.Builder(this, CHANNEL_ID)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentIntent(mainPendingIntent)
+                .setLargeIcon(ytmIcon)
+                .setColor(Color.parseColor("#8C90C8"))
+                .setDeleteIntent(deletePendingIntent)
+                .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+                .setBadgeIconType(NotificationCompat.BADGE_ICON_NONE)
+                .setOnlyAlertOnce(true)
+                .setAutoCancel(false)
+                .setStyle(mediaStyle)
+                // SERVICE, not TRANSPORT: TRANSPORT is what One UI files under
+                // Now Playing and auto-hides when the stream is paused or dies.
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .setOngoing(true)
+                .setForegroundServiceBehavior(
+                        NotificationCompat.FOREGROUND_SERVICE_IMMEDIATE)
+                .setAllowSystemGeneratedContextualActions(false)
+                .addAction(android.R.drawable.ic_media_previous, "PREV", previousPendingIntent)
+                .addAction(android.R.drawable.ic_media_play, "PLAY", togglePendingIntent)
+                .addAction(android.R.drawable.ic_media_next, "NEXT", nextPendingIntent)
+                .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent);
+        applyNotificationText(builder);
+    }
+
+    private void ensureNotification() {
+        mediaSession.setActive(true);
+        if (builder == null) {
+            buildNotification();
+            if (isPlaying != null) {
+                boolean playing = isPlaying;
+                isPlaying = null;
+                publishPlaybackState(playing);
+                return;
+            }
+        }
+        postNotification();
     }
 
     private void destroyService() {
@@ -232,10 +256,12 @@ public class WebViewService extends Service {
      */
     private void publishPlaybackState(boolean playing) {
         if (isPlaying != null && isPlaying == playing) {
+            postNotification();
             return;
         }
         isPlaying = playing;
         Log.d(TAG, "svc: session state -> " + (playing ? "PLAYING" : "PAUSED"));
+        mediaSession.setActive(true);
         mediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
                 .setActions(PlaybackStateCompat.ACTION_PLAY
                         | PlaybackStateCompat.ACTION_PAUSE
@@ -245,7 +271,7 @@ public class WebViewService extends Service {
                 .setState(playing ? PlaybackStateCompat.STATE_PLAYING
                         : PlaybackStateCompat.STATE_PAUSED, 0, playing ? 1f : 0f)
                 .build());
-        if (builder == null || manager == null) {
+        if (builder == null) {
             return;
         }
         builder.clearActions()
@@ -255,27 +281,56 @@ public class WebViewService extends Service {
                         playing ? "PAUSE" : "PLAY", togglePendingIntent)
                 .addAction(android.R.drawable.ic_media_next, "NEXT", nextPendingIntent)
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, "STOP", deletePendingIntent);
-        manager.notify(NOTIFICATION_ID, builder.build());
+        applyNotificationText(builder);
+        postNotification();
     }
 
     private void publishMetadata(String newAuthor, String newTitle) {
         author = newAuthor != null ? newAuthor : "";
         title = newTitle != null ? newTitle : "";
+        mediaSession.setActive(true);
         mediaSession.setMetadata(new MediaMetadataCompat.Builder()
                 .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, ytmIcon)
                 .putBitmap(MediaMetadata.METADATA_KEY_ART, ytmIcon)
                 .putLong(MediaMetadata.METADATA_KEY_DURATION, -1L)
-                .putString(MediaMetadata.METADATA_KEY_ARTIST, author)
-                .putString(MediaMetadata.METADATA_KEY_TITLE, title)
-                .putString(MediaMetadata.METADATA_KEY_ALBUM, "ytMusic")
+                .putString(MediaMetadata.METADATA_KEY_ARTIST, displayArtist())
+                .putString(MediaMetadata.METADATA_KEY_TITLE, displayTitle())
+                .putString(MediaMetadata.METADATA_KEY_ALBUM, "monochrome")
                 .build());
-        if (builder == null || manager == null) {
+        if (builder == null) {
             return;
         }
-        builder.setContentTitle(title)
-                .setContentText(author)
-                .setSubText(title);
-        manager.notify(NOTIFICATION_ID, builder.build());
+        applyNotificationText(builder);
+        postNotification();
+    }
+
+    private String displayTitle() {
+        return title.isEmpty() ? "monochrome" : title;
+    }
+
+    private String displayArtist() {
+        return author.isEmpty() ? "playback" : author;
+    }
+
+    private void applyNotificationText(NotificationCompat.Builder target) {
+        String shownTitle = displayTitle();
+        String shownArtist = displayArtist();
+        target.setContentTitle(shownTitle)
+                .setContentText(shownArtist)
+                .setSubText(shownTitle)
+                .setOngoing(true);
+    }
+
+    private void postNotification() {
+        if (builder == null) {
+            return;
+        }
+        Notification notification = builder.build();
+        notification.flags |= Notification.FLAG_NO_CLEAR
+                | Notification.FLAG_ONGOING_EVENT
+                | Notification.FLAG_FOREGROUND_SERVICE;
+        ServiceCompat.startForeground(this, NOTIFICATION_ID, notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK);
     }
 
     private void sendMessageToActivity(String action) {

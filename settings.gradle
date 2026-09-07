@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "YT Music"
+rootProject.name = "monochrome"
 include ':app'

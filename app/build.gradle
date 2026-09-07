@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace 'com.webview.music'
+    namespace 'com.webview.monochrome'
     compileSdk 37
 
     defaultConfig {
-        applicationId "com.webview.music"
+        applicationId "com.webview.monochrome"
         // 24 is the floor for current AndroidX (appcompat needs 23, webkit needs 24).
         minSdk 24
         targetSdk 37
@@ -16,9 +16,13 @@ android {
     }
 
     buildTypes {
+        debug {
+            crunchPngs false
+        }
         release {
             minifyEnabled true
             shrinkResources true
+            crunchPngs false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

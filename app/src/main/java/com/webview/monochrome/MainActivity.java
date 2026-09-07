@@ -1,4 +1,4 @@
-package com.webview.music;
+package com.webview.monochrome;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
@@ -13,9 +13,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.webkit.JavascriptInterface;
 import android.webkit.CookieManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -37,42 +36,51 @@ import androidx.webkit.WebSettingsCompat;
 import androidx.webkit.WebViewCompat;
 import androidx.webkit.WebViewFeature;
 
-import com.webview.music.service.WebViewService;
-import com.webview.music.webview.MediaWebView;
+import com.webview.monochrome.service.WebViewService;
+import com.webview.monochrome.webview.MediaWebView;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
-    public final static String RECEIVER = "YOUTUBE_MUSIC";
+    public final static String RECEIVER = "MONOCHROME";
     /** Watch the transport chain with: adb logcat -s YTM:D */
     private static final String TAG = "YTM";
-    private final static String BASE_URL = "https://music.youtube.com/";
+    private final static String BASE_URL = "https://monochrome.tf/";
     private final static int NOTIFICATION_PERMISSION_REQUEST = 1;
 
     private MediaWebView mWebView;
-    private String script;
-    private String playback;
-    private String next;
-    private String previous;
-    private String toggle;
-    private String playScript;
-    private String pauseScript;
     private BroadcastReceiver receiver;
     /** Written from the WebView's JS thread, read from the main thread. */
     private volatile boolean playing;
 
-    private void startService() {
-        Intent serviceIntent = new Intent(this, WebViewService.class);
-        serviceIntent.setAction("START");
-        ContextCompat.startForegroundService(this, serviceIntent);
+    private void registerPlaybackReceiver() {
         // API 34+ requires an explicit export flag on every runtime-registered receiver.
         ContextCompat.registerReceiver(this, receiver, new IntentFilter(RECEIVER),
                 ContextCompat.RECEIVER_NOT_EXPORTED);
+    }
+
+    /** Keep the media notification up for as long as this activity's process is alive. */
+    private void startPlaybackService() {
+        startPlaybackService("START");
+    }
+
+    private void startPlaybackService(String action) {
+        Intent serviceIntent = new Intent(this, WebViewService.class);
+        serviceIntent.setAction(action);
+        startPlaybackService(serviceIntent);
+    }
+
+    private void startPlaybackService(Intent serviceIntent) {
+        if (isFinishing()) {
+            return;
+        }
+        try {
+            ContextCompat.startForegroundService(this, serviceIntent);
+        } catch (IllegalStateException e) {
+            Log.w(TAG, "act: startForegroundService failed; falling back", e);
+            startService(serviceIntent);
+        }
     }
 
     /** The media notification is the only playback control, so ask for it up front. */
@@ -86,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /** FLAG_FULLSCREEN is a no-op since API 30; system bars go through the insets controller. */
+    /** Used only for HTML5 fullscreen video, not for the normal browsing UI. */
     private void goFullscreen() {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         WindowInsetsControllerCompat controller =
@@ -96,16 +104,25 @@ public class MainActivity extends AppCompatActivity {
         controller.hide(WindowInsetsCompat.Type.systemBars());
     }
 
-    /** Wraps a raw script so its declarations stay out of the page's global scope. */
+    private void showSystemBars() {
+        WindowInsetsControllerCompat controller =
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
+        controller.show(WindowInsetsCompat.Type.systemBars());
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), true);
+    }
+
     private static String iife(String js) {
         return "(function() {" + js + "\n})();";
     }
 
-    /** evaluateJavascript avoids the percent/fragment decoding a javascript: URL suffers. */
     private void runScript(String js) {
         if (mWebView != null) {
             mWebView.evaluateJavascript(iife(js), null);
         }
+    }
+
+    private void runCommand(String fn) {
+        runScript("if (window." + fn + ") window." + fn + "();");
     }
 
     /** The user asked to quit from the notification. onDestroy() does the teardown. */
@@ -130,13 +147,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        script = fileToStr(R.raw.script);
-        playback = fileToStr(R.raw.playback);
-        toggle = fileToStr(R.raw.toggle);
-        playScript = fileToStr(R.raw.play);
-        pauseScript = fileToStr(R.raw.pause);
-        next = fileToStr(R.raw.next);
-        previous = fileToStr(R.raw.previous);
 
         receiver = new BroadcastReceiver() {
             @Override
@@ -144,19 +154,19 @@ public class MainActivity extends AppCompatActivity {
                 String extra = intent.getStringExtra("ACTION");
                 Log.d(TAG, "act: <- service " + extra);
                 if ("TOGGLE".equals(extra)) {
-                    runScript(toggle);
+                    runCommand("__monoToggle");
                 }
                 if ("PLAY".equals(extra)) {
-                    runScript(playScript);
+                    runCommand("__monoPlay");
                 }
                 if ("PAUSE".equals(extra)) {
-                    runScript(pauseScript);
+                    runCommand("__monoPause");
                 }
                 if ("NEXT".equals(extra)) {
-                    runScript(next);
+                    runCommand("__monoNext");
                 }
                 if ("PREVIOUS".equals(extra)) {
-                    runScript(previous);
+                    runCommand("__monoPrev");
                 }
                 if ("DESTROY".equals(extra)) {
                     quit();
@@ -164,24 +174,12 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true);
-            setTurnScreenOn(true);
-        } else {
-            getWindow().addFlags(
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        }
-        goFullscreen();
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
             getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.black));
         }
         requestNotificationPermission();
-        startService();
+        registerPlaybackReceiver();
+        startPlaybackService();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.hide();
@@ -218,8 +216,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageFinished(WebView view, String url) {
-                runScript(script);
-                runScript(playback);
+                runScript(PlaybackJs.HOOK);
             }
         });
         mWebView.setWebChromeClient(new WebChromeClient() {
@@ -236,7 +233,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                     mCustomView = null;
                 }
-                goFullscreen();
+                showSystemBars();
                 MainActivity.this.setRequestedOrientation(mOriginalOrientation);
                 if (mCustomViewCallback != null) {
                     mCustomViewCallback.onCustomViewHidden();
@@ -264,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setJavaScriptEnabled(true);
         webSettings.setAllowFileAccess(false);
         webSettings.setJavaScriptCanOpenWindowsAutomatically(false);
-        webSettings.setMediaPlaybackRequiresUserGesture(true);
+        webSettings.setMediaPlaybackRequiresUserGesture(false);
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setBlockNetworkLoads(false);
         webSettings.setDomStorageEnabled(true);
@@ -280,12 +277,11 @@ public class MainActivity extends AppCompatActivity {
         if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
             WebSettingsCompat.setAlgorithmicDarkeningAllowed(webSettings, true);
         }
-        // onPageFinished runs after the player response is already parsed,
-        // so the ad blocker also goes in at document start where that is supported.
         if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
-            Set<String> youtubeOrigins = Collections.singleton("https://*.youtube.com");
-            WebViewCompat.addDocumentStartJavaScript(mWebView, iife(script), youtubeOrigins);
-            WebViewCompat.addDocumentStartJavaScript(mWebView, iife(playback), youtubeOrigins);
+            Set<String> origins = new HashSet<>();
+            origins.add("https://monochrome.tf");
+            origins.add("https://*.monochrome.tf");
+            WebViewCompat.addDocumentStartJavaScript(mWebView, iife(PlaybackJs.HOOK), origins);
         }
         mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
         mWebView.setScrollbarFadingEnabled(false);
@@ -294,10 +290,6 @@ public class MainActivity extends AppCompatActivity {
         mWebView.loadUrl(getValue("url"));
     }
 
-    /**
-     * Lets the page tell us whether audio is actually rolling, so the media session
-     * and the notification's play/pause button reflect reality instead of a guess.
-     */
     private class PlaybackBridge {
         @JavascriptInterface
         public void setPlaying(boolean isPlaying) {
@@ -306,9 +298,7 @@ public class MainActivity extends AppCompatActivity {
             }
             playing = isPlaying;
             Log.d(TAG, "act: page reports " + (isPlaying ? "PLAYING" : "PAUSED"));
-            Intent stateIntent = new Intent(MainActivity.this, WebViewService.class);
-            stateIntent.setAction(isPlaying ? "STATE_PLAYING" : "STATE_PAUSED");
-            ContextCompat.startForegroundService(MainActivity.this, stateIntent);
+            startPlaybackService(isPlaying ? "STATE_PLAYING" : "STATE_PAUSED");
         }
 
         @JavascriptInterface
@@ -317,8 +307,14 @@ public class MainActivity extends AppCompatActivity {
             metaIntent.setAction("METADATA");
             metaIntent.putExtra("AUTHOR", author != null ? author : "");
             metaIntent.putExtra("TITLE", title != null ? title : "");
-            ContextCompat.startForegroundService(MainActivity.this, metaIntent);
+            startPlaybackService(metaIntent);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startPlaybackService();
     }
 
     @Override
@@ -349,11 +345,14 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == NOTIFICATION_PERMISSION_REQUEST
-                && (grantResults.length == 0
-                || grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
-            Log.w(TAG, "notifications denied; playback controls will be hidden");
-            Toast.makeText(this, R.string.notifications_denied, Toast.LENGTH_LONG).show();
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST) {
+            if (grantResults.length > 0
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startPlaybackService();
+            } else {
+                Log.w(TAG, "notifications denied; playback controls will be hidden");
+                Toast.makeText(this, R.string.notifications_denied, Toast.LENGTH_LONG).show();
+            }
         }
     }
 
@@ -364,8 +363,9 @@ public class MainActivity extends AppCompatActivity {
                 if (mWebView != null && mWebView.canGoBack()) {
                     mWebView.goBack();
                 } else {
-                    setEnabled(false);
-                    getOnBackPressedDispatcher().onBackPressed();
+                    // Home, not finish: Samsung kills the process when the
+                    // root activity is finished, which also drops playback.
+                    moveTaskToBack(true);
                 }
             }
         });
@@ -391,19 +391,5 @@ public class MainActivity extends AppCompatActivity {
      */
     private SharedPreferences prefs() {
         return getSharedPreferences(getPackageName() + "_preferences", MODE_PRIVATE);
-    }
-
-    private String fileToStr(int resource) {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(
-                getResources().openRawResource(resource), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append('\n');
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "could not read raw resource " + resource, e);
-        }
-        return sb.toString();
     }
 }
