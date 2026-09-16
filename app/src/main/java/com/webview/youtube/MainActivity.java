@@ -25,11 +25,11 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
     /** Watch the whole transport chain with: adb logcat -s YT:D */
     private static final String TAG = "YT";
     private final static String BASE_URL = "https://www.youtube.com/";
-    private final static int NOTIFICATION_PERMISSION_REQUEST = 1;
     private String script;
     private String toggle;
     private String next;
@@ -68,6 +67,13 @@ public class MainActivity extends AppCompatActivity {
     private ActionReceiver receiver;
     /** Written from the WebView's JS thread, read from the main thread. */
     private volatile boolean playing;
+    private final ActivityResultLauncher<String> notificationPermissionLauncher =
+            registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                if (!Boolean.TRUE.equals(granted)) {
+                    Log.w(TAG, "notifications denied; playback controls will be hidden");
+                    Toast.makeText(this, R.string.notifications_denied, Toast.LENGTH_LONG).show();
+                }
+            });
 
     private void startService() {
         Intent serviceIntent = new Intent(this, WebViewService.class);
@@ -83,9 +89,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.POST_NOTIFICATIONS},
-                    NOTIFICATION_PERMISSION_REQUEST);
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
         }
     }
 
@@ -166,23 +170,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
-        getWindow().addFlags(
-                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
-                        WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
-            setShowWhenLocked(true);
-            setTurnScreenOn(true);
-        } else {
-            getWindow().addFlags(
-                    WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
-                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
-                            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
-        }
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            int black = ContextCompat.getColor(this, R.color.black);
-            getWindow().setStatusBarColor(black);
-            getWindow().setNavigationBarColor(black);
-        }
+        keepAwakeOnLockScreen();
 
         requestNotificationPermission();
         startService();
@@ -283,7 +271,6 @@ public class MainActivity extends AppCompatActivity {
         webSettings.setCacheMode(WebSettings.LOAD_DEFAULT);
         webSettings.setBlockNetworkLoads(false);
         webSettings.setDomStorageEnabled(true);
-        webSettings.setDatabaseEnabled(true);
 
         webSettings.setUseWideViewPort(true);
         webSettings.setLoadWithOverviewMode(true);
@@ -381,16 +368,28 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == NOTIFICATION_PERMISSION_REQUEST
-                && (grantResults.length == 0
-                || grantResults[0] != PackageManager.PERMISSION_GRANTED)) {
-            Log.w(TAG, "notifications denied; playback controls will be hidden");
-            Toast.makeText(this, R.string.notifications_denied, Toast.LENGTH_LONG).show();
+    /**
+     * setShowWhenLocked/setTurnScreenOn exist from API 27. The window flags they
+     * replaced are the only option on API 24–26.
+     */
+    private void keepAwakeOnLockScreen() {
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_ALLOW_LOCK_WHILE_SCREEN_ON);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true);
+            setTurnScreenOn(true);
+        } else {
+            addPreOMr1LockScreenWindowFlags();
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void addPreOMr1LockScreenWindowFlags() {
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON |
+                        WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
     }
 
     private void save(String key, String value) {

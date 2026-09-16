@@ -8,23 +8,21 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.media.MediaMetadata;
 import android.os.Build;
 import android.os.IBinder;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaSessionCompat;
-import android.support.v4.media.session.PlaybackStateCompat;
+import android.os.Looper;
 import android.util.Log;
 import android.view.KeyEvent;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.ServiceCompat;
 import androidx.core.content.IntentCompat;
-
-import android.content.pm.ServiceInfo;
+import androidx.media3.session.MediaSession;
+import androidx.media3.session.MediaStyleNotificationHelper;
 
 import com.webview.youtube.MainActivity;
 import com.webview.youtube.R;
@@ -39,8 +37,8 @@ public class WebViewService extends Service {
     private static final String CHANNEL_NAME = APP_NAME + "_CHANNEL_NAME";
     private static final int NOTIFICATION_ID = 1;
     private NotificationManager manager;
-    private androidx.media.app.NotificationCompat.MediaStyle mediaStyle;
-    private MediaSessionCompat mediaSession;
+    private MediaSession mediaSession;
+    private WebViewPlayer player;
     private Bitmap ytIcon;
 
     private NotificationCompat.Builder builder;
@@ -55,31 +53,24 @@ public class WebViewService extends Service {
     public void onCreate() {
         super.onCreate();
 
-        PlaybackStateCompat.Builder playbackStateBuilder = new PlaybackStateCompat.Builder();
-        playbackStateBuilder
-                .setActions(PlaybackStateCompat.ACTION_PLAY
-                        | PlaybackStateCompat.ACTION_PAUSE
-                        | PlaybackStateCompat.ACTION_PLAY_PAUSE
-                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
-                .setState(PlaybackStateCompat.STATE_PAUSED, 0, 0f);
         ytIcon = BitmapFactory.decodeResource(getResources(), R.drawable.youtube);
-
         manager = getSystemService(NotificationManager.class);
-        mediaSession = new MediaSessionCompat(getApplicationContext(), "YT:mediaService");
-        mediaStyle = new androidx.media.app.NotificationCompat.MediaStyle();
-        mediaSession.setPlaybackState(playbackStateBuilder.build());
-        mediaSession.setCallback(callback);
-        mediaSession.setActive(true);
-        mediaStyle.setShowActionsInCompactView(0, 1, 2);
-        mediaStyle.setShowCancelButton(true);
-        mediaSession.setMetadata(new MediaMetadataCompat.Builder()
-                .putBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART, ytIcon)
-                .putBitmap(MediaMetadata.METADATA_KEY_ART, ytIcon)
-                .putLong(MediaMetadata.METADATA_KEY_DURATION, -1L)
-                .putString(MediaMetadata.METADATA_KEY_ARTIST, "playback")
-                .putString(MediaMetadata.METADATA_KEY_TITLE, "YouTube")
-                .putString(MediaMetadata.METADATA_KEY_ALBUM, "YouTube")
-                .build());
+
+        player = new WebViewPlayer(Looper.getMainLooper(), new WebViewPlayer.Callback() {
+            @Override
+            public void onPlayWhenReadyChanged(boolean playWhenReady) {
+                sendMessageToActivity(playWhenReady ? "PLAY" : "PAUSE");
+            }
+
+            @Override
+            public void onSkipToNext() {
+                sendMessageToActivity("NEXT");
+            }
+        });
+        mediaSession = new MediaSession.Builder(this, player)
+                .setId("YT:mediaService")
+                .setCallback(sessionCallback)
+                .build();
     }
 
     @Override
@@ -90,7 +81,6 @@ public class WebViewService extends Service {
         final String action = intent.getAction();
         Log.d(TAG, "svc: command " + action + " (startId=" + startId + ")");
         if (action != null) {
-            mediaStyle.setMediaSession(mediaSession.getSessionToken());
             switch (action) {
                 case "TOGGLE":
                     sendMessageToActivity("TOGGLE");
@@ -114,6 +104,9 @@ public class WebViewService extends Service {
                     destroyService();
                     break;
                 case "START":
+                    if (mediaSession == null) {
+                        break;
+                    }
                     createNotificationChannel();
 
                     Intent mainIntent = new Intent(this, MainActivity.class);
@@ -153,7 +146,8 @@ public class WebViewService extends Service {
                             .setOngoing(true)
                             .setBadgeIconType(androidx.core.app.NotificationCompat.BADGE_ICON_NONE)
                             .setOnlyAlertOnce(true)
-                            .setStyle(mediaStyle)
+                            .setStyle(new MediaStyleNotificationHelper.MediaStyle(mediaSession)
+                                    .setShowActionsInCompactView(0, 1, 2))
                             .setAllowSystemGeneratedContextualActions(true)
                             .setCategory(Notification.CATEGORY_TRANSPORT)
                             .setForegroundServiceBehavior(
@@ -199,8 +193,14 @@ public class WebViewService extends Service {
     }
 
     private void destroyService() {
-        mediaSession.setActive(false);
-        mediaSession.release();
+        if (mediaSession != null) {
+            mediaSession.release();
+            mediaSession = null;
+        }
+        if (player != null) {
+            player.release();
+            player = null;
+        }
         sendMessageToActivity("DESTROY");
         if (manager != null) {
             manager.cancel(NOTIFICATION_ID);
@@ -222,15 +222,9 @@ public class WebViewService extends Service {
         // No transport command logged just before this means the page changed state
         // on its own - that is the signature of the player pausing itself.
         Log.d(TAG, "svc: session state -> " + (playing ? "PLAYING" : "PAUSED"));
-        mediaSession.setActive(true);
-        mediaSession.setPlaybackState(new PlaybackStateCompat.Builder()
-                .setActions(PlaybackStateCompat.ACTION_PLAY
-                        | PlaybackStateCompat.ACTION_PAUSE
-                        | PlaybackStateCompat.ACTION_PLAY_PAUSE
-                        | PlaybackStateCompat.ACTION_SKIP_TO_NEXT)
-                .setState(playing ? PlaybackStateCompat.STATE_PLAYING
-                        : PlaybackStateCompat.STATE_PAUSED, 0, playing ? 1f : 0f)
-                .build());
+        if (player != null) {
+            player.setReportedPlaying(playing);
+        }
         if (builder == null) {
             return;
         }
@@ -271,65 +265,32 @@ public class WebViewService extends Service {
         intent.putExtra("ACTION", action);
         sendBroadcast(intent);
     }
-    MediaSessionCompat.Callback callback = new MediaSessionCompat.Callback() {
-        // PLAY and PAUSE rather than TOGGLE: the system can deliver these more than
-        // once for a single user action, and a blind flip turns the repeat into a
-        // pause right after the play.
+
+    private final MediaSession.Callback sessionCallback = new MediaSession.Callback() {
         @Override
-        public void onPlay() {
-            Log.d(TAG, "svc: media session onPlay()");
-            sendMessageToActivity("PLAY");
-        }
-
-        @Override
-        public void onPause() {
-            Log.d(TAG, "svc: media session onPause()");
-            sendMessageToActivity("PAUSE");
-        }
-
-        @Override
-        public void onSkipToPrevious() {
-            Log.d(TAG, "svc: media session onSkipToPrevious()");
-            sendMessageToActivity("TOGGLE");
-        }
-
-        @Override
-        public void onSkipToNext() {
-            Log.d(TAG, "svc: media session onSkipToNext()");
-            sendMessageToActivity("NEXT");
-        }
-
-        @Override
-        public boolean onMediaButtonEvent(Intent mediaButtonIntent) {
-            String intentAction = mediaButtonIntent.getAction();
-            if (Intent.ACTION_MEDIA_BUTTON.equals(intentAction)) {
-                KeyEvent event = IntentCompat.getParcelableExtra(
-                        mediaButtonIntent, Intent.EXTRA_KEY_EVENT, KeyEvent.class);
-
-                if (event != null && event.getAction() == KeyEvent.ACTION_DOWN) {
-                    int keycode = event.getKeyCode();
-                    Log.d(TAG, "svc: media key " + KeyEvent.keyCodeToString(keycode));
-
-                    if (keycode == KeyEvent.KEYCODE_MEDIA_NEXT) {
-                        sendMessageToActivity("NEXT");
-                    }
-
-                    if (keycode == KeyEvent.KEYCODE_MEDIA_PLAY) {
-                        sendMessageToActivity("PLAY");
-                    }
-
-                    if (keycode == KeyEvent.KEYCODE_MEDIA_PAUSE) {
-                        sendMessageToActivity("PAUSE");
-                    }
-
-                    if (keycode == KeyEvent.KEYCODE_MEDIA_PLAY_PAUSE
-                            || keycode == KeyEvent.KEYCODE_MEDIA_PREVIOUS
-                            || keycode == KeyEvent.KEYCODE_HEADSETHOOK) {
-                        sendMessageToActivity("TOGGLE");
-                    }
-                }
+        public boolean onMediaButtonEvent(MediaSession session, MediaSession.ControllerInfo controllerInfo,
+                                          Intent mediaButtonIntent) {
+            if (!Intent.ACTION_MEDIA_BUTTON.equals(mediaButtonIntent.getAction())) {
+                return MediaSession.Callback.super.onMediaButtonEvent(
+                        session, controllerInfo, mediaButtonIntent);
             }
-            return true;
+            KeyEvent event = IntentCompat.getParcelableExtra(
+                    mediaButtonIntent, Intent.EXTRA_KEY_EVENT, KeyEvent.class);
+            if (event == null || event.getAction() != KeyEvent.ACTION_DOWN) {
+                return MediaSession.Callback.super.onMediaButtonEvent(
+                        session, controllerInfo, mediaButtonIntent);
+            }
+            int keycode = event.getKeyCode();
+            Log.d(TAG, "svc: media key " + KeyEvent.keyCodeToString(keycode));
+            // Previous/headset-hook stay as TOGGLE: they are not advertised as session
+            // actions, so the default Player mapping would drop them.
+            if (keycode == KeyEvent.KEYCODE_MEDIA_PREVIOUS
+                    || keycode == KeyEvent.KEYCODE_HEADSETHOOK) {
+                sendMessageToActivity("TOGGLE");
+                return true;
+            }
+            return MediaSession.Callback.super.onMediaButtonEvent(
+                    session, controllerInfo, mediaButtonIntent);
         }
     };
 }

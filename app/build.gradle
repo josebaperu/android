@@ -3,34 +3,38 @@ plugins {
 }
 
 android {
-    namespace 'com.webview.youtube'
-    compileSdk 37
+    namespace = 'com.webview.youtube'
+    compileSdk = 37
 
     defaultConfig {
-        applicationId "com.webview.youtube"
-        minSdk 24
-        targetSdk 37
-        versionCode 1
-        versionName "1.0"
+        applicationId = "com.webview.youtube"
+        minSdk = 24
+        targetSdk = 37
+        versionCode = 1
+        versionName = "1.0"
     }
 
     buildTypes {
         release {
-            minifyEnabled true
-            shrinkResources true
+            minifyEnabled = true
+            shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    lint {
+        lintConfig = file("lint.xml")
     }
 }
 
 dependencies {
     implementation 'androidx.appcompat:appcompat:1.8.0'
     implementation 'androidx.webkit:webkit:1.17.0'
-    implementation 'androidx.media:media:1.8.0'
+    implementation 'androidx.media3:media3-session:1.11.1'
     implementation 'androidx.core:core:1.19.0'
 }
