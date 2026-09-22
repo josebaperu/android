@@ -24,3 +24,26 @@ ytd-video-masthead-ad-v3-renderer,
 ytm-promoted-sparkles-web-renderer {
     display: none !important;
 }
+
+/* Shorts. The WebView gets the mobile site (ytm-*), desktop (ytd-*) is kept
+   in case the user agent ever changes. :has() hides the whole section, so no
+   empty gap is left behind where a shelf used to be. */
+ytm-reel-shelf-renderer,
+ytm-shorts-lockup-view-model,
+ytm-shorts-lockup-view-model-v2,
+ytm-rich-section-renderer:has(ytm-reel-shelf-renderer),
+ytm-rich-section-renderer:has(ytm-shorts-lockup-view-model),
+ytm-rich-section-renderer:has(ytm-shorts-lockup-view-model-v2),
+ytm-rich-item-renderer:has(a[href^="/shorts/"]),
+ytm-video-with-context-renderer:has(a[href^="/shorts/"]),
+ytm-compact-video-renderer:has(a[href^="/shorts/"]),
+ytm-pivot-bar-item-renderer:has(.pivot-shorts),
+ytd-reel-shelf-renderer,
+ytd-rich-shelf-renderer[is-shorts],
+ytd-rich-section-renderer:has(ytd-rich-shelf-renderer[is-shorts]),
+ytd-rich-item-renderer:has(a[href^="/shorts/"]),
+ytd-video-renderer:has(a[href^="/shorts/"]),
+ytd-guide-entry-renderer:has(a[title="Shorts"]),
+ytd-mini-guide-entry-renderer[aria-label="Shorts"] {
+    display: none !important;
+}
