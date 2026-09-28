@@ -57,7 +57,8 @@ public class MainActivity extends AppCompatActivity {
     /** Watch the whole transport chain with: adb logcat -s YT:D */
     private static final String TAG = "YT";
     private final static String BASE_URL = "https://www.youtube.com/";
-    private String script;
+    private String scriptAds;
+    private String scriptToggleVideo;
     private String toggle;
     private String next;
     private String css;
@@ -139,7 +140,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        script = fileToStr(R.raw.script);
+        scriptAds = fileToStr(R.raw.script);
+        scriptToggleVideo = fileToStr(R.raw.script_hide_video);
         toggle = fileToStr(R.raw.toggle);
         next = fileToStr(R.raw.next);
         css = fileToStr(R.raw.style);
@@ -212,7 +214,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 injectCSS();
-                runScript(script);
+                runScript(scriptAds);
+                runScript(scriptToggleVideo);
                 runScript(playback);
             }
 
@@ -288,7 +291,8 @@ public class MainActivity extends AppCompatActivity {
         // so the ad blocker also goes in at document start where that is supported.
         if (WebViewFeature.isFeatureSupported(WebViewFeature.DOCUMENT_START_SCRIPT)) {
             Set<String> youtubeOrigins = Collections.singleton("https://*.youtube.com");
-            WebViewCompat.addDocumentStartJavaScript(mWebView, iife(script), youtubeOrigins);
+            WebViewCompat.addDocumentStartJavaScript(mWebView, iife(scriptAds), youtubeOrigins);
+            WebViewCompat.addDocumentStartJavaScript(mWebView, iife(scriptToggleVideo), youtubeOrigins);
             WebViewCompat.addDocumentStartJavaScript(mWebView, iife(playback), youtubeOrigins);
         }
         mWebView.setScrollBarStyle(WebView.SCROLLBARS_OUTSIDE_OVERLAY);
