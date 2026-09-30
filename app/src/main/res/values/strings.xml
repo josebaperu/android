@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">YT</string>
     <string name="notifications_denied">Enable notifications to get playback controls</string>
+    <string name="link_not_youtube">No YouTube link in that share</string>
+    <string name="open_links_title">Open YouTube links here</string>
+    <string name="open_links_message">Turn on supported links so Firefox and Chrome can open YouTube links in this app. If the YouTube app is installed, turn its supported links off first, or it keeps them. Sharing a page to YT works either way.</string>
+    <string name="open_links_settings">Open settings</string>
+    <string name="not_now">Not now</string>
 </resources>

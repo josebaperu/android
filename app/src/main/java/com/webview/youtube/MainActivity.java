@@ -2,13 +2,18 @@ package com.webview.youtube;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.verify.domain.DomainVerificationManager;
+import android.content.pm.verify.domain.DomainVerificationUserState;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
@@ -17,6 +22,7 @@ import android.view.WindowManager;
 import android.webkit.CookieManager;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.RenderProcessGoneDetail;
 import android.webkit.WebView;
@@ -29,6 +35,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 
 import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -49,6 +56,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.Set;
 
 public class MainActivity extends AppCompatActivity {
@@ -57,6 +65,8 @@ public class MainActivity extends AppCompatActivity {
     /** Watch the whole transport chain with: adb logcat -s YT:D */
     private static final String TAG = "YT";
     private final static String BASE_URL = "https://www.youtube.com/";
+    /** Set once the user dismisses the supported-links prompt, so it stays gone. */
+    private static final String KEY_LINK_PROMPT_DISMISSED = "link_prompt_dismissed";
     private String scriptAds;
     private String scriptToggleVideo;
     private String toggle;
@@ -68,12 +78,18 @@ public class MainActivity extends AppCompatActivity {
     private ActionReceiver receiver;
     /** Written from the WebView's JS thread, read from the main thread. */
     private volatile boolean playing;
+    /** Launcher start with no incoming link: offer the supported-links setting once. */
+    private boolean promptForLinks;
+    private boolean waitingForNotificationPermission;
+    private AlertDialog linkPrompt;
     private final ActivityResultLauncher<String> notificationPermissionLauncher =
             registerForActivityResult(new ActivityResultContracts.RequestPermission(), granted -> {
+                waitingForNotificationPermission = false;
                 if (!Boolean.TRUE.equals(granted)) {
                     Log.w(TAG, "notifications denied; playback controls will be hidden");
                     Toast.makeText(this, R.string.notifications_denied, Toast.LENGTH_LONG).show();
                 }
+                maybeOfferLinkSettings();
             });
 
     private void startService() {
@@ -86,12 +102,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /** The media notification is the only playback control, so ask for it up front. */
-    private void requestNotificationPermission() {
+    private boolean requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
                 && ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
                 != PackageManager.PERMISSION_GRANTED) {
+            waitingForNotificationPermission = true;
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            return true;
         }
+        return false;
     }
 
     /** The user asked to quit from the notification. onDestroy() does the teardown. */
@@ -173,8 +192,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         keepAwakeOnLockScreen();
-
-        requestNotificationPermission();
         startService();
 
         ActionBar actionBar = getSupportActionBar();
@@ -186,6 +203,37 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView = findViewById(R.id.activity_main_webview);
         mWebView.setWebViewClient(new WebViewClient() {
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri uri = request.getUrl();
+                if (uri == null || uri.getScheme() == null) {
+                    return false;
+                }
+                String scheme = uri.getScheme().toLowerCase(Locale.ROOT);
+                // https stays in the WebView. http YouTube pages are upgraded so a
+                // link opened from a browser doesn't bounce back out over cleartext.
+                if ("https".equals(scheme)) {
+                    return false;
+                }
+                if ("http".equals(scheme)) {
+                    String https = YouTubeLinks.toWebUrl(uri);
+                    if (https != null) {
+                        view.loadUrl(https);
+                        return true;
+                    }
+                    return false;
+                }
+                String webUrl = YouTubeLinks.toWebUrl(uri);
+                if (webUrl == null && "intent".equals(scheme)) {
+                    webUrl = YouTubeLinks.fromIntentUri(uri.toString());
+                }
+                if (webUrl != null) {
+                    view.loadUrl(webUrl);
+                    return true;
+                }
+                return false;
+            }
 
             @Override
             public void doUpdateVisitedHistory(WebView view,
@@ -313,7 +361,110 @@ public class MainActivity extends AppCompatActivity {
 
         mWebView.addJavascriptInterface(new PlaybackBridge(), "AndroidPlayback");
 
-        mWebView.loadUrl(getValue("url"));
+        // A recreated activity (renderer death, process restore) must resume the
+        // saved page. A fresh launch from a browser link or a share loads that URL.
+        // The supported-links prompt is only for an ordinary tap on the icon.
+        promptForLinks = savedInstanceState == null
+                && Intent.ACTION_MAIN.equals(getIntent().getAction());
+        mWebView.loadUrl(initialUrl(savedInstanceState));
+        if (!requestNotificationPermission()) {
+            maybeOfferLinkSettings();
+        }
+    }
+
+    /**
+     * singleTask: a link opened while the app is already running arrives here
+     * instead of creating a second activity.
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        String incoming = YouTubeLinks.urlFrom(intent);
+        if (incoming == null) {
+            if (Intent.ACTION_SEND.equals(intent.getAction())) {
+                Toast.makeText(this, R.string.link_not_youtube, Toast.LENGTH_LONG).show();
+            }
+            return;
+        }
+        saveCurrentUrl(incoming);
+        if (mWebView != null) {
+            mWebView.loadUrl(incoming);
+        }
+    }
+
+    private String initialUrl(Bundle savedInstanceState) {
+        if (savedInstanceState == null) {
+            String incoming = YouTubeLinks.urlFrom(getIntent());
+            if (incoming != null) {
+                saveCurrentUrl(incoming);
+                return incoming;
+            }
+            if (Intent.ACTION_SEND.equals(getIntent().getAction())) {
+                Toast.makeText(this, R.string.link_not_youtube, Toast.LENGTH_LONG).show();
+            }
+        }
+        return getValue("url");
+    }
+
+    /**
+     * On Android 12+ an unverified https link opens in the browser until the
+     * user allows it. Point them at that setting once; Share does not need it.
+     */
+    private void maybeOfferLinkSettings() {
+        if (!promptForLinks || waitingForNotificationPermission || isFinishing()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            return;
+        }
+        if (prefs().getBoolean(KEY_LINK_PROMPT_DISMISSED, false) || hasApprovedYouTubeLinks()) {
+            return;
+        }
+        promptForLinks = false;
+        linkPrompt = new AlertDialog.Builder(this)
+                .setTitle(R.string.open_links_title)
+                .setMessage(R.string.open_links_message)
+                .setPositiveButton(R.string.open_links_settings, (dialog, which) -> {
+                    save(KEY_LINK_PROMPT_DISMISSED, true);
+                    try {
+                        startActivity(new Intent(
+                                Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+                                Uri.parse("package:" + getPackageName())));
+                    } catch (ActivityNotFoundException e) {
+                        Log.w(TAG, "open-by-default settings unavailable", e);
+                    }
+                })
+                .setNegativeButton(R.string.not_now, (dialog, which) ->
+                        save(KEY_LINK_PROMPT_DISMISSED, true))
+                .show();
+    }
+
+    private boolean hasApprovedYouTubeLinks() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            return false;
+        }
+        DomainVerificationManager manager = getSystemService(DomainVerificationManager.class);
+        if (manager == null) {
+            return false;
+        }
+        DomainVerificationUserState state;
+        try {
+            state = manager.getDomainVerificationUserState(getPackageName());
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.w(TAG, "domain verification state unavailable", e);
+            return false;
+        }
+        if (state == null) {
+            return false;
+        }
+        for (int value : state.getHostToStateMap().values()) {
+            if (value == DomainVerificationUserState.DOMAIN_STATE_SELECTED
+                    || value == DomainVerificationUserState.DOMAIN_STATE_VERIFIED) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -359,6 +510,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (linkPrompt != null) {
+            linkPrompt.dismiss();
+            linkPrompt = null;
+        }
         if (receiver != null) {
             unregisterReceiver(receiver);
             receiver = null;
@@ -400,6 +555,10 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = prefs().edit();
         editor.putString(key, value);
         editor.apply();
+    }
+
+    private void save(String key, boolean value) {
+        prefs().edit().putBoolean(key, value).apply();
     }
 
     private void saveCurrentUrl(String url) {

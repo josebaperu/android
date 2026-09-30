@@ -37,6 +37,47 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <!--
+                YouTube will not verify a third-party app, so these links stay
+                unverified. autoVerify is what lists the hosts under
+                Settings → Open by default, where the user can still allow them.
+                The activity then loads the URL; see YouTubeLinks.
+            -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="https" />
+                <data android:scheme="http" />
+                <data android:host="youtube.com" />
+                <data android:host="www.youtube.com" />
+                <data android:host="m.youtube.com" />
+                <data android:host="music.youtube.com" />
+                <data android:host="gaming.youtube.com" />
+                <data android:host="youtu.be" />
+                <data android:host="www.youtu.be" />
+                <data android:host="youtube-nocookie.com" />
+                <data android:host="www.youtube-nocookie.com" />
+            </intent-filter>
+
+            <!-- Custom schemes still show the app chooser on Android 12+. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="vnd.youtube" />
+                <data android:scheme="youtube" />
+            </intent-filter>
+
+            <!-- Share from Chrome or Firefox. Works without link approval. -->
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
         </activity>
 
         <receiver
